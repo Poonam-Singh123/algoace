@@ -1,0 +1,28 @@
+{
+  "name": "algoace",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build:css": "tailwindcss -i ./public/tailwind.css -o ./public/styles.min.css --watch",
+    "build:css:prod": "tailwindcss -i ./public/tailwind.css -o ./public/styles.min.css --minify"
+  },
+  "keywords": ["leetcode", "algorithms", "competitive-programming", "cpp", "solutions"],
+  "author": "Poonam Singh",
+  "license": "MIT",
+  "description": "A comprehensive collection of C++ solutions for LeetCode problems with a modern, responsive web interface",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
