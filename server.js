@@ -20,26 +20,17 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/1", (req, res) => {
-  res.render("1", { title: "LeetCode 1 - Two Sum" });
-});
-
-app.get("/2", (req, res) => {
-  res.render("2", { title: "LeetCode 2 - Add Two Numbers" });
-});
-
-// Dynamic problem pages
-app.get("/problem/:number", (req, res) => {
-  const problemNumber = req.params.number;
-  // For now, redirect to existing pages if they exist, otherwise show a template
-  if (problemNumber === "1" || problemNumber === "2") {
-    res.redirect(`/${problemNumber}`);
+// Generic route for any EJS file in views
+app.get("/:page", (req, res, next) => {
+  const page = req.params.page;
+  if (page === "home") {
+    return res.redirect("/");
+  }
+  const viewPath = path.join(__dirname, "views", `${page}.ejs`);
+  if (fs.existsSync(viewPath)) {
+    res.render(page, { title: `LeetCode ${page}` });
   } else {
-    // You can implement dynamic problem loading here
-    res.render("solution-template", {
-      title: `LeetCode ${problemNumber} - Problem ${problemNumber}`,
-      problemNumber: problemNumber,
-    });
+    next();
   }
 });
 
