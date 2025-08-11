@@ -62,7 +62,7 @@ A comprehensive collection of C++ solutions for LeetCode problems with a modern,
 - **Homepage**: `http://localhost:3000` - Modern landing page with project overview
 - **LeetCode 1**: `http://localhost:3000/1` - Two Sum solution
 - **LeetCode 2**: `http://localhost:3000/2` - Add Two Numbers solution
-- **Problem Pages**: `http://localhost:3000/problem/{number}` - Dynamic problem pages
+- **Problem Pages**: `http://localhost:3000/{number}` - Dynamic problem pages
 
 ## 🎨 Styling & Build
 
