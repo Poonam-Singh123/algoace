@@ -8,6 +8,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-  autoDeploy: true
-  branch: main
+    autoDeploy: true
+    branch: main
     healthCheckPath: /
