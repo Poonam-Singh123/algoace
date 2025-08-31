@@ -171,6 +171,14 @@ The project supports dynamic problem pages using the URL pattern `/problem/{numb
 - Syntax highlighting support with highlight.js
 - Proper font families for code
 - Inline code styling for problem descriptions
+  
+### HTML Entity Encoding for C++ Template Syntax
+When displaying C++ code with template syntax in HTML, use HTML entities to prevent browser interpretation:
+- `<` → `&lt;` (less than)
+- `>` → `&gt;` (greater than)  
+- `&` → `&amp;` (ampersand)
+
+**Example**: `vector<vector<char>>&` should be written as `vector&lt;vector&lt;char&gt;&gt;&amp;` in HTML source to display correctly.
 
 ### Problem Navigation
 - Easy URL-based navigation: `/problem/{number}`
