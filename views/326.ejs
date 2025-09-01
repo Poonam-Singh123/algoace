@@ -14,7 +14,8 @@
     <main>
         <h1>LeetCode 326: Power of Three (C++)</h1>
         <div class="problem-description">
-            <p><strong>Problem:</strong> Given an integer n, return true if it is a power of three. Otherwise, return false.</p>
+            <p><strong>Problem:</strong> Given an integer n, return true if it is a power of three. Otherwise, return
+                false.</p>
             <p><strong>Example:</strong> <br>
                 Input: n = 27 <br>
                 Output: true <br>
@@ -26,7 +27,7 @@
             <pre><code class="language-cpp">class Solution {
  public:
   bool isPowerOfThree(int n) {
-    if (n < 1) return false;
+    if (n &lt; 1) return false;
     while (n % 3 == 0) n /= 3;
     return n == 1;
   }

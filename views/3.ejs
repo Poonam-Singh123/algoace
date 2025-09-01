@@ -2,36 +2,36 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LeetCode 3: Longest Substring Without Repeating Characters (C++)</title>
-    <link rel="stylesheet" href="/styles.min.css" />
-    <link rel="stylesheet" href="/styles.css" />
-    <script src="/solution.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeetCode 3: Longest Substring Without Repeating Characters (C++)</title>
+  <link rel="stylesheet" href="/styles.min.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/solution.js"></script>
 </head>
 
 <body>
-    <main>
-        <h1>LeetCode 3: Longest Substring Without Repeating Characters (C++)</h1>
-        <div class="problem-description">
-            <p><strong>Problem:</strong> Given a string s, find the length of the longest substring without repeating
-                characters.</p>
-            <p><strong>Example:</strong> <br>
-                Input: s = "abcabcbb" <br>
-                Output: 3 <br>
-                Explanation: The answer is "abc", with the length of 3.
-            </p>
-        </div>
-        <div class="code-container">
-            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
-            <pre><code class="language-cpp">class Solution {
+  <main>
+    <h1>LeetCode 3: Longest Substring Without Repeating Characters (C++)</h1>
+    <div class="problem-description">
+      <p><strong>Problem:</strong> Given a string s, find the length of the longest substring without repeating
+        characters.</p>
+      <p><strong>Example:</strong> <br>
+        Input: s = "abcabcbb" <br>
+        Output: 3 <br>
+        Explanation: The answer is "abc", with the length of 3.
+      </p>
+    </div>
+    <div class="code-container">
+      <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+      <pre><code class="language-cpp">class Solution {
  public:
   int lengthOfLongestSubstring(string s) {
-    vector<int> index(128, -1);
+    vector&lt;int&gt; index(128, -1);
     int maxLen = 0;
     int start = 0;
-    for (int i = 0; i < s.length(); ++i) {
-      if (index[s[i]] >= start)
+    for (int i = 0; i &lt; s.length(); ++i) {
+      if (index[s[i]] &gt;= start)
         start = index[s[i]] + 1;
       index[s[i]] = i;
       maxLen = max(maxLen, i - start + 1);
@@ -40,9 +40,9 @@
   }
 };
 </code></pre>
-        </div>
-        <a href="/" class="back-link">← Back to Home</a>
-    </main>
+    </div>
+    <a href="/" class="back-link">← Back to Home</a>
+  </main>
 </body>
 
 </html>
