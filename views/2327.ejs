@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetCode 2327: Number of People Aware of a Secret</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        main {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .problem-description {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .problem-description p {
+            margin: 15px 0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .problem-description strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .code-container {
+            position: relative;
+            margin: 30px 0;
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .copy-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+        
+        .copy-button:active {
+            transform: translateY(0);
+        }
+        
+        pre {
+            margin: 0;
+            padding: 25px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        code {
+            color: #f8f8f2;
+            background: none;
+        }
+        
+        .language-cpp {
+            color: #f8f8f2;
+        }
+        
+        /* C++ syntax highlighting */
+        .keyword { color: #66d9ef; font-weight: bold; }
+        .string { color: #e6db74; }
+        .comment { color: #75715e; font-style: italic; }
+        .number { color: #ae81ff; }
+        .type { color: #a6e22e; }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(-5px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .complexity-info {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .approach-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            main {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2327: Number of People Aware of a Secret (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                On day 1, one person discovers a secret. You are given an integer `delay`, which means that each person will share the secret with a new person every day, starting from `delay` days after discovering the secret. You are also given an integer `forget`, which means that each person will forget the secret `forget` days after discovering it. A person cannot share the secret on the same day they forgot it, or on any day afterwards. Given an integer `n`, return the number of people who know the secret at the end of day `n`. Since the answer may be very large, return it modulo 10^9 + 7.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 6, delay = 2, forget = 4<br>
+                Output: 5<br>
+                Explanation: Day 1: Suppose the first person is named A. (1 person)<br>
+                Day 2: A is the only person who knows the secret. (1 person)<br>
+                Day 3: A shares the secret with a new person B. (2 people)<br>
+                Day 4: A shares the secret with a new person C, and B shares the secret with a new person D. (4 people)<br>
+                Day 5: A forgets the secret, and B shares the secret with a new person E, and C shares the secret with a new person F. (5 people)<br>
+                Day 6: B forgets the secret, and C shares the secret with a new person G, and E shares the secret with a new person H. (6 people)<br>
+                But we only count people who still remember: C, D, E, F, G = 5 people.
+            </p>
+        </div>
+
+        <div class="approach-section">
+            <p><strong>Approach:</strong>
+                We use dynamic programming where dp[i] represents the number of people who discover the secret on day i. We maintain running sums of people who can share secrets and people who will forget. The key insight is tracking when people start sharing (after delay days) and when they forget (after forget days).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int peopleAwareOfSecret(int n, int delay, int forget) {
+        const int MOD = 1000000007;
+        
+        // dp[i] = number of people who learn the secret on day i
+        vector<long long> dp(n + 1, 0);
+        dp[1] = 1;  // One person knows the secret on day 1
+        
+        long long share = 0;  // Number of people who can share the secret today
+        long long totalKnow = 1;  // Total people who know the secret
+        
+        for (int i = 2; i <= n; i++) {
+            // People who learned the secret (i - delay) days ago can start sharing today
+            if (i - delay >= 1) {
+                share = (share + dp[i - delay]) % MOD;
+            }
+            
+            // People who learned the secret (i - forget) days ago forget today
+            if (i - forget >= 1) {
+                share = (share - dp[i - forget] + MOD) % MOD;
+                totalKnow = (totalKnow - dp[i - forget] + MOD) % MOD;
+            }
+            
+            // New people learn the secret today (one from each person who can share)
+            dp[i] = share;
+            totalKnow = (totalKnow + dp[i]) % MOD;
+        }
+        
+        return totalKnow;
+    }
+};</code></pre>
+        </div>
+
+        <div class="complexity-info">
+            <p><strong>Time Complexity:</strong> O(n) - We iterate through each day from 1 to n once.</p>
+            <p><strong>Space Complexity:</strong> O(n) - We use an array dp of size n+1 to store the number of people learning the secret each day.</p>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling.querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                button.textContent = 'Copied!';
+                button.style.background = '#27ae60';
+                setTimeout(function() {
+                    button.textContent = 'Copy Code';
+                    button.style.background = '#3498db';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                button.textContent = 'Copied!';
+                button.style.background = '#27ae60';
+                setTimeout(function() {
+                    button.textContent = 'Copy Code';
+                    button.style.background = '#3498db';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
