@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>LeetCode 2785: Sort Vowels in a String</title>
+     <style>
+         body {
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             max-width: 1000px;
+             margin: 0 auto;
+             padding: 20px;
+             background: #f5f5f5;
+             line-height: 1.6;
+         }
+         main {
+             background: white;
+             padding: 30px;
+             border-radius: 10px;
+             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+         }
+         h1 {
+             color: #333;
+             border-bottom: 3px solid #007acc;
+             padding-bottom: 10px;
+             margin-bottom: 25px;
+         }
+         .problem-description {
+             background: #f8f9fa;
+             padding: 20px;
+             border-left: 4px solid #007acc;
+             margin: 20px 0;
+             border-radius: 5px;
+         }
+         .problem-description p {
+             margin: 10px 0;
+         }
+         .code-container {
+             position: relative;
+             background: #1e1e1e;
+             border-radius: 8px;
+             margin: 20px 0;
+             overflow: hidden;
+         }
+         .copy-button {
+             position: absolute;
+             top: 10px;
+             right: 10px;
+             background: #007acc;
+             color: white;
+             border: none;
+             padding: 8px 16px;
+             border-radius: 4px;
+             cursor: pointer;
+             font-size: 12px;
+             z-index: 10;
+         }
+         .copy-button:hover {
+             background: #005a9e;
+         }
+         pre {
+             margin: 0;
+             padding: 20px;
+             padding-top: 50px;
+             overflow-x: auto;
+         }
+         code {
+             color: #d4d4d4;
+             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+             font-size: 14px;
+             line-height: 1.5;
+         }
+         .back-link {
+             display: inline-block;
+             margin-top: 30px;
+             padding: 10px 20px;
+             background: #007acc;
+             color: white;
+             text-decoration: none;
+             border-radius: 5px;
+             transition: background 0.3s;
+         }
+         .back-link:hover {
+             background: #005a9e;
+         }
+         .complexity {
+             background: #e8f4f8;
+             padding: 15px;
+             border-radius: 5px;
+             margin: 15px 0;
+             border-left: 4px solid #17a2b8;
+         }
+     </style>
+ </head>
+ <body>
+     <main>
+         <h1>LeetCode 2785: Sort Vowels in a String (C++)</h1>
+         
+         <div class="problem-description">
+             <p><strong>Problem:</strong>
+                 Given a 0-indexed string s, permute s to get a new string t such that:
+                 <br>• All consonants remain in their original places. More formally, if there is an index i with 0 <= i < s.length such that s[i] is a consonant, then t[i] = s[i].
+                 <br>• The vowels must be sorted in the nondecreasing order of their ASCII values. More formally, for pairs of indices i, j with 0 <= i < j < s.length such that s[i] and s[j] are vowels, then t[i] <= t[j].
+                 <br>Return the resulting string.
+                 <br>The vowels are 'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', and 'U'.
+             </p>
+             <p><strong>Example:</strong>
+                 <br><strong>Example 1:</strong>
+                 <br>Input: s = "lEetcOde"
+                 <br>Output: "lEOtceede"
+                 <br>Explanation: 'E', 'e', 'O', 'o', 'e' are the vowels in s; after sorting, the vowels are 'E', 'O', 'e', 'e', 'o'. After placing the vowels at their original positions, we get "lEOtceede".
+                 <br><br><strong>Example 2:</strong>
+                 <br>Input: s = "lYmpH"
+                 <br>Output: "lYmpH"
+                 <br>Explanation: There are no vowels in s (all characters in s are consonants), so we return "lYmpH".
+             </p>
+             <p><strong>Constraints:</strong>
+                 <br>• 1 <= s.length <= 10^5
+                 <br>• s consists only of letters of the English alphabet in uppercase and lowercase.
+             </p>
+         </div>
+         
+         <div class="complexity">
+             <strong>Time Complexity:</strong> O(n log n) - where n is the number of vowels in the string<br>
+             <strong>Space Complexity:</strong> O(n) - for storing vowels and result string
+         </div>
+         
+         <div class="code-container">
+             <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+             <pre><code class="language-cpp">class Solution {
+public:
+    string sortVowels(string s) {
+        // Helper function to check if a character is a vowel
+        auto isVowel = [](char c) {
+            return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ||
+                   c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
+        };
+        
+        // Extract all vowels from the string
+        vector<char> vowels;
+        for (char c : s) {
+            if (isVowel(c)) {
+                vowels.push_back(c);
+            }
+        }
+        
+        // Sort vowels by ASCII values
+        sort(vowels.begin(), vowels.end());
+        
+        // Reconstruct the string with sorted vowels
+        string result = s;
+        int vowelIndex = 0;
+        
+        for (int i = 0; i < result.length(); i++) {
+            if (isVowel(result[i])) {
+                result[i] = vowels[vowelIndex++];
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+         </div>
+         
+         <div class="problem-description">
+             <p><strong>Algorithm Explanation:</strong>
+                 <br>1. <strong>Identify Vowels:</strong> Use a lambda function to check if a character is a vowel (both uppercase and lowercase).
+                 <br>2. <strong>Extract Vowels:</strong> Iterate through the string and collect all vowels in a separate vector.
+                 <br>3. <strong>Sort Vowels:</strong> Sort the vowels vector in ascending order based on ASCII values.
+                 <br>4. <strong>Replace Vowels:</strong> Iterate through the original string again and replace each vowel with the next vowel from the sorted list, keeping consonants in their original positions.
+                 <br>5. <strong>Return Result:</strong> Return the modified string with sorted vowels and unchanged consonants.
+             </p>
+         </div>
+         
+         <a href="/" class="back-link">← Back to Home</a>
+     </main>
+     
+     <script>
+         function copyCode(button) {
+             const codeBlock = button.nextElementSibling.querySelector('code');
+             const text = codeBlock.textContent;
+             
+             navigator.clipboard.writeText(text).then(function() {
+                 const originalText = button.textContent;
+                 button.textContent = 'Copied!';
+                 button.style.background = '#28a745';
+                 
+                 setTimeout(function() {
+                     button.textContent = originalText;
+                     button.style.background = '#007acc';
+                 }, 2000);
+             }).catch(function(err) {
+                 console.error('Failed to copy code: ', err);
+             });
+         }
+     </script>
+ </body>
+</html>
