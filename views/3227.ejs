@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetCode 3227: Vowels Game in a String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling.querySelector('code');
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy Code';
+                }, 2000);
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3227: Vowels Game in a String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Alice and Bob are playing a turn-based game on a string s. Alice goes first and must remove any non-empty substring that contains an odd number of vowels. Bob must remove any non-empty substring that contains an even number of vowels. The first player who cannot make a valid move loses. Both players play optimally. Return true if Alice wins, false if Bob wins.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "leetcode" → Output: true (Alice can remove "leetcod" leaving "e", Bob cannot move)
+                Input: s = "bbcd" → Output: false (Alice cannot make first move, no vowels)
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool doesAliceWin(string s) {
+        // The key insight: Alice wins if and only if the string contains at least one vowel
+        // 
+        // Game theory analysis:
+        // - If no vowels exist: Alice cannot make a move (needs odd vowels), Bob wins
+        // - If odd number of vowels: Alice removes entire string (odd vowels), Alice wins
+        // - If even number of vowels: Alice removes (total-1) vowels, leaving 1 vowel
+        //   Bob then cannot move (1 is odd, not even), Alice wins
+        
+        const string vowels = "aeiou";
+        
+        // Check if any character in the string is a vowel
+        for (char c : s) {
+            if (vowels.find(c) != string::npos) {
+                return true;  // Alice wins if any vowel exists
+            }
+        }
+        
+        return false;  // No vowels found, Alice cannot make a move
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
