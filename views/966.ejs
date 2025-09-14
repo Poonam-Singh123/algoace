@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetCode 966: Vowel Spellchecker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        main {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007acc;
+            padding-bottom: 10px;
+        }
+
+        .problem-description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007acc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        .copy-button:hover {
+            background: #005999;
+        }
+
+        pre {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007acc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            color: #333;
+        }
+    </style>
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling.querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                button.textContent = 'Copied!';
+                setTimeout(function() {
+                    button.textContent = 'Copy Code';
+                }, 2000);
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 966: Vowel Spellchecker (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a wordlist, we want to implement a spellchecker that converts a query word into a correct word. For a given query word, the spell checker handles two categories of spelling mistakes:
+                <br><br>
+                1. <strong>Capitalization:</strong> If the query matches a word in the wordlist (case-insensitive), then the query word is returned with the same case as in the wordlist.
+                <br><br>
+                2. <strong>Vowel Errors:</strong> If after replacing the vowels ('a', 'e', 'i', 'o', 'u') of the query word with any vowel individually, it matches a word in the wordlist (case-insensitive), then the query word is returned with the same case as in the wordlist.
+            </p>
+            <p><strong>Example:</strong>
+                <br>Input: wordlist = ["KiTe","kite","hare","Hare"], queries = ["kite","Kite","KiTe","Hare","HARE","Hear","hear","keti","keet","keto"]
+                <br>Output: ["kite","KiTe","KiTe","Hare","hare","","","KiTe","","KiTe"]
+                <br><br>
+                Priority: Exact match > Case insensitive match > Vowel error match > No match (return "")
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;string&gt; spellchecker(vector&lt;string&gt;& wordlist, vector&lt;string&gt;& queries) {
+        unordered_set&lt;string&gt; words(wordlist.begin(), wordlist.end());
+        unordered_map&lt;string, string&gt; cap; // for case insensitive matches
+        unordered_map&lt;string, string&gt; vowel; // for vowel error matches
+        
+        // Build the maps for case insensitive and vowel error matching
+        for (const string& word : wordlist) {
+            string lower = toLower(word);
+            string devowel = devowelize(lower);
+            
+            // Only store the first occurrence for case insensitive match
+            if (cap.find(lower) == cap.end()) {
+                cap[lower] = word;
+            }
+            
+            // Only store the first occurrence for vowel error match
+            if (vowel.find(devowel) == vowel.end()) {
+                vowel[devowel] = word;
+            }
+        }
+        
+        vector&lt;string&gt; result;
+        
+        // Process each query
+        for (const string& query : queries) {
+            if (words.count(query)) {
+                // Exact match
+                result.push_back(query);
+            } else if (cap.count(toLower(query))) {
+                // Case insensitive match
+                result.push_back(cap[toLower(query)]);
+            } else if (vowel.count(devowelize(toLower(query)))) {
+                // Vowel error match
+                result.push_back(vowel[devowelize(toLower(query))]);
+            } else {
+                // No match
+                result.push_back("");
+            }
+        }
+        
+        return result;
+    }
+
+private:
+    // Convert string to lowercase
+    string toLower(const string& word) {
+        string result = word;
+        for (char& c : result) {
+            c = tolower(c);
+        }
+        return result;
+    }
+    
+    // Replace all vowels with '*' to handle vowel errors
+    string devowelize(const string& word) {
+        string result = word;
+        for (char& c : result) {
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                c = '*';
+            }
+        }
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
