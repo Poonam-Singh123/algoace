@@ -40,10 +40,8 @@ app.use((req, res) => {
   res.status(404).render("404", { title: "Not Found" });
 });
 
-// Start server
-const port = process.env.PORT || 3974;
-const host = process.env.HOST || "0.0.0.0";
-app.listen(port, host, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server listening on http://${host}:${port}`);
+// ✅ Start server
+const port = process.env.PORT || 3974; // Render gives you a dynamic PORT
+app.listen(port, "0.0.0.0", () => {
+  console.log(`✅ Server running on http://0.0.0.0:${port}`);
 });
