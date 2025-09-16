@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2197: Replace Non-Coprime Numbers in Array (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2197: Replace Non-Coprime Numbers in Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of integers nums. Perform the following steps: Find any two adjacent numbers in nums that are non-coprime. If no such numbers are found, stop the process. Otherwise, delete the two numbers and replace them with their LCM (Least Common Multiple). Repeat this process as long as you keep finding two adjacent non-coprime numbers. Return the final modified array. Two values x and y are non-coprime if GCD(x, y) &gt; 1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [6,4,3,2,7,6,2]<br>
+                Output: [12,7,6]<br>
+                Explanation: (6, 4) are non-coprime with LCM(6, 4) = 12. Now, nums = [12,3,2,7,6,2]. Continue merging adjacent non-coprime pairs until no more such pairs exist.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; replaceNonCoprimes(vector&lt;int&gt;&amp; nums) {
+        int j = 0, n = nums.size();
+        
+        for (int i = 0; i &lt; n; ++i, ++j) {
+            nums[j] = nums[i];
+            
+            // Keep merging leftwards if current element and previous are non-coprime
+            for (; j - 1 &gt;= 0 &amp;&amp; __gcd(nums[j], nums[j - 1]) &gt; 1; --j) {
+                // Calculate LCM and replace nums[j-1] with it
+                long long gcd_val = __gcd(nums[j], nums[j - 1]);
+                nums[j - 1] = (long long)nums[j] * nums[j - 1] / gcd_val;
+            }
+        }
+        
+        nums.resize(j);
+        return nums;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
