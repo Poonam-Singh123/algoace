@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2353: Design a Food Rating System (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2353: Design a Food Rating System (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Design a food rating system that can do the following: Modify the rating of a food item listed in the system. Return the highest-rated food item for a type of cuisine in the system. Implement the FoodRatings class with constructor FoodRatings(foods, cuisines, ratings), method changeRating(food, newRating), and method highestRated(cuisine). If there is a tie, return the item with the lexicographically smaller name.
+            </p>
+            <p><strong>Example:</strong>
+                Input: foods = ["kimchi", "miso", "sushi"], cuisines = ["korean", "japanese", "japanese"], ratings = [9, 12, 8]<br>
+                Output: highestRated("korean") returns "kimchi", highestRated("japanese") returns "miso"<br>
+                Explanation: "kimchi" has rating 9 for korean cuisine, "miso" has rating 12 for japanese cuisine.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class FoodRatings {
+private:
+    // Map: food name -&gt; {rating, cuisine}
+    unordered_map&lt;string, pair&lt;int, string&gt;&gt; foodInfo;
+    
+    // Map: cuisine -&gt; set of {-rating, food} (negative rating for descending order)
+    unordered_map&lt;string, set&lt;pair&lt;int, string&gt;&gt;&gt; cuisineToFoods;
+    
+public:
+    FoodRatings(vector&lt;string&gt;&amp; foods, vector&lt;string&gt;&amp; cuisines, vector&lt;int&gt;&amp; ratings) {
+        int n = foods.size();
+        
+        for (int i = 0; i &lt; n; i++) {
+            string food = foods[i];
+            string cuisine = cuisines[i];
+            int rating = ratings[i];
+            
+            // Store food info
+            foodInfo[food] = {rating, cuisine};
+            
+            // Add to cuisine set (negative rating for max-heap behavior)
+            cuisineToFoods[cuisine].insert({-rating, food});
+        }
+    }
+    
+    void changeRating(string food, int newRating) {
+        // Get current info
+        auto&amp; info = foodInfo[food];
+        int oldRating = info.first;
+        string cuisine = info.second;
+        
+        // Remove old entry from set
+        cuisineToFoods[cuisine].erase({-oldRating, food});
+        
+        // Update rating
+        info.first = newRating;
+        
+        // Add new entry to set
+        cuisineToFoods[cuisine].insert({-newRating, food});
+    }
+    
+    string highestRated(string cuisine) {
+        // Return the food with highest rating (first element in set)
+        // Set is ordered by {-rating, food}, so first element has highest rating
+        // If ratings are equal, lexicographically smaller food comes first
+        return cuisineToFoods[cuisine].begin()-&gt;second;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
