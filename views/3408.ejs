@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3408: Design Task Manager (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3408: Design Task Manager (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Design a task management system that allows users to manage their tasks, each associated with a priority. The system should efficiently handle adding, modifying, executing, and removing tasks. Implement TaskManager class with methods: constructor(tasks), add(userId, taskId, priority), edit(taskId, newPriority), rmv(taskId), and execTop() which returns the userId of the highest priority task (highest taskId if tied).
+            </p>
+            <p><strong>Example:</strong>
+                Input: TaskManager([[1, 101, 10], [2, 102, 20], [3, 103, 15]])<br>
+                add(4, 104, 5), edit(102, 8), execTop() returns 3<br>
+                Explanation: Task 103 has highest priority (15), so User 3 is returned. Tasks are executed by highest priority, then highest taskId.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class TaskManager {
+private:
+    // Map: taskId -&gt; {userId, priority}
+    unordered_map&lt;int, pair&lt;int, int&gt;&gt; taskInfo;
+    
+    // Set: {-priority, -taskId} for max-heap behavior
+    // Negative values to get highest priority and highest taskId first
+    set&lt;pair&lt;int, int&gt;&gt; prioritySet;
+    
+public:
+    TaskManager(vector&lt;vector&lt;int&gt;&gt;&amp; tasks) {
+        for (const auto&amp; task : tasks) {
+            add(task[0], task[1], task[2]);
+        }
+    }
+    
+    void add(int userId, int taskId, int priority) {
+        // Store task information
+        taskInfo[taskId] = {userId, priority};
+        
+        // Add to priority set (negative values for max-heap behavior)
+        prioritySet.insert({-priority, -taskId});
+    }
+    
+    void edit(int taskId, int newPriority) {
+        // Get current task info
+        auto [userId, oldPriority] = taskInfo[taskId];
+        
+        // Remove old entry from priority set
+        prioritySet.erase({-oldPriority, -taskId});
+        
+        // Update task info
+        taskInfo[taskId] = {userId, newPriority};
+        
+        // Add new entry to priority set
+        prioritySet.insert({-newPriority, -taskId});
+    }
+    
+    void rmv(int taskId) {
+        // Get task info to remove from priority set
+        auto [userId, priority] = taskInfo[taskId];
+        
+        // Remove from both data structures
+        prioritySet.erase({-priority, -taskId});
+        taskInfo.erase(taskId);
+    }
+    
+    int execTop() {
+        if (prioritySet.empty()) {
+            return -1;
+        }
+        
+        // Get the highest priority task (first element in set)
+        auto topTask = *prioritySet.begin();
+        prioritySet.erase(prioritySet.begin());
+        
+        // Extract taskId (remember it's negative)
+        int taskId = -topTask.second;
+        
+        // Get userId and remove task info
+        int userId = taskInfo[taskId].first;
+        taskInfo.erase(taskId);
+        
+        return userId;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
