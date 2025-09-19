@@ -253,4 +253,5 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **AlgoAce** - Making LeetCode solutions accessible and beautiful! 🚀
 
-
+### Author
+- Poonam Singh
