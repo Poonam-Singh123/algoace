@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3484: Design Spreadsheet (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3484: Design Spreadsheet (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Design a spreadsheet with 26 columns (labeled from 'A' to 'Z') and a given number of rows. Each cell can hold an integer value between 0 and 10^5. Implement Spreadsheet class with methods: constructor(rows), setCell(cell, value), resetCell(cell), and getValue(formula). The getValue method evaluates formulas of the form "=X+Y" where X and Y are either cell references or non-negative integers.
+            </p>
+            <p><strong>Example:</strong>
+                Input: Spreadsheet(3), getValue("=5+7"), setCell("A1", 10), getValue("=A1+6")<br>
+                Output: [null, 12, null, 16]<br>
+                Explanation: getValue("=5+7") returns 12, then A1 is set to 10, getValue("=A1+6") returns 16 (10+6).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Spreadsheet {
+private:
+    // Hash map to store cell values: cell reference -&gt; value
+    unordered_map&lt;string, int&gt; cellValues;
+    
+public:
+    Spreadsheet(int rows) {
+        // Initialize empty spreadsheet - cells default to 0
+    }
+    
+    void setCell(string cell, int value) {
+        // Set the value of the specified cell
+        cellValues[cell] = value;
+    }
+    
+    void resetCell(string cell) {
+        // Reset cell to 0 by removing from map (default value is 0)
+        cellValues.erase(cell);
+    }
+    
+    int getValue(string formula) {
+        // Parse formula of the form "=X+Y"
+        // Remove the '=' at the beginning
+        string expr = formula.substr(1);
+        
+        int ans = 0;
+        stringstream ss(expr);
+        string token;
+        
+        // Split by '+' character
+        while (getline(ss, token, '+')) {
+            if (isdigit(token[0])) {
+                // Token is a number
+                ans += stoi(token);
+            } else {
+                // Token is a cell reference
+                // Use 0 as default if cell not found
+                ans += cellValues.count(token) ? cellValues[token] : 0;
+            }
+        }
+        
+        return ans;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
