@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3508: Implement Router (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3508: Implement Router (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Design a data structure that can efficiently manage data packets in a network router. Each data packet consists of source, destination, and timestamp attributes. Implement Router class with methods: constructor(memoryLimit), addPacket(source, destination, timestamp) that returns true if packet is added successfully, forwardPacket() that forwards the next packet in FIFO order, and getCount(destination, startTime, endTime) that returns count of packets for given destination in time range.
+            </p>
+            <p><strong>Example:</strong>
+                Input: Router(2), addPacket(1, 2, 10), addPacket(1, 3, 15), forwardPacket()<br>
+                Output: [null, true, true, [1, 2, 10]]<br>
+                Explanation: Router with memory limit 2, add two packets, then forward the first packet (1, 2, 10).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">struct Packet {
+    int source;
+    int destination;
+    int timestamp;
+    
+    Packet(int s, int d, int t) : source(s), destination(d), timestamp(t) {}
+    
+    // For uniqueness check
+    bool operator&lt;(const Packet&amp; other) const {
+        if (source != other.source) return source &lt; other.source;
+        if (destination != other.destination) return destination &lt; other.destination;
+        return timestamp &lt; other.timestamp;
+    }
+};
+
+class Router {
+private:
+    int memoryLimit;
+    queue&lt;Packet&gt; packetQueue;
+    set&lt;Packet&gt; uniquePackets;
+    unordered_map&lt;int, vector&lt;int&gt;&gt; destinationTimestamps;
+    unordered_map&lt;int, int&gt; processedPacketIndex;
+    
+    // Binary search for first element &gt;= target
+    int firstGreaterEqual(const vector&lt;int&gt;&amp; timestamps, int startIndex, int target) {
+        int left = startIndex, right = timestamps.size();
+        while (left &lt; right) {
+            int mid = left + (right - left) / 2;
+            if (timestamps[mid] &gt;= target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+    
+    // Binary search for first element &gt; target
+    int firstGreater(const vector&lt;int&gt;&amp; timestamps, int startIndex, int target) {
+        int left = startIndex, right = timestamps.size();
+        while (left &lt; right) {
+            int mid = left + (right - left) / 2;
+            if (timestamps[mid] &gt; target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+    
+public:
+    Router(int memoryLimit) : memoryLimit(memoryLimit) {}
+    
+    bool addPacket(int source, int destination, int timestamp) {
+        Packet packet(source, destination, timestamp);
+        
+        // Check if packet already exists
+        if (uniquePackets.count(packet)) {
+            return false;
+        }
+        
+        // Forward packet if memory is full
+        if (packetQueue.size() == memoryLimit) {
+            forwardPacket();
+        }
+        
+        // Add packet
+        packetQueue.push(packet);
+        uniquePackets.insert(packet);
+        destinationTimestamps[destination].push_back(timestamp);
+        
+        return true;
+    }
+    
+    vector&lt;int&gt; forwardPacket() {
+        if (packetQueue.empty()) {
+            return {};
+        }
+        
+        Packet nextPacket = packetQueue.front();
+        packetQueue.pop();
+        uniquePackets.erase(nextPacket);
+        processedPacketIndex[nextPacket.destination]++;
+        
+        return {nextPacket.source, nextPacket.destination, nextPacket.timestamp};
+    }
+    
+    int getCount(int destination, int startTime, int endTime) {
+        if (destinationTimestamps.find(destination) == destinationTimestamps.end()) {
+            return 0;
+        }
+        
+        const vector&lt;int&gt;&amp; timestamps = destinationTimestamps[destination];
+        int startIndex = processedPacketIndex[destination];
+        
+        int lowerBound = firstGreaterEqual(timestamps, startIndex, startTime);
+        int upperBound = firstGreater(timestamps, lowerBound, endTime);
+        
+        return upperBound - lowerBound;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
