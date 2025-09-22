@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1912: Design Movie Rental System (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1912: Design Movie Rental System (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Design a movie rental system that supports searching for, booking, and returning movies. Each movie is given as entries[i] = [shop, movie, price]. The system should support: search(movie) - finds cheapest 5 shops with unrented copy, rent(shop, movie) - rents movie from shop, drop(shop, movie) - returns rented movie, and report() - returns cheapest 5 rented movies as [shop, movie] pairs.
+            </p>
+            <p><strong>Example:</strong>
+                Input: MovieRentingSystem(3, [[0,1,5],[0,2,6],[1,1,4]]), search(1), rent(0,1), report()<br>
+                Output: [null, [1,0], null, [[0,1]]]<br>
+                Explanation: Movie 1 available at shops 1(price=4) and 0(price=5). After renting from shop 0, report shows [0,1].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class MovieRentingSystem {
+private:
+    // Map to store price for each {shop, movie} pair
+    map&lt;pair&lt;int, int&gt;, int&gt; price;
+    
+    // Map: movie -&gt; set of {price, shop} for unrented movies
+    unordered_map&lt;int, set&lt;pair&lt;int, int&gt;&gt;&gt; unrented;
+    
+    // Set of {price, shop, movie} for rented movies
+    set&lt;tuple&lt;int, int, int&gt;&gt; rented;
+    
+public:
+    MovieRentingSystem(int n, vector&lt;vector&lt;int&gt;&gt;&amp; entries) {
+        for (const auto&amp; entry : entries) {
+            int shop = entry[0], movie = entry[1], p = entry[2];
+            
+            // Store price mapping
+            price[{shop, movie}] = p;
+            
+            // Add to unrented movies (sorted by price, then shop)
+            unrented[movie].insert({p, shop});
+        }
+    }
+    
+    vector&lt;int&gt; search(int movie) {
+        vector&lt;int&gt; result;
+        
+        if (unrented.find(movie) == unrented.end()) {
+            return result;
+        }
+        
+        const auto&amp; movieSet = unrented[movie];
+        int count = 0;
+        
+        // Get first 5 shops with cheapest prices
+        for (auto it = movieSet.begin(); it != movieSet.end() &amp;&amp; count &lt; 5; ++it, ++count) {
+            result.push_back(it-&gt;second); // shop number
+        }
+        
+        return result;
+    }
+    
+    void rent(int shop, int movie) {
+        // Get price for this shop-movie combination
+        int p = price[{shop, movie}];
+        
+        // Remove from unrented
+        unrented[movie].erase({p, shop});
+        
+        // Add to rented (sorted by price, shop, movie)
+        rented.insert({p, shop, movie});
+    }
+    
+    void drop(int shop, int movie) {
+        // Get price for this shop-movie combination
+        int p = price[{shop, movie}];
+        
+        // Remove from rented
+        rented.erase({p, shop, movie});
+        
+        // Add back to unrented
+        unrented[movie].insert({p, shop});
+    }
+    
+    vector&lt;vector&lt;int&gt;&gt; report() {
+        vector&lt;vector&lt;int&gt;&gt; result;
+        int count = 0;
+        
+        // Get first 5 cheapest rented movies
+        for (auto it = rented.begin(); it != rented.end() &amp;&amp; count &lt; 5; ++it, ++count) {
+            int shop = get&lt;1&gt;(*it);
+            int movie = get&lt;2&gt;(*it);
+            result.push_back({shop, movie});
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
