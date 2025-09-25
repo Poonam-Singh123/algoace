@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 166: Fraction to Recurring Decimal (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 166: Fraction to Recurring Decimal (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two integers representing the numerator and denominator of a fraction, return the fraction in string format. If the fractional part is repeating, enclose the repeating part in parentheses. Handle negative numbers and edge cases properly. The answer string length is guaranteed to be less than 10^4 characters.
+            </p>
+            <p><strong>Example:</strong>
+                Input: numerator = 4, denominator = 333<br>
+                Output: "0.(012)"<br>
+                Explanation: The fraction 4/333 = 0.012012012... where "012" repeats, so it's enclosed in parentheses.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) {
+            return "0";
+        }
+        
+        string result = "";
+        
+        // Handle negative sign
+        bool isNegative = (numerator &gt; 0) ^ (denominator &gt; 0);
+        if (isNegative) {
+            result += "-";
+        }
+        
+        // Use long long to avoid overflow
+        long long num = abs((long long)numerator);
+        long long den = abs((long long)denominator);
+        
+        // Add integer part
+        result += to_string(num / den);
+        num %= den;
+        
+        // If no remainder, return result
+        if (num == 0) {
+            return result;
+        }
+        
+        // Add decimal point
+        result += ".";
+        
+        // Map to store remainder -&gt; position in result string
+        unordered_map&lt;long long, int&gt; remainderMap;
+        
+        // Process fractional part
+        while (num != 0) {
+            // If we've seen this remainder before, we found a cycle
+            if (remainderMap.find(num) != remainderMap.end()) {
+                int index = remainderMap[num];
+                result.insert(index, "(");
+                result += ")";
+                break;
+            }
+            
+            // Store current remainder and its position
+            remainderMap[num] = result.length();
+            
+            // Perform division
+            num *= 10;
+            result += to_string(num / den);
+            num %= den;
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
