@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 120: Triangle (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 120: Triangle (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a triangle array, return the minimum path sum from top to bottom. For each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row. Find the minimum path sum from top to bottom.
+            </p>
+            <p><strong>Example:</strong>
+                Input: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]<br>
+                Output: 11<br>
+                Explanation: The minimum path is 2 + 3 + 5 + 1 = 11 (shown in bold below):<br>
+                &nbsp;&nbsp;&nbsp;2<br>
+                &nbsp;&nbsp;3 4<br>
+                &nbsp;6 5 7<br>
+                4 1 8 3
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumTotal(vector&lt;vector&lt;int&gt;&gt;&amp; triangle) {
+        int n = triangle.size();
+        
+        // Bottom-up dynamic programming
+        // Start from second last row and work upwards
+        for (int i = n - 2; i &gt;= 0; i--) {
+            for (int j = 0; j &lt;= i; j++) {
+                // For position (i,j), we can move to (i+1,j) or (i+1,j+1)
+                // Choose the minimum path and add current value
+                triangle[i][j] += min(triangle[i + 1][j], triangle[i + 1][j + 1]);
+            }
+        }
+        
+        // The answer is stored at the top of the triangle
+        return triangle[0][0];
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
