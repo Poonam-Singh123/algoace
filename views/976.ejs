@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 976: Largest Perimeter Triangle (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 976: Largest Perimeter Triangle (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given an integer array nums, return the largest perimeter of a triangle with a non-zero area, formed from three of these lengths. If it is impossible to form any triangle of a non-zero area, return 0. For a triangle to have non-zero area, the sum of any two sides must be greater than the third side (triangle inequality theorem).
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [2,1,2]<br>
+                Output: 5<br>
+                Explanation: You can form a triangle with three side lengths: 1, 2, and 2. The perimeter is 1 + 2 + 2 = 5.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int largestPerimeter(vector&lt;int&gt;&amp; nums) {
+        // Sort the array in descending order to check largest possible triangles first
+        sort(nums.begin(), nums.end(), greater&lt;int&gt;());
+        
+        // Try all possible combinations starting from the largest sides
+        for (int i = 0; i &lt; nums.size() - 2; i++) {
+            // For a valid triangle with sides a, b, c (where a &gt;= b &gt;= c):
+            // We need to check: a &lt; b + c (since a is the largest side)
+            // Other inequalities (b &lt; a + c and c &lt; a + b) are automatically satisfied
+            // when a &gt;= b &gt;= c and a &lt; b + c
+            
+            if (nums[i] &lt; nums[i + 1] + nums[i + 2]) {
+                // Found a valid triangle, return its perimeter
+                return nums[i] + nums[i + 1] + nums[i + 2];
+            }
+        }
+        
+        // No valid triangle found
+        return 0;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
