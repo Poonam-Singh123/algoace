@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2221: Find Triangular Sum of an Array (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2221: Find Triangular Sum of an Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed integer array nums, where nums[i] is a digit between 0 and 9 (inclusive). The triangular sum of nums is found by repeatedly creating a new array where each element is the sum of adjacent pairs modulo 10, until only one element remains. Return the triangular sum of nums.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,2,3,4,5]<br>
+                Output: 8<br>
+                Explanation: [1,2,3,4,5] → [3,5,7,9] → [8,2,6] → [0,8] → [8]
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int triangularSum(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        
+        // Process the array level by level, reducing size by 1 each iteration
+        // Start from n-1 and work down to 1
+        for (int len = n - 1; len &gt; 0; len--) {
+            // For each level, calculate new values by summing adjacent pairs
+            for (int i = 0; i &lt; len; i++) {
+                // Add current element with next element and take modulo 10
+                // Store result in-place by overwriting the left element
+                nums[i] = (nums[i] + nums[i + 1]) % 10;
+            }
+        }
+        
+        // After all iterations, the result is stored in the first element
+        return nums[0];
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
