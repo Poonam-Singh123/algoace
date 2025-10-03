@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1518: Water Bottles (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1518: Water Bottles (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There are numBottles water bottles that are initially full of water. You can exchange numExchange empty water bottles from the market with one full water bottle. The operation of drinking a full water bottle turns it into an empty bottle. Given the two integers numBottles and numExchange, return the maximum number of water bottles you can drink.
+            </p>
+            <p><strong>Example:</strong>
+                Input: numBottles = 9, numExchange = 3<br>
+                Output: 13<br>
+                Explanation: You can exchange 3 empty bottles to get 1 full water bottle. Number of water bottles you can drink: 9 + 3 + 1 = 13.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numWaterBottles(int numBottles, int numExchange) {
+        // Start with drinking all initial bottles
+        int totalDrunk = numBottles;
+        
+        // Keep exchanging empty bottles for full ones
+        while (numBottles &gt;= numExchange) {
+            // Exchange numExchange empty bottles for 1 full bottle
+            // After drinking the new bottle, we have:
+            // - Lost numExchange empty bottles (traded)
+            // + Gained 1 full bottle (from exchange)
+            // After drinking: +1 empty bottle
+            // Net change: -(numExchange - 1) bottles
+            
+            numBottles -= (numExchange - 1);
+            totalDrunk++;
+        }
+        
+        return totalDrunk;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
