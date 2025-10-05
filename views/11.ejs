@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 11: Container With Most Water (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 11: Container With Most Water (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]). Find two lines that together with the x-axis form a container, such that the container contains the most water. Return the maximum amount of water a container can store. Notice that you may not slant the container.
+            </p>
+            <p><strong>Example:</strong>
+                Input: height = [1,8,6,2,5,4,8,3,7]<br>
+                Output: 49<br>
+                Explanation: The vertical lines are at positions 1 and 8 with heights 8 and 7. The area is min(8,7) * (8-1) = 7 * 7 = 49.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxArea(vector&lt;int&gt;&amp; height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int maxWater = 0;
+        
+        // Use two pointers approaching from both ends
+        while (left &lt; right) {
+            // Calculate current area
+            // Width is the distance between the two lines
+            int width = right - left;
+            
+            // Height is limited by the shorter line
+            int currentHeight = min(height[left], height[right]);
+            
+            // Calculate area: width * height
+            int currentArea = width * currentHeight;
+            
+            // Update maximum area
+            maxWater = max(maxWater, currentArea);
+            
+            // Move the pointer with the shorter height
+            // Moving the taller one would only decrease area
+            if (height[left] &lt; height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        
+        return maxWater;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
