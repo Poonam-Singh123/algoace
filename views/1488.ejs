@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1488: Avoid Flood in The City (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1488: Avoid Flood in The City (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Your country has an infinite number of lakes. Initially, all the lakes are empty, but when it rains over the nth lake, the nth lake becomes full of water. If it rains over a lake that is full of water, there will be a flood. Your goal is to avoid floods in any lake. Given an integer array rains where rains[i] &gt; 0 means there will be rains over the rains[i] lake, and rains[i] == 0 means there are no rains this day and you can choose one lake this day and dry it. Return an array ans where ans[i] == -1 if rains[i] &gt; 0, and ans[i] is the lake you choose to dry if rains[i] == 0.
+            </p>
+            <p><strong>Example:</strong>
+                Input: rains = [1,2,0,0,2,1]<br>
+                Output: [-1,-1,2,1,-1,-1]<br>
+                Explanation: After day 1: lake 1 is full. After day 2: lakes 1,2 are full. Day 3: dry lake 2. Day 4: dry lake 1. After day 5: lake 2 is full. After day 6: lakes 1,2 are full.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; avoidFlood(vector&lt;int&gt;&amp; rains) {
+        int n = rains.size();
+        vector&lt;int&gt; ans(n, -1);
+        
+        // Set to store sunny days (when we can dry a lake)
+        set&lt;int&gt; sunny;
+        
+        // Map to store the last rainy day for each lake
+        unordered_map&lt;int, int&gt; rainy;
+        
+        for (int i = 0; i &lt; n; i++) {
+            int lake = rains[i];
+            
+            if (lake &gt; 0) {
+                // It's raining on this lake
+                
+                // Check if this lake is already full
+                if (rainy.count(lake)) {
+                    // Lake is full, we need to find a sunny day to dry it
+                    // Find the first sunny day after the last rain on this lake
+                    auto it = sunny.upper_bound(rainy[lake]);
+                    
+                    if (it == sunny.end()) {
+                        // No sunny day available after last rain - flood is inevitable
+                        return {};
+                    }
+                    
+                    // Use this sunny day to dry the lake
+                    ans[*it] = lake;
+                    sunny.erase(it);
+                }
+                
+                // Record this rainy day for the lake
+                rainy[lake] = i;
+            } else {
+                // It's a sunny day - store the index for later use
+                sunny.insert(i);
+                ans[i] = 1; // Placeholder (can be any lake, we'll update if needed)
+            }
+        }
+        
+        return ans;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
