@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3494: Find the Minimum Amount of Time to Brew Potions (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3494: Find the Minimum Amount of Time to Brew Potions (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two 0-indexed integer arrays potionA and potionB of length n and m respectively. For each i, brewing potion A[i] takes A[i] time units, and for each j, brewing potion B[j] takes B[j] time units. You have two brewing machines. Each potion must be brewed on both machines sequentially (first on machine 1, then on machine 2). Find the minimum amount of time to brew all potions. Potions can be scheduled in any order.
+            </p>
+            <p><strong>Example:</strong>
+                Input: potionA = [1,2,3], potionB = [3,2,1]<br>
+                Output: 12<br>
+                Explanation: Optimal scheduling minimizes total time by carefully ordering potions to avoid idle time on machines.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minBrewTime(vector&lt;int&gt;&amp; potionA, vector&lt;int&gt;&amp; potionB) {
+        int n = potionA.size();
+        int m = potionB.size();
+        
+        // Track completion time on machine 1 and machine 2
+        int machine1Time = 0;
+        int machine2Time = 0;
+        
+        // Process potionA first
+        for (int i = 0; i &lt; n; i++) {
+            // Potion starts on machine 1 after previous potion finishes
+            machine1Time += potionA[i];
+            
+            // Potion can only start on machine 2 after:
+            // 1. It finishes on machine 1 (machine1Time)
+            // 2. Previous potion finishes on machine 2 (machine2Time)
+            machine2Time = max(machine1Time, machine2Time) + potionA[i];
+        }
+        
+        // Process potionB
+        for (int j = 0; j &lt; m; j++) {
+            // Potion starts on machine 1 after previous potion finishes
+            machine1Time += potionB[j];
+            
+            // Potion can only start on machine 2 after:
+            // 1. It finishes on machine 1 (machine1Time)
+            // 2. Previous potion finishes on machine 2 (machine2Time)
+            machine2Time = max(machine1Time, machine2Time) + potionB[j];
+        }
+        
+        // Total time is when machine 2 finishes all potions
+        return machine2Time;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
