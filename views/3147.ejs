@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3147: Taking Maximum Energy From the Mystic Dungeon (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3147: Taking Maximum Energy From the Mystic Dungeon (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array energy of length n representing the energy of n magicians and an integer k. You have been cursed in such a way that after absorbing energy from magician i, you will be instantly transported to magician (i + k). This process will be repeated until you reach a magician where (i + k) does not exist. In other words, you will choose a starting point and then teleport with step k until you go out of bounds. Return the maximum total energy you can gain.
+            </p>
+            <p><strong>Example:</strong>
+                Input: energy = [5,-2,-3,1], k = 2<br>
+                Output: 3<br>
+                Explanation: Start at index 1: -2 + 1 = -1 or start at index 0: 5 + (-3) = 2 or start at index 2: -3 or start at index 3: 1. Best choice depends on the path sum.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maximumEnergy(vector&lt;int&gt;&amp; energy, int k) {
+        int n = energy.size();
+        
+        // dp[i] represents the maximum energy starting from index i
+        vector&lt;int&gt; dp = energy;
+        
+        // Work backwards from the end
+        // For each position i, we can jump to i+k
+        // So dp[i] = energy[i] + dp[i+k] (if i+k exists)
+        for (int i = n - 1 - k; i &gt;= 0; i--) {
+            dp[i] += dp[i + k];
+        }
+        
+        // Return the maximum value in dp array
+        // This represents the best starting position
+        return *max_element(dp.begin(), dp.end());
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
