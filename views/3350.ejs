@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3350: Adjacent Increasing Subarrays Detection II (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3350: Adjacent Increasing Subarrays Detection II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given an array nums of n integers, your task is to find the maximum value of k for which there exist two adjacent subarrays of length k each, such that both subarrays are strictly increasing. Specifically, find the maximum k where there are two subarrays of length k starting at indices a and b (a &lt; b), where both nums[a..a+k-1] and nums[b..b+k-1] are strictly increasing, and the subarrays must be adjacent meaning b = a + k.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [2,5,7,8,9,2,3,4,3,1]<br>
+                Output: 3<br>
+                Explanation: The maximum k is 3 where subarrays [7,8,9] and [2,3,4] are both strictly increasing and adjacent.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxIncreasingSubarrays(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        int maxK = 0;           // Maximum k value found
+        int prevLen = 0;        // Length of previous increasing segment
+        int curLen = 1;         // Current increasing segment length
+        
+        for (int i = 1; i &lt; n; i++) {
+            if (nums[i] &gt; nums[i - 1]) {
+                // Continue current increasing segment
+                curLen++;
+            } else {
+                // Current increasing segment ends
+                prevLen = curLen;
+                curLen = 1;
+            }
+            
+            // Update maxK with two possibilities:
+            // 1. Split current segment into two equal parts: curLen / 2
+            // 2. Use previous and current segments as adjacent: min(prevLen, curLen)
+            maxK = max(maxK, curLen / 2);
+            maxK = max(maxK, min(prevLen, curLen));
+        }
+        
+        return maxK;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
