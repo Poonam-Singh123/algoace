@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3003: Maximize the Number of Partitions After Operations (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3003: Maximize the Number of Partitions After Operations (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed string s and an integer k. You perform partitioning operations until s is empty: Choose the longest prefix of s containing at most k distinct characters, delete the prefix from s and increase the number of partitions by one. Before the operations, you are allowed to change at most one index in s to another lowercase English letter. Return the maximum number of resulting partitions after optimally choosing at most one index to change.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "accca", k = 2<br>
+                Output: 3<br>
+                Explanation: Change s[2] to 'b' to get "acbca". Then partition: "ac" (2 distinct), "bc" (2 distinct), "a" (1 distinct) = 3 partitions.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxPartitionsAfterOperations(string s, int k) {
+        int n = s.size();
+        unordered_map&lt;long long, int&gt; memo;
+        
+        return dfs(s, k, 0, 0, 1, memo);
+    }
+    
+private:
+    int dfs(const string&amp; s, int k, int i, int cur, int canChange, 
+            unordered_map&lt;long long, int&gt;&amp; memo) {
+        // Base case: reached end of string
+        if (i &gt;= s.size()) {
+            return 1;
+        }
+        
+        // Create unique key for memoization
+        // Encode: position (i), current bitmask (cur), and canChange flag
+        long long key = ((long long)i &lt;&lt; 32) | (cur &lt;&lt; 1) | canChange;
+        
+        if (memo.count(key)) {
+            return memo[key];
+        }
+        
+        // Add current character to the bitmask
+        int charBit = 1 &lt;&lt; (s[i] - 'a');
+        int nextMask = cur | charBit;
+        
+        int ans = 0;
+        
+        // Option 1: Don't change current character
+        if (__builtin_popcount(nextMask) &gt; k) {
+            // Too many distinct characters, start new partition
+            ans = dfs(s, k, i + 1, charBit, canChange, memo) + 1;
+        } else {
+            // Continue current partition
+            ans = dfs(s, k, i + 1, nextMask, canChange, memo);
+        }
+        
+        // Option 2: Change current character (if we haven't used the change yet)
+        if (canChange) {
+            for (int j = 0; j &lt; 26; j++) {
+                int newCharBit = 1 &lt;&lt; j;
+                int newMask = cur | newCharBit;
+                
+                if (__builtin_popcount(newMask) &gt; k) {
+                    // Start new partition with changed character
+                    ans = max(ans, dfs(s, k, i + 1, newCharBit, 0, memo) + 1);
+                } else {
+                    // Continue current partition with changed character
+                    ans = max(ans, dfs(s, k, i + 1, newMask, 0, memo));
+                }
+            }
+        }
+        
+        memo[key] = ans;
+        return ans;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
