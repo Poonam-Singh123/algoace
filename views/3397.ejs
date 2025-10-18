@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3397: Maximum Number of Distinct Elements After Operations (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3397: Maximum Number of Distinct Elements After Operations (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array nums and an integer k. You are allowed to perform the following operation on each element of the array at most once: Add an integer in the range [-k, k] to the element. Return the maximum possible number of distinct elements in nums after performing the operations.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,2,2,3,3,4], k = 2<br>
+                Output: 6<br>
+                Explanation: nums changes to [-1, 0, 1, 2, 3, 4] after performing operations on the first four elements.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxDistinctElements(vector&lt;int&gt;&amp; nums, int k) {
+        // Sort the array to process elements in order
+        sort(nums.begin(), nums.end());
+        
+        int ans = 0;
+        int prev = INT_MIN; // Track the maximum value used so far
+        
+        for (int x : nums) {
+            // Try to make current element as small as possible
+            // but at least prev + 1 to ensure it's distinct
+            // Range for current element is [x - k, x + k]
+            int minPossible = x - k;
+            int maxPossible = x + k;
+            
+            // We want the smallest value that is &gt; prev
+            int current = max(minPossible, prev + 1);
+            
+            // But it cannot exceed the maximum possible value
+            current = min(current, maxPossible);
+            
+            // If we can create a distinct element
+            if (current &gt; prev) {
+                ans++;
+                prev = current;
+            }
+        }
+        
+        return ans;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
