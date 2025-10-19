@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1625: Lexicographically Smallest String After Applying Operations (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1625: Lexicographically Smallest String After Applying Operations (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string s of even length consisting of digits from 0 to 9, and two integers a and b. You can apply either of the following two operations any number of times and in any order on s: (1) Add a to all odd indices of s (0-indexed). Digits post 9 are cycled back to 0. For example, if s = "3456" and a = 5, s becomes "3951". (2) Rotate s to the right by b positions. For example, if s = "3456" and b = 1, s becomes "6345". Return the lexicographically smallest string you can obtain by applying the above operations any number of times on s.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "5525", a = 9, b = 2<br>
+                Output: "2050"<br>
+                Explanation: Apply operations to get lexicographically smallest string.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string findLexSmallestString(string s, int a, int b) {
+        string result = s;
+        set&lt;string&gt; visited;
+        queue&lt;string&gt; q;
+        
+        q.push(s);
+        visited.insert(s);
+        
+        // BFS to explore all possible states
+        while (!q.empty()) {
+            string curr = q.front();
+            q.pop();
+            
+            // Update result to keep lexicographically smallest
+            if (curr &lt; result) {
+                result = curr;
+            }
+            
+            // Operation 1: Add a to all odd indices
+            string op1 = addToOdd(curr, a);
+            if (visited.find(op1) == visited.end()) {
+                visited.insert(op1);
+                q.push(op1);
+            }
+            
+            // Operation 2: Rotate right by b positions
+            string op2 = rotateRight(curr, b);
+            if (visited.find(op2) == visited.end()) {
+                visited.insert(op2);
+                q.push(op2);
+            }
+        }
+        
+        return result;
+    }
+    
+private:
+    string addToOdd(const string&amp; s, int a) {
+        string result = s;
+        // Add a to all odd indices (1, 3, 5, ...)
+        for (int i = 1; i &lt; result.length(); i += 2) {
+            int digit = (result[i] - '0' + a) % 10;
+            result[i] = '0' + digit;
+        }
+        return result;
+    }
+    
+    string rotateRight(const string&amp; s, int b) {
+        int n = s.length();
+        b = b % n; // Handle b &gt; n
+        // Rotate right: take last b chars and move to front
+        return s.substr(n - b) + s.substr(0, n - b);
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
