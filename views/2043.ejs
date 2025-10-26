@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2043: Simple Bank System (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2043: Simple Bank System (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You have been tasked with writing a program for a popular bank that will automate all its incoming transactions (transfer, deposit, and withdraw). The bank has n accounts numbered from 1 to n. The initial balance of each account is stored in a 0-indexed integer array balance, with the (i + 1)th account having an initial balance of balance[i]. A transaction is valid if: The given account number(s) are between 1 and n, and the amount of money withdrawn or transferred from is less than or equal to the balance of the account.
+            </p>
+            <p><strong>Example:</strong>
+                Input: ["Bank", "withdraw", "transfer", "deposit", "transfer", "withdraw"]<br>
+                [[[10, 100, 20, 50, 30]], [3, 10], [5, 1, 20], [5, 20], [3, 4, 15], [10, 50]]<br>
+                Output: [null, true, true, true, false, false]<br>
+                Explanation: Operations succeed if valid conditions are met.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Bank {
+private:
+    vector&lt;long long&gt; balance;
+    int n;
+    
+public:
+    Bank(vector&lt;long long&gt;&amp; balance) {
+        this-&gt;balance = balance;
+        this-&gt;n = balance.size();
+    }
+    
+    bool transfer(int account1, int account2, long long money) {
+        // Validate account numbers (1 to n)
+        if (account1 &lt; 1 || account1 &gt; n || account2 &lt; 1 || account2 &gt; n) {
+            return false;
+        }
+        
+        // Check if account1 has sufficient balance
+        if (balance[account1 - 1] &lt; money) {
+            return false;
+        }
+        
+        // Perform transfer
+        balance[account1 - 1] -= money;
+        balance[account2 - 1] += money;
+        return true;
+    }
+    
+    bool deposit(int account, long long money) {
+        // Validate account number
+        if (account &lt; 1 || account &gt; n) {
+            return false;
+        }
+        
+        // Perform deposit
+        balance[account - 1] += money;
+        return true;
+    }
+    
+    bool withdraw(int account, long long money) {
+        // Validate account number
+        if (account &lt; 1 || account &gt; n) {
+            return false;
+        }
+        
+        // Check if account has sufficient balance
+        if (balance[account - 1] &lt; money) {
+            return false;
+        }
+        
+        // Perform withdrawal
+        balance[account - 1] -= money;
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
