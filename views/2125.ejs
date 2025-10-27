@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2125: Number of Laser Beams in a Bank (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2125: Number of Laser Beams in a Bank (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Anti-theft security devices are activated inside a bank. You are given a 0-indexed binary string array bank representing the floor plan of the bank, which is an m x n 2D matrix. bank[i] represents the ith row, consisting of '0's and '1's. '0' means the cell is empty, while '1' means the cell has a security device. There is one laser beam between any two security devices if both conditions are met: The two devices are located on two different rows r1 and r2 (r1 &lt; r2), and for each row i where r1 &lt; i &lt; r2, there are no security devices in the ith row. Return the total number of laser beams in the bank.
+            </p>
+            <p><strong>Example:</strong>
+                Input: bank = ["011001","000000","010100","001000"]<br>
+                Output: 8<br>
+                Explanation: Between each device pair on different rows with no devices in between, there is one beam. Row 0 has 3 devices, row 2 has 2 devices. Beams = 3 * 2 = 6. Row 2 has 2 devices, row 3 has 1 device. Beams = 2 * 1 = 2. Total = 8.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numberOfBeams(vector&lt;string&gt;&amp; bank) {
+        int totalBeams = 0;
+        int previousDeviceCount = 0;
+        
+        for (const string&amp; row : bank) {
+            // Count number of devices (1's) in current row
+            int currentDeviceCount = 0;
+            for (char c : row) {
+                if (c == '1') {
+                    currentDeviceCount++;
+                }
+            }
+            
+            // If current row has devices
+            if (currentDeviceCount &gt; 0) {
+                // Number of beams = devices in previous row * devices in current row
+                totalBeams += previousDeviceCount * currentDeviceCount;
+                
+                // Update previous device count for next iteration
+                previousDeviceCount = currentDeviceCount;
+            }
+            // If current row has no devices, skip it (it doesn't affect beams)
+        }
+        
+        return totalBeams;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
