@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3354: Make Array Elements Equal to Zero (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3354: Make Array Elements Equal to Zero (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array nums. Start by selecting a starting position curr such that nums[curr] == 0, and choose a movement direction of either left or right. Repeat: If curr is out of range, process ends. If nums[curr] == 0, move in current direction. Else if nums[curr] &gt; 0, decrement nums[curr] by 1, reverse direction, and take a step. A selection is valid if every element becomes 0. Return the number of possible valid selections.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,0,2,0,3]<br>
+                Output: 2<br>
+                Explanation: Choose curr = 3 and move left or right. Both directions make all elements 0.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countValidSelections(vector&lt;int&gt;&amp; nums) {
+        // Calculate total sum of array
+        int totalSum = 0;
+        for (int x : nums) {
+            totalSum += x;
+        }
+        
+        int ans = 0;
+        int leftSum = 0;
+        
+        // For each zero element, check if it's a valid starting position
+        for (int x : nums) {
+            if (x != 0) {
+                // Add to left sum
+                leftSum += x;
+            } else {
+                // Current element is 0, check validity
+                int rightSum = totalSum - leftSum;
+                
+                if (leftSum == rightSum) {
+                    // Equal sums: can move either left or right
+                    ans += 2;
+                } else if (abs(leftSum - rightSum) == 1) {
+                    // Difference of 1: can move in one direction
+                    ans += 1;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
