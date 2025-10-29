@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3370: Smallest Number With All Set Bits (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3370: Smallest Number With All Set Bits (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a positive integer n. Your task is to find the smallest number x such that: x is greater than or equal to n, and the binary representation of x consists only of set bits (1s).
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 5<br>
+                Output: 7<br>
+                Explanation: The binary representation of 7 is 111, which is the smallest number greater than or equal to 5 with all bits set.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int smallestNumber(int n) {
+        // Start with x = 1 (binary: 1)
+        // Keep doubling x (shifting left) until x - 1 &gt;= n
+        // x - 1 gives us a number with all bits set
+        // For example: x = 8 (1000), x - 1 = 7 (0111)
+        
+        int x = 1;
+        while (x - 1 &lt; n) {
+            x &lt;&lt;= 1; // Left shift (multiply by 2)
+        }
+        
+        return x - 1;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
