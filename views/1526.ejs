@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1526: Minimum Number of Increments on Subarrays to Form a Target Array (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1526: Minimum Number of Increments on Subarrays to Form a Target Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array target. You have an integer array initial of the same size as target with all elements initially zeros. In one operation you can choose any subarray from initial and increment each value by one. Return the minimum number of operations to form a target array from initial. The test cases are generated so that the answer fits in a 32-bit integer.
+            </p>
+            <p><strong>Example:</strong>
+                Input: target = [1,2,3,2,1]<br>
+                Output: 3<br>
+                Explanation: We need at least 3 operations. [0,0,0,0,0] → [1,1,1,1,1] → [1,2,2,2,1] → [1,2,3,2,1].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minNumberOperations(vector&lt;int&gt;&amp; target) {
+        // Start with the first element value as base operations needed
+        int operations = target[0];
+        
+        int n = target.size();
+        
+        // Compare consecutive elements
+        for (int i = 1; i &lt; n; i++) {
+            // If current element is greater than previous
+            // We need additional operations for the difference
+            if (target[i] &gt; target[i - 1]) {
+                operations += target[i] - target[i - 1];
+            }
+            // If target[i] &lt;= target[i-1], no extra operations needed
+            // because we can reuse previous operations
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
