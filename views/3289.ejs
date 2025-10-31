@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3289: The Two Sneaky Numbers of Digitville (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3289: The Two Sneaky Numbers of Digitville (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                In the town of Digitville, there was a list of numbers called nums containing integers from 0 to n - 1. Each number was supposed to appear exactly once in the list, however, two mischievous numbers sneaked in an additional time, making the list longer than usual. As the town detective, your task is to find these two sneaky numbers. Return an array of size two containing the two numbers (in any order).
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [0,1,1,0]<br>
+                Output: [0,1]<br>
+                Explanation: The numbers 0 and 1 each appear twice in the array.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; getSneakyNumbers(vector&lt;int&gt;&amp; nums) {
+        vector&lt;int&gt; result;
+        unordered_set&lt;int&gt; seen;
+        
+        for (int num : nums) {
+            // If number already exists in set, it's a duplicate
+            if (seen.count(num)) {
+                result.push_back(num);
+                
+                // Once we find both duplicates, we can return
+                if (result.size() == 2) {
+                    break;
+                }
+            } else {
+                // Add to set if seeing for first time
+                seen.insert(num);
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
