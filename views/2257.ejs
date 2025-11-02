@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2257: Count Unguarded Cells in the Grid (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2257: Count Unguarded Cells in the Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two integers m and n representing a 0-indexed m x n grid. You are also given two 2D integer arrays guards and walls where guards[i] = [row_i, col_i] and walls[j] = [row_j, col_j] represent the positions of the ith guard and jth wall respectively. A guard can see every cell in the four cardinal directions (north, east, south, or west) starting from their position unless obstructed by a wall or another guard. A cell is guarded if there is at least one guard that can see it. Return the number of unoccupied cells that are not guarded.
+            </p>
+            <p><strong>Example:</strong>
+                Input: m = 4, n = 6, guards = [[0,0],[1,1],[2,3]], walls = [[0,1],[2,2],[1,4]]<br>
+                Output: 7<br>
+                Explanation: The guarded and unguarded cells are shown. There are 7 unguarded cells.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countUnguarded(int m, int n, vector&lt;vector&lt;int&gt;&gt;&amp; guards, vector&lt;vector&lt;int&gt;&gt;&amp; walls) {
+        // 0 = empty, 1 = guard, 2 = wall, 3 = guarded
+        vector&lt;vector&lt;int&gt;&gt; grid(m, vector&lt;int&gt;(n, 0));
+        
+        // Mark guards
+        for (const auto&amp; guard : guards) {
+            grid[guard[0]][guard[1]] = 1;
+        }
+        
+        // Mark walls
+        for (const auto&amp; wall : walls) {
+            grid[wall[0]][wall[1]] = 2;
+        }
+        
+        // Directions: north, east, south, west
+        int dirs[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        
+        // For each guard, mark all cells it can see
+        for (const auto&amp; guard : guards) {
+            int row = guard[0], col = guard[1];
+            
+            // Check all four directions
+            for (int d = 0; d &lt; 4; d++) {
+                int r = row + dirs[d][0];
+                int c = col + dirs[d][1];
+                
+                // Move in this direction until hitting wall, guard, or boundary
+                while (r &gt;= 0 &amp;&amp; r &lt; m &amp;&amp; c &gt;= 0 &amp;&amp; c &lt; n) {
+                    // Stop if we hit a wall or another guard
+                    if (grid[r][c] == 1 || grid[r][c] == 2) {
+                        break;
+                    }
+                    
+                    // Mark as guarded
+                    grid[r][c] = 3;
+                    
+                    // Continue in same direction
+                    r += dirs[d][0];
+                    c += dirs[d][1];
+                }
+            }
+        }
+        
+        // Count unguarded cells (cells with value 0)
+        int unguarded = 0;
+        for (int i = 0; i &lt; m; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                if (grid[i][j] == 0) {
+                    unguarded++;
+                }
+            }
+        }
+        
+        return unguarded;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
