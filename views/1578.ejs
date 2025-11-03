@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 1578: Minimum Time to Make Rope Colorful (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 1578: Minimum Time to Make Rope Colorful (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Alice has n balloons arranged on a rope. You are given a 0-indexed string colors where colors[i] is the color of the ith balloon. Alice wants the rope to be colorful. She does not want two consecutive balloons to be of the same color, so she asks Bob for help. Bob can remove some balloons from the rope to make it colorful. You are given a 0-indexed integer array neededTime where neededTime[i] is the time (in seconds) that Bob needs to remove the ith balloon from the rope. Return the minimum time Bob needs to make the rope colorful.
+            </p>
+            <p><strong>Example:</strong>
+                Input: colors = "abaac", neededTime = [1,2,3,4,5]<br>
+                Output: 3<br>
+                Explanation: Bob can remove the blue balloon at index 2. This takes 3 seconds. There are no longer two consecutive balloons of the same color.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minCost(string colors, vector&lt;int&gt;&amp; neededTime) {
+        int totalCost = 0;
+        int n = colors.size();
+        
+        for (int i = 0; i &lt; n - 1; i++) {
+            // If current and next balloon have same color
+            if (colors[i] == colors[i + 1]) {
+                // Remove the one with smaller time cost
+                // Keep the one with larger time (more expensive to remove)
+                totalCost += min(neededTime[i], neededTime[i + 1]);
+                
+                // Update neededTime[i + 1] to be the max of the two
+                // This handles cases where we have more than 2 consecutive same colors
+                neededTime[i + 1] = max(neededTime[i], neededTime[i + 1]);
+            }
+        }
+        
+        return totalCost;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
