@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3321: Find X-Sum of All K-Long Subarrays II (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3321: Find X-Sum of All K-Long Subarrays II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array nums of n integers and two positive integers k and x. The x-sum of an array is calculated by: Count the occurrences of all elements. Keep only the occurrences of the top x most frequent elements. If two elements have the same number of occurrences, the element with the bigger value is considered more frequent. Calculate the sum of the resulting array. Return an array answer of length n - k + 1 where answer[i] is the x-sum of the subarray nums[i..i + k - 1]. This is the same as problem 3318 but with larger constraints requiring optimization.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [3,8,7,8,7,5], k = 2, x = 2<br>
+                Output: [11,15,15,15,12]<br>
+                Explanation: Since k == x, answer[i] equals the sum of subarray nums[i..i + k - 1].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;long long&gt; findXSum(vector&lt;int&gt;&amp; nums, int k, int x) {
+        int n = nums.size();
+        vector&lt;long long&gt; answer;
+        
+        // For larger constraints, need more efficient sliding window approach
+        // Using two multisets to maintain top x elements efficiently
+        
+        unordered_map&lt;int, int&gt; freq;
+        multiset&lt;pair&lt;int, int&gt;&gt; top;  // Top x elements by frequency
+        multiset&lt;pair&lt;int, int&gt;&gt; rest; // Remaining elements
+        long long windowSum = 0;
+        
+        // Helper to update frequency and maintain sets
+        auto update = [&amp;](int num, int delta) {
+            if (freq[num] &gt; 0) {
+                // Remove old count
+                auto p = make_pair(freq[num], num);
+                if (top.count(p)) {
+                    top.erase(top.find(p));
+                    windowSum -= (long long)freq[num] * num;
+                } else {
+                    rest.erase(rest.find(p));
+                }
+            }
+            
+            freq[num] += delta;
+            
+            if (freq[num] &gt; 0) {
+                rest.insert({freq[num], num});
+            }
+        };
+        
+        // Helper to balance top and rest sets
+        auto balance = [&amp;]() {
+            // Move elements from rest to top if needed
+            while (top.size() &lt; x &amp;&amp; !rest.empty()) {
+                auto it = rest.rbegin();
+                top.insert(*it);
+                windowSum += (long long)it-&gt;first * it-&gt;second;
+                rest.erase(rest.find(*it));
+            }
+            
+            // Move smallest from top to rest if top has more than x
+            while (top.size() &gt; x) {
+                auto it = top.begin();
+                windowSum -= (long long)it-&gt;first * it-&gt;second;
+                rest.insert(*it);
+                top.erase(it);
+            }
+            
+            // Ensure top has the x largest elements
+            while (!rest.empty() &amp;&amp; !top.empty()) {
+                auto maxRest = *rest.rbegin();
+                auto minTop = *top.begin();
+                
+                if (maxRest &gt; minTop) {
+                    top.erase(top.find(minTop));
+                    windowSum -= (long long)minTop.first * minTop.second;
+                    
+                    rest.erase(rest.find(maxRest));
+                    top.insert(maxRest);
+                    windowSum += (long long)maxRest.first * maxRest.second;
+                } else {
+                    break;
+                }
+            }
+        };
+        
+        // Process first window
+        for (int i = 0; i &lt; k; i++) {
+            update(nums[i], 1);
+        }
+        balance();
+        answer.push_back(windowSum);
+        
+        // Slide window
+        for (int i = k; i &lt; n; i++) {
+            update(nums[i - k], -1); // Remove leftmost
+            update(nums[i], 1);       // Add rightmost
+            balance();
+            answer.push_back(windowSum);
+        }
+        
+        return answer;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
