@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2528: Maximize the Minimum Powered City (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2528: Maximize the Minimum Powered City (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed integer array stations of length n, where stations[i] represents the number of power stations in the ith city. Each power station can provide power to every city in a fixed range r (cities j where |i - j| &lt;= r). The power of a city is the total number of power stations providing power to it. The government can build k more power stations. Return the maximum possible minimum power of a city if the additional power stations are built optimally.
+            </p>
+            <p><strong>Example:</strong>
+                Input: stations = [1,2,4,5,0], r = 1, k = 2<br>
+                Output: 5<br>
+                Explanation: Install both power stations at city 1. City 0 gets 5 power (1+4), all cities get at least 5. Minimum power is 5.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maxPower(vector&lt;int&gt;&amp; stations, int r, int k) {
+        int n = stations.size();
+        vector&lt;long long&gt; power(n);
+        
+        // Calculate initial power for each city using sliding window
+        long long windowSum = 0;
+        for (int i = 0; i &lt; n; i++) {
+            windowSum += stations[i];
+            if (i - 2 * r - 1 &gt;= 0) {
+                windowSum -= stations[i - 2 * r - 1];
+            }
+            if (i &gt;= r) {
+                power[i - r] = windowSum;
+            }
+        }
+        
+        // Handle boundary cities
+        for (int i = max(0, n - r); i &lt; n; i++) {
+            power[i] = 0;
+            for (int j = max(0, i - r); j &lt;= min(n - 1, i + r); j++) {
+                power[i] += stations[j];
+            }
+        }
+        
+        // Binary search on answer
+        long long left = *min_element(power.begin(), power.end());
+        long long right = left + k;
+        
+        while (left &lt; right) {
+            long long mid = left + (right - left + 1) / 2;
+            
+            if (canAchieve(stations, power, r, k, mid)) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return left;
+    }
+    
+private:
+    bool canAchieve(vector&lt;int&gt;&amp; stations, vector&lt;long long&gt;&amp; power, 
+                    int r, int k, long long target) {
+        int n = stations.size();
+        vector&lt;long long&gt; add(n, 0);
+        long long used = 0;
+        long long currentPower = power[0];
+        
+        for (int i = 0; i &lt; n; i++) {
+            // Update current power based on added stations
+            if (i + r &lt; n) {
+                currentPower += add[i + r];
+            }
+            if (i - r - 1 &gt;= 0) {
+                currentPower -= add[i - r - 1];
+            }
+            
+            if (currentPower &lt; target) {
+                long long need = target - currentPower;
+                if (used + need &gt; k) {
+                    return false;
+                }
+                
+                // Build station at rightmost position to cover maximum cities
+                int pos = min(n - 1, i + r);
+                add[pos] += need;
+                used += need;
+                currentPower += need;
+            }
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
