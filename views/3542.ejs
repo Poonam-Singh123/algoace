@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3542: Minimum Operations to Convert All Elements to Zero (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3542: Minimum Operations to Convert All Elements to Zero (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array nums of size n, consisting of non-negative integers. Your task is to apply some (possibly zero) operations on the array so that all elements become 0. In one operation, you can select a subarray [i, j] (where 0 &lt;= i &lt;= j &lt; n) and set all occurrences of the minimum non-negative integer in that subarray to 0. Return the minimum number of operations required to make all elements in the array 0.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,2,1,2,1,2]<br>
+                Output: 4<br>
+                Explanation: Select subarray [0,5] with minimum 1, set all 1s to 0 → [0,2,0,2,0,2]. Select [1,1] → [0,0,0,2,0,2]. Select [3,3] → [0,0,0,0,0,2]. Select [5,5] → [0,0,0,0,0,0]. Total: 4 operations.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        int operations = 0;
+        int n = nums.size();
+        
+        // Process array from left to right
+        for (int i = 0; i &lt; n; i++) {
+            // Skip if already zero
+            if (nums[i] == 0) {
+                continue;
+            }
+            
+            // Check if current element differs from previous non-zero element
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                operations++;
+            }
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
