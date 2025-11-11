@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 474: Ones and Zeroes (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 474: Ones and Zeroes (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of binary strings strs and two integers m and n. Return the size of the largest subset of strs such that there are at most m 0's and n 1's in the subset. A set x is a subset of a set y if all elements of x are also elements of y. Each string can be used at most once.
+            </p>
+            <p><strong>Example:</strong>
+                Input: strs = ["10","0001","111001","1","0"], m = 5, n = 3<br>
+                Output: 4<br>
+                Explanation: The largest subset with at most 5 0's and 3 1's is {"10", "0001", "1", "0"}, so the answer is 4.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int findMaxForm(vector&lt;string&gt;&amp; strs, int m, int n) {
+        // dp[i][j] = maximum number of strings with at most i 0's and j 1's
+        vector&lt;vector&lt;int&gt;&gt; dp(m + 1, vector&lt;int&gt;(n + 1, 0));
+        
+        // Process each string
+        for (const string&amp; s : strs) {
+            // Count zeros and ones in current string
+            int zeros = count(s.begin(), s.end(), '0');
+            int ones = count(s.begin(), s.end(), '1');
+            
+            // Update dp table in reverse to avoid using same string multiple times
+            for (int i = m; i &gt;= zeros; i--) {
+                for (int j = n; j &gt;= ones; j--) {
+                    // Either don't include this string, or include it
+                    dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
