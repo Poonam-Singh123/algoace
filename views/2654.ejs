@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2654: Minimum Number of Operations to Make All Array Elements Equal to 1 (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2654: Minimum Number of Operations to Make All Array Elements Equal to 1 (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed array nums consisting of positive integers. You can do the following operation any number of times: Select an index i such that 0 &lt;= i &lt; n - 1 and replace either nums[i] or nums[i+1] with their GCD value. Return the minimum number of operations to make all elements of nums equal to 1. If it is impossible, return -1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [2,6,3,4]<br>
+                Output: 4<br>
+                Explanation: Choose i=2, replace nums[2] with gcd(3,4)=1 → [2,6,1,4]. Choose i=1, replace nums[1] with gcd(6,1)=1 → [2,1,1,4]. Choose i=0, replace with gcd(2,1)=1 → [1,1,1,4]. Choose i=3, replace with gcd(1,4)=1 → [1,1,1,1].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        
+        // Count existing 1s
+        int ones = count(nums.begin(), nums.end(), 1);
+        
+        // If we already have 1s, we can convert all others to 1
+        // Cost: n - ones operations (convert each non-1 to 1)
+        if (ones &gt; 0) {
+            return n - ones;
+        }
+        
+        // Check if GCD of entire array is &gt; 1
+        // If yes, impossible to make all elements 1
+        int totalGcd = nums[0];
+        for (int i = 1; i &lt; n; i++) {
+            totalGcd = __gcd(totalGcd, nums[i]);
+        }
+        if (totalGcd &gt; 1) {
+            return -1;
+        }
+        
+        // Find smallest subarray with GCD = 1
+        int minLen = INT_MAX;
+        for (int i = 0; i &lt; n; i++) {
+            int g = nums[i];
+            for (int j = i + 1; j &lt; n; j++) {
+                g = __gcd(g, nums[j]);
+                if (g == 1) {
+                    minLen = min(minLen, j - i);
+                    break;
+                }
+            }
+        }
+        
+        // Operations needed:
+        // (minLen operations to create one 1) + (n - 1 operations to convert rest)
+        return minLen + n - 1;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
