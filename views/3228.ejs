@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3228: Maximum Number of Operations to Move Ones to the End (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3228: Maximum Number of Operations to Move Ones to the End (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a binary string s. You can perform the following operation any number of times: Choose any index i where i + 1 &lt; s.length such that s[i] == '1' and s[i + 1] == '0'. Move the character s[i] to the right until it reaches the end of the string or another '1'. For example, for s = "010010", if we choose i = 1, the resulting string will be s = "000110". Return the maximum number of operations that you can perform.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "1001101"<br>
+                Output: 4<br>
+                Explanation: Choose index i = 0 → "0011101". Choose i = 4 → "0011011". Choose i = 3 → "0010111". Choose i = 2 → "0001111". Total: 4 operations.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxOperations(string s) {
+        int operations = 0;
+        int onesCount = 0;
+        int n = s.size();
+        
+        for (int i = 0; i &lt; n; i++) {
+            if (s[i] == '1') {
+                // Count the number of 1s
+                onesCount++;
+            } else if (i &gt; 0 &amp;&amp; s[i - 1] == '1') {
+                // When we encounter a "10" pattern (1 followed by 0)
+                // We can move all previous 1s past this 0
+                // This adds onesCount to our operation count
+                operations += onesCount;
+            }
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
