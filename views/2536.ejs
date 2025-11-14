@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2536: Increment Submatrices by One (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2536: Increment Submatrices by One (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a positive integer n, indicating that we initially have an n x n 0-indexed integer matrix mat filled with zeroes. You are also given a 2D integer array query. For each query[i] = [row1i, col1i, row2i, col2i], you should do the following operation: Add 1 to every element in the submatrix with the top left corner (row1i, col1i) and the bottom right corner (row2i, col2i). Return the matrix mat after performing every query.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 3, queries = [[1,1,2,2],[0,0,1,1]]<br>
+                Output: [[1,1,0],[1,2,1],[0,1,1]]<br>
+                Explanation: Add 1 to submatrix (1,1) to (2,2), then add 1 to submatrix (0,0) to (1,1).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; rangeAddQueries(int n, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+        // Use 2D difference array technique
+        vector&lt;vector&lt;int&gt;&gt; diff(n + 1, vector&lt;int&gt;(n + 1, 0));
+        
+        // Apply each query using difference array
+        for (const auto&amp; q : queries) {
+            int row1 = q[0], col1 = q[1], row2 = q[2], col2 = q[3];
+            
+            // Mark the top-left corner
+            diff[row1][col1]++;
+            
+            // Mark boundaries for the difference array
+            if (row2 + 1 &lt; n) diff[row2 + 1][col1]--;
+            if (col2 + 1 &lt; n) diff[row1][col2 + 1]--;
+            if (row2 + 1 &lt; n &amp;&amp; col2 + 1 &lt; n) diff[row2 + 1][col2 + 1]++;
+        }
+        
+        // Compute prefix sum to get actual values
+        vector&lt;vector&lt;int&gt;&gt; mat(n, vector&lt;int&gt;(n, 0));
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                mat[i][j] = diff[i][j];
+                if (i &gt; 0) mat[i][j] += mat[i - 1][j];
+                if (j &gt; 0) mat[i][j] += mat[i][j - 1];
+                if (i &gt; 0 &amp;&amp; j &gt; 0) mat[i][j] -= mat[i - 1][j - 1];
+            }
+        }
+        
+        return mat;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
