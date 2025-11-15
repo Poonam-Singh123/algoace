@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 3234: Count the Number of Substrings With Dominant Ones (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 3234: Count the Number of Substrings With Dominant Ones (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a binary string s. Return the number of substrings with dominant ones. A string has dominant ones if the number of ones in the string is greater than or equal to the square of the number of zeros in the string.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "00011"<br>
+                Output: 5<br>
+                Explanation: Substrings with dominant ones are: "1" (at index 3), "1" (at index 4), "11" (substring from 3 to 4), "0011", and "00011".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        int n = s.size();
+        int count = 0;
+        
+        // Precompute prefix sums for ones
+        vector&lt;int&gt; ones(n + 1, 0);
+        for (int i = 0; i &lt; n; i++) {
+            ones[i + 1] = ones[i] + (s[i] == '1' ? 1 : 0);
+        }
+        
+        // For each starting position
+        for (int i = 0; i &lt; n; i++) {
+            // Try all ending positions
+            for (int j = i; j &lt; n; j++) {
+                int numOnes = ones[j + 1] - ones[i];
+                int numZeros = (j - i + 1) - numOnes;
+                
+                // Check if dominant: ones &gt;= zeros^2
+                if (numOnes &gt;= numZeros * numZeros) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
