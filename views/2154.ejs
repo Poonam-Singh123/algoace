@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        LeetCode 2154: Keep Multiplying Found Values by Two (C++)
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>LeetCode 2154: Keep Multiplying Found Values by Two (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of integers nums. You are also given an integer original which is the first number that needs to be searched for in nums. You then do the following steps: If original is found in nums, multiply it by two (i.e., set original = 2 * original). Otherwise, stop the process. Repeat this process with the new number as long as you keep finding the number. Return the final value of original.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [5,3,6,1,12], original = 3<br>
+                Output: 24<br>
+                Explanation: 3 is found in nums. 3 is multiplied by 2 to obtain 6. 6 is found in nums. 6 is multiplied by 2 to obtain 12. 12 is found in nums. 12 is multiplied by 2 to obtain 24. 24 is not found in nums. Thus, 24 is returned.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int findFinalValue(vector&lt;int&gt;&amp; nums, int original) {
+        // Store all numbers in a set for O(1) lookup
+        unordered_set&lt;int&gt; numSet(nums.begin(), nums.end());
+        
+        // Keep doubling original while it exists in the set
+        while (numSet.count(original)) {
+            original *= 2;
+        }
+        
+        return original;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+
+</html>
