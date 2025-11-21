@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1930. Unique Length-3 Palindromic Subsequences</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1930: Unique Length-3 Palindromic Subsequences (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a string s, return the number of unique palindromes of length three that are a subsequence of s. Note that even if there are multiple ways to obtain the same subsequence, it is still only counted once. A palindrome is a string that reads the same forwards and backwards. A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "aabca"<br/>
+                Output: 3<br/>
+                Explanation: The 3 palindromic subsequences of length 3 are: "aba", "aaa", "aca".<br/><br/>
+                Input: s = "adc"<br/>
+                Output: 0<br/>
+                Explanation: There are no palindromic subsequences of length 3 in "adc".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.length();
+        unordered_set&lt;string&gt; uniquePalindromes;
+        
+        // For each character from 'a' to 'z'
+        for (char c = 'a'; c &lt;= 'z'; c++) {
+            int first = -1, last = -1;
+            
+            // Find first and last occurrence of character c
+            for (int i = 0; i &lt; n; i++) {
+                if (s[i] == c) {
+                    if (first == -1) {
+                        first = i;
+                    }
+                    last = i;
+                }
+            }
+            
+            // If character appears at least twice
+            if (first != -1 &amp;&amp; last != -1 &amp;&amp; first &lt; last) {
+                // Count unique characters between first and last occurrence
+                unordered_set&lt;char&gt; middle;
+                for (int i = first + 1; i &lt; last; i++) {
+                    middle.insert(s[i]);
+                }
+                
+                // Create palindromes with current character at ends
+                for (char mid : middle) {
+                    string palindrome = "";
+                    palindrome += c;
+                    palindrome += mid;
+                    palindrome += c;
+                    uniquePalindromes.insert(palindrome);
+                }
+            }
+        }
+        
+        return uniquePalindromes.size();
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
