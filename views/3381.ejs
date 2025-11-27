@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3381. Maximum Subarray Sum With Length Divisible by K</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3381: Maximum Subarray Sum With Length Divisible by K (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of integers nums and an integer k. Return the maximum sum of a non-empty subarray of nums, such that the size of the subarray is divisible by k. A subarray is a contiguous non-empty sequence of elements within an array.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,2], k = 1<br/>
+                Output: 3<br/>
+                Explanation: The subarray [1, 2] with sum 3 has length equal to 2 which is divisible by 1.<br/><br/>
+                Input: nums = [-1,-2,-3,-4,-5], k = 4<br/>
+                Output: -10<br/>
+                Explanation: The maximum sum subarray is [-1, -2, -3, -4] with sum -10 and length 4 which is divisible by 4.<br/><br/>
+                Input: nums = [-5,1,2,-3,4], k = 2<br/>
+                Output: 4<br/>
+                Explanation: The maximum sum subarray is [1, 2, -3, 4] with sum 4 and length 4 which is divisible by 2.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maxSubarraySum(vector&lt;int&gt;&amp; nums, int k) {
+        int n = nums.size();
+        vector&lt;long long&gt; prefixSum(n + 1, 0);
+        
+        // Calculate prefix sums
+        for (int i = 0; i &lt; n; i++) {
+            prefixSum[i + 1] = prefixSum[i] + nums[i];
+        }
+        
+        long long maxSum = LLONG_MIN;
+        
+        // For each remainder class (0 to k-1)
+        for (int remainder = 0; remainder &lt; k; remainder++) {
+            long long minPrefix = LLONG_MAX;
+            
+            // Check all indices with the same remainder when divided by k
+            for (int i = remainder; i &lt;= n; i += k) {
+                if (minPrefix != LLONG_MAX) {
+                    maxSum = max(maxSum, prefixSum[i] - minPrefix);
+                }
+                minPrefix = min(minPrefix, prefixSum[i]);
+            }
+        }
+        
+        return maxSum;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
