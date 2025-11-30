@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1590. Make Sum Divisible by P</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1590: Make Sum Divisible by P (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given an array of positive integers nums, remove the smallest subarray (possibly empty) such that the sum of the remaining elements is divisible by p. It is not allowed to remove the whole array. Return the length of the smallest subarray that you need to remove, or -1 if it's impossible. A subarray is defined as a contiguous block of elements in the array.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [3,1,4,2], p = 6<br/>
+                Output: 1<br/>
+                Explanation: The sum of the elements in nums is 10, which is not divisible by 6. We can remove the subarray [4], and the sum of the remaining elements is 6, which is divisible by 6.<br/><br/>
+                Input: nums = [6,3,5,2], p = 9<br/>
+                Output: 2<br/>
+                Explanation: We cannot remove a single element to get a sum divisible by 9. The best way is to remove the subarray [5,2], leaving us with [6,3] with sum 9.<br/><br/>
+                Input: nums = [1,2,3], p = 3<br/>
+                Output: 0<br/>
+                Explanation: Here the sum is 6 which is already divisible by 3. Thus we do not need to remove anything.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minSubarray(vector&lt;int&gt;&amp; nums, int p) {
+        int n = nums.size();
+        long long totalSum = 0;
+        
+        // Calculate total sum
+        for (int num : nums) {
+            totalSum += num;
+        }
+        
+        int target = totalSum % p;
+        
+        // If already divisible, no need to remove anything
+        if (target == 0) {
+            return 0;
+        }
+        
+        unordered_map&lt;int, int&gt; prefixMod;
+        prefixMod[0] = -1; // Initialize with remainder 0 at index -1
+        
+        int minLength = n;
+        long long prefixSum = 0;
+        
+        for (int i = 0; i &lt; n; i++) {
+            prefixSum += nums[i];
+            int currentMod = prefixSum % p;
+            
+            // We need to find a prefix with mod = (currentMod - target + p) % p
+            int neededMod = (currentMod - target + p) % p;
+            
+            if (prefixMod.find(neededMod) != prefixMod.end()) {
+                minLength = min(minLength, i - prefixMod[neededMod]);
+            }
+            
+            prefixMod[currentMod] = i;
+        }
+        
+        return minLength == n ? -1 : minLength;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
