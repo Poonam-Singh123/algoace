@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3625. Stone Removal Game</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3625: Stone Removal Game (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Alice and Bob are playing a game with n piles of stones. On each player's turn, the player should remove exactly 10 stones from a pile. However, if a pile has fewer than 10 stones, the player can remove all remaining stones from that pile. The player who cannot make a move loses the game. Given a positive integer array piles where piles[i] represents the number of stones in the i<sup>th</sup> pile, return true if Alice wins the game assuming both players play optimally, otherwise return false. Alice goes first.
+            </p>
+            <p><strong>Example:</strong>
+                Input: piles = [10,10,10,10]<br/>
+                Output: true<br/>
+                Explanation: Alice takes 10 stones from the first pile, then Bob takes 10 stones from the second pile. Alice takes 10 stones from the third pile, then Bob takes 10 stones from the fourth pile. Alice wins because Bob has no more moves.<br/><br/>
+                Input: piles = [4,4,4,4]<br/>
+                Output: false<br/>
+                Explanation: Alice takes 4 stones from the first pile, then Bob takes 4 stones from the second pile. Alice takes 4 stones from the third pile, then Bob takes 4 stones from the fourth pile. Bob wins because Alice has no more moves.<br/><br/>
+                Input: piles = [1,2,3,4,5]<br/>
+                Output: true<br/>
+                Explanation: Alice can take all stones from any pile and win.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool canAliceWin(vector&lt;int&gt;&amp; piles) {
+        int totalMoves = 0;
+        
+        for (int pile : piles) {
+            // Count how many moves can be made from this pile
+            totalMoves += (pile + 9) / 10; // Ceiling division
+        }
+        
+        // Alice wins if total moves is odd (she makes the last move)
+        return totalMoves % 2 == 1;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
