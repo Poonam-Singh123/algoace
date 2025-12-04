@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2211. Count Collisions on a Road</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2211: Count Collisions on a Road (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There are n cars on an infinitely long road. The cars are numbered from 0 to n - 1 from left to right and each car is present at a unique point. You are given a 0-indexed string directions of length n. directions[i] can be either 'L', 'R', or 'S' denoting whether the i<sup>th</sup> car is moving towards the left, towards the right, or staying at its current point respectively. Each moving car has the same speed. The number of collisions can be calculated as follows: When two cars moving in opposite directions collide with each other, the number of collisions increases by 2. When a moving car collides with a stationary car, the number of collisions increases by 1. After a collision, the cars involved can no longer move and will stay at the point where they collided. Other than that, cars cannot change their state or direction of motion. Return the total number of collisions that will happen on the road.
+            </p>
+            <p><strong>Example:</strong>
+                Input: directions = "RLRSLL"<br/>
+                Output: 5<br/>
+                Explanation: The collisions that will happen on the road are: Cars 0 and 1 collide, and since they are moving in opposite directions, the number of collisions becomes 0 + 2 = 2. Cars 2 and 3 collide, and since 3 is stationary, the number of collisions becomes 2 + 1 = 3. Cars 3 and 4 collide, and since 3 is stationary, the number of collisions becomes 3 + 1 = 4. Cars 4 and 5 collide, and since 4 is stationary, the number of collisions becomes 4 + 1 = 5. Thus, the total number of collisions that will happen on the road is 5.<br/><br/>
+                Input: directions = "LLRR"<br/>
+                Output: 0<br/>
+                Explanation: No cars will collide with each other. Thus, the total number of collisions that will happen on the road is 0.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countCollisions(string directions) {
+        int n = directions.length();
+        int collisions = 0;
+        
+        // Remove leading 'L's - they will never collide
+        int left = 0;
+        while (left &lt; n &amp;&amp; directions[left] == 'L') {
+            left++;
+        }
+        
+        // Remove trailing 'R's - they will never collide
+        int right = n - 1;
+        while (right &gt;= 0 &amp;&amp; directions[right] == 'R') {
+            right--;
+        }
+        
+        // Count cars that will collide (all non-S cars between left and right)
+        for (int i = left; i &lt;= right; i++) {
+            if (directions[i] != 'S') {
+                collisions++;
+            }
+        }
+        
+        return collisions;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
