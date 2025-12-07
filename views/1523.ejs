@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1523. Count Odd Numbers in an Interval Range</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1523: Count Odd Numbers in an Interval Range (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two non-negative integers low and high. Return the count of odd numbers between low and high (inclusive).
+            </p>
+            <p><strong>Example:</strong>
+                Input: low = 3, high = 7<br/>
+                Output: 3<br/>
+                Explanation: The odd numbers between 3 and 7 are [3,5,7].<br/><br/>
+                Input: low = 8, high = 10<br/>
+                Output: 1<br/>
+                Explanation: The odd numbers between 8 and 10 are [9].<br/><br/>
+                Input: low = 1, high = 1<br/>
+                Output: 1<br/>
+                Explanation: The only odd number in the range is 1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countOdds(int low, int high) {
+        // Calculate the total count of numbers
+        int total = high - low + 1;
+        
+        // Count of odd numbers
+        int count = total / 2;
+        
+        // If either low or high is odd, we need to add 1
+        if (low % 2 == 1 || high % 2 == 1) {
+            count++;
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
