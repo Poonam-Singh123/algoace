@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1925. Count Square Sum Triples</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1925: Count Square Sum Triples (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A square triple (a,b,c) is a triple where a, b, and c are integers and a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>. Given an integer n, return the number of square triples such that 1 &lt;= a, b, c &lt;= n.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 5<br/>
+                Output: 2<br/>
+                Explanation: The square triples are (3,4,5) and (4,3,5).<br/><br/>
+                Input: n = 10<br/>
+                Output: 4<br/>
+                Explanation: The square triples are (3,4,5), (4,3,5), (6,8,10), and (8,6,10).<br/><br/>
+                Input: n = 15<br/>
+                Output: 6<br/>
+                Explanation: There are 6 valid square triples where all values are between 1 and 15.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countTriples(int n) {
+        int count = 0;
+        
+        for (int a = 1; a &lt;= n; a++) {
+            for (int b = 1; b &lt;= n; b++) {
+                int cSquared = a * a + b * b;
+                int c = sqrt(cSquared);
+                
+                // Check if c is valid and c^2 equals a^2 + b^2
+                if (c &lt;= n &amp;&amp; c * c == cSquared) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
