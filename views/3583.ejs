@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3583. Kth Largest Perfect Subtree Size in Binary Tree</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3583: Kth Largest Perfect Subtree Size in Binary Tree (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given the root of a binary tree and an integer k. Return the size of the k<sup>th</sup> largest perfect binary subtree, or -1 if it doesn't exist. A perfect binary tree is a tree where all leaves are on the same level, and every parent has two children.
+            </p>
+            <p><strong>Example:</strong>
+                Input: root = [5,3,6,5,2,5,7,1,8,null,null,6,8], k = 2<br/>
+                Output: 3<br/>
+                Explanation: The roots of the perfect binary subtrees are highlighted. Their sizes are 1, 1, 1, 3, 1, 1, 1, 1, 1. The 2nd largest size is 3.<br/><br/>
+                Input: root = [1,2,3,4,5,6,7], k = 1<br/>
+                Output: 7<br/>
+                Explanation: The entire tree is a perfect binary tree of size 7, which is the largest.<br/><br/>
+                Input: root = [1,2,3,null,4], k = 3<br/>
+                Output: -1<br/>
+                Explanation: There are only 2 perfect binary subtrees of sizes 1 and 1. The 3rd largest doesn't exist.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int kthLargestPerfectSubtree(TreeNode* root, int k) {
+        vector&lt;int&gt; sizes;
+        dfs(root, sizes);
+        
+        // Sort sizes in descending order
+        sort(sizes.begin(), sizes.end(), greater&lt;int&gt;());
+        
+        if (k &lt;= sizes.size()) {
+            return sizes[k - 1];
+        }
+        return -1;
+    }
+    
+private:
+    // Returns {isPerfect, height, size}
+    tuple&lt;bool, int, int&gt; dfs(TreeNode* node, vector&lt;int&gt;&amp; sizes) {
+        if (!node) {
+            return {true, 0, 0};
+        }
+        
+        auto [leftPerfect, leftHeight, leftSize] = dfs(node-&gt;left, sizes);
+        auto [rightPerfect, rightHeight, rightSize] = dfs(node-&gt;right, sizes);
+        
+        // Check if current subtree is perfect
+        if (leftPerfect &amp;&amp; rightPerfect &amp;&amp; leftHeight == rightHeight) {
+            int size = leftSize + rightSize + 1;
+            sizes.push_back(size);
+            return {true, leftHeight + 1, size};
+        }
+        
+        return {false, 0, 0};
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
