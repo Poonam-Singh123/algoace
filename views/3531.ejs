@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3531. Minimum Number of Increasing Subsequence to Be Removed</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3531: Minimum Number of Increasing Subsequence to Be Removed (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array nums. In one operation, you can remove a strictly increasing subsequence from the array. Return the minimum number of operations needed to make the array empty.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [5,3,1,4,2]<br/>
+                Output: 3<br/>
+                Explanation: We can remove [5], [3,4], and [1,2] as strictly increasing subsequences. It requires 3 operations to empty the array.<br/><br/>
+                Input: nums = [1,2,3,4,5]<br/>
+                Output: 1<br/>
+                Explanation: We can remove the entire array [1,2,3,4,5] in one operation since it's strictly increasing.<br/><br/>
+                Input: nums = [5,4,3,2,1]<br/>
+                Output: 5<br/>
+                Explanation: Each element must be removed separately since the array is strictly decreasing.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        // Use a multiset to track the smallest tail of each increasing subsequence
+        multiset&lt;int&gt; tails;
+        
+        for (int num : nums) {
+            // Find the largest tail that is smaller than current number
+            auto it = tails.lower_bound(num);
+            
+            if (it != tails.begin()) {
+                // We can extend an existing subsequence
+                --it;
+                tails.erase(it);
+            }
+            
+            // Add current number as a new tail
+            tails.insert(num);
+        }
+        
+        // The number of tails is the minimum number of operations needed
+        return tails.size();
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
