@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetCode 3433: Count Mentions Per User</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3433: Count Mentions Per User (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer n representing the number of users, a 2D string array events where events[i] = [id<sub>i</sub>, message<sub>i</sub>], and an integer k. Each message can mention users using the format "id{x}" where x is a user ID. The special mention "id{0}" mentions all users from id 1 to id n. A user can only be mentioned once per message. Return an array result of length n where result[i] is the number of times user i+1 was mentioned across all messages, considering only the first k valid mentions per message.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 5, events = [["1","id{2} id{3}"],["2","id{0}"]], k = 2<br/>
+                Output: [1,2,2,1,1]<br/>
+                Explanation: In the first message, user 2 and 3 are mentioned. In the second message, "id{0}" mentions all users 1-5, but only the first 2 (users 1 and 2) count due to k=2.
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; countMentions(int n, vector&lt;vector&lt;string&gt;&gt;&amp; events, int k) {
+        vector&lt;int&gt; result(n, 0);
+        
+        for (const auto&amp; event : events) {
+            string message = event[1];
+            unordered_set&lt;int&gt; mentioned;
+            int count = 0;
+            
+            // Parse the message to find mentions
+            for (int i = 0; i &lt; message.length(); i++) {
+                if (message.substr(i, 3) == "id{") {
+                    int j = i + 3;
+                    string numStr = "";
+                    
+                    // Extract the number inside id{...}
+                    while (j &lt; message.length() &amp;&amp; message[j] != '}') {
+                        numStr += message[j];
+                        j++;
+                    }
+                    
+                    if (j &lt; message.length() &amp;&amp; message[j] == '}') {
+                        int userId = stoi(numStr);
+                        
+                        if (userId == 0) {
+                            // Mention all users from 1 to n
+                            for (int u = 1; u &lt;= n &amp;&amp; count &lt; k; u++) {
+                                if (mentioned.find(u) == mentioned.end()) {
+                                    mentioned.insert(u);
+                                    result[u - 1]++;
+                                    count++;
+                                }
+                            }
+                        } else if (userId &gt;= 1 &amp;&amp; userId &lt;= n) {
+                            // Mention specific user
+                            if (mentioned.find(userId) == mentioned.end() &amp;&amp; count &lt; k) {
+                                mentioned.insert(userId);
+                                result[userId - 1]++;
+                                count++;
+                            }
+                        }
+                        
+                        i = j; // Move past the closing brace
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
