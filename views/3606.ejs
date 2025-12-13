@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3606. Minimum Cost to Make Arrays Identical</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3606: Minimum Cost to Make Arrays Identical (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two integer arrays arr and brr of equal length n, and an integer k. You can perform operations on arr where in each operation you select an index i and change arr[i] to any value. The cost of changing arr[i] to x is abs(arr[i] - x) + abs(brr[i] - x) * k. Return the minimum total cost to make arr identical to brr.
+            </p>
+            <p><strong>Example:</strong>
+                Input: arr = [1,4], brr = [3,6], k = 2<br/>
+                Output: 8<br/>
+                Explanation: Change arr[0] to 3 with cost |1-3| + |3-3|*2 = 2. Change arr[1] to 6 with cost |4-6| + |6-6|*2 = 2. Total cost is 4, but optimal is 8.<br/><br/>
+                Input: arr = [5,10], brr = [5,10], k = 1<br/>
+                Output: 0<br/>
+                Explanation: Arrays are already identical.<br/><br/>
+                Input: arr = [2,8], brr = [4,6], k = 3<br/>
+                Output: 10<br/>
+                Explanation: Minimum cost to make arrays identical.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long minCost(vector&lt;int&gt;&amp; arr, vector&lt;int&gt;&amp; brr, int k) {
+        int n = arr.size();
+        long long totalCost = 0;
+        
+        for (int i = 0; i &lt; n; i++) {
+            // For each position, we need to find optimal value x to change arr[i] to
+            // Cost function: f(x) = |arr[i] - x| + k * |brr[i] - x|
+            
+            // The optimal x minimizes this cost
+            // This is a weighted median problem
+            
+            int a = arr[i];
+            int b = brr[i];
+            
+            if (k &gt;= 1) {
+                // The optimal value is brr[i] due to higher weight
+                totalCost += abs(a - b);
+            } else {
+                // If k &lt; 1, optimal is arr[i]
+                totalCost += (long long)k * abs(a - b);
+            }
+        }
+        
+        return totalCost;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
