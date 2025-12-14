@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2147. Number of Ways to Divide a Long Corridor</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2147: Number of Ways to Divide a Long Corridor (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Along a long library corridor, there is a line of seats and decorative plants. You are given a 0-indexed string corridor of length n consisting of letters 'S' and 'P' where each 'S' represents a seat and each 'P' represents a plant. One room divider has already been installed to the left of index 0, and another to the right of index n - 1. Additional dividers can be installed. For each position between indices i - 1 and i (1 &lt;= i &lt;= n - 1), at most one divider can be installed. Divide the corridor into non-overlapping sections, where each section has exactly two seats with any number of plants. There may be multiple ways to perform the division. Two ways are different if there is a position with a room divider installed in the first way but not in the second way. Return the number of ways to divide the corridor. Since the answer may be very large, return it modulo 10<sup>9</sup> + 7. If there is no way, return 0.
+            </p>
+            <p><strong>Example:</strong>
+                Input: corridor = "SSPPSPS"<br/>
+                Output: 3<br/>
+                Explanation: There are 3 different ways to divide the corridor.<br/><br/>
+                Input: corridor = "PPSPSP"<br/>
+                Output: 1<br/>
+                Explanation: There is only 1 way to divide the corridor.<br/><br/>
+                Input: corridor = "S"<br/>
+                Output: 0<br/>
+                Explanation: There is no way to divide the corridor since there are not exactly 2 seats in each section.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numberOfWays(string corridor) {
+        const int MOD = 1e9 + 7;
+        vector&lt;int&gt; seatPositions;
+        
+        // Collect all seat positions
+        for (int i = 0; i &lt; corridor.length(); i++) {
+            if (corridor[i] == 'S') {
+                seatPositions.push_back(i);
+            }
+        }
+        
+        int numSeats = seatPositions.size();
+        
+        // If number of seats is odd or less than 2, impossible to divide
+        if (numSeats &lt; 2 || numSeats % 2 != 0) {
+            return 0;
+        }
+        
+        // If exactly 2 seats, only 1 way
+        if (numSeats == 2) {
+            return 1;
+        }
+        
+        long long ways = 1;
+        
+        // Count ways to place dividers between each pair of sections
+        // A section has 2 seats, so we look at gaps between 2nd seat of one section
+        // and 1st seat of next section
+        for (int i = 2; i &lt; numSeats; i += 2) {
+            // Gap between 2nd seat of current section and 1st seat of next section
+            int gap = seatPositions[i] - seatPositions[i - 1];
+            ways = (ways * gap) % MOD;
+        }
+        
+        return ways;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
