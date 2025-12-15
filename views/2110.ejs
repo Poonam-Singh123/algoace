@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2110. Number of Smooth Descent Periods of a Stock</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2110: Number of Smooth Descent Periods of a Stock (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array prices representing the daily price history of a stock, where prices[i] is the stock price on the i<sup>th</sup> day. A smooth descent period of a stock consists of one or more contiguous days such that the price on each day is lower than the price on the preceding day by exactly 1. The first day of the period is exempted from this rule. Return the number of smooth descent periods.
+            </p>
+            <p><strong>Example:</strong>
+                Input: prices = [3,2,1,4]<br/>
+                Output: 7<br/>
+                Explanation: There are 7 smooth descent periods: [3], [2], [1], [4], [3,2], [2,1], and [3,2,1].<br/><br/>
+                Input: prices = [8,6,7,7]<br/>
+                Output: 4<br/>
+                Explanation: There are 4 smooth descent periods: [8], [6], [7], and [7].<br/><br/>
+                Input: prices = [1]<br/>
+                Output: 1<br/>
+                Explanation: There is 1 smooth descent period: [1].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long getDescentPeriods(vector&lt;int&gt;&amp; prices) {
+        int n = prices.size();
+        long long total = 0;
+        long long length = 1; // Current descent period length
+        
+        for (int i = 0; i &lt; n; i++) {
+            if (i &gt; 0 &amp;&amp; prices[i] == prices[i - 1] - 1) {
+                // Continue the descent period
+                length++;
+            } else {
+                // Start a new descent period
+                length = 1;
+            }
+            
+            // Add all subarrays ending at current position
+            total += length;
+        }
+        
+        return total;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
