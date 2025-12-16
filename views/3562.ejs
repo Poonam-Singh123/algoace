@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3562. Find the Count of Monotonic Pairs I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3562: Find the Count of Monotonic Pairs I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of positive integers nums of length n. We call a pair of non-negative integer arrays (arr1, arr2) monotonic if: The lengths of both arrays are n. arr1 is monotonically non-decreasing, i.e., arr1[0] &lt;= arr1[1] &lt;= ... &lt;= arr1[n - 1]. arr2 is monotonically non-increasing, i.e., arr2[0] &gt;= arr2[1] &gt;= ... &gt;= arr2[n - 1]. For all indices i in the range [0, n - 1], arr1[i] + arr2[i] == nums[i]. Return the count of monotonic pairs. Since the answer may be very large, return it modulo 10<sup>9</sup> + 7.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [2,3,2]<br/>
+                Output: 4<br/>
+                Explanation: The monotonic pairs are: ([0,1,1], [2,2,1]), ([0,1,2], [2,2,0]), ([0,2,2], [2,1,0]), ([1,2,2], [1,1,0]).<br/><br/>
+                Input: nums = [5,5,5,5]<br/>
+                Output: 126<br/>
+                Explanation: There are 126 valid monotonic pairs for this input.<br/><br/>
+                Input: nums = [1,2,3,4]<br/>
+                Output: 5<br/>
+                Explanation: There are 5 valid monotonic pairs.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countOfPairs(vector&lt;int&gt;&amp; nums) {
+        const int MOD = 1e9 + 7;
+        int n = nums.size();
+        
+        // dp[i][j] = count of ways to form monotonic pairs for nums[0..i]
+        // where arr1[i] = j
+        vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(1001, 0));
+        
+        // Base case: for first element
+        for (int j = 0; j &lt;= nums[0]; j++) {
+            dp[0][j] = 1;
+        }
+        
+        // Fill DP table
+        for (int i = 1; i &lt; n; i++) {
+            long long prefixSum = 0;
+            
+            for (int j = 0; j &lt;= nums[i]; j++) {
+                // arr2[i] = nums[i] - j
+                int arr2_curr = nums[i] - j;
+                
+                // arr1 is non-decreasing: arr1[i-1] &lt;= arr1[i] = j
+                // arr2 is non-increasing: arr2[i-1] &gt;= arr2[i] = arr2_curr
+                // arr2[i-1] = nums[i-1] - arr1[i-1]
+                // nums[i-1] - arr1[i-1] &gt;= arr2_curr
+                // arr1[i-1] &lt;= nums[i-1] - arr2_curr
+                
+                int maxPrev = min(j, nums[i - 1] - arr2_curr);
+                
+                if (maxPrev &gt;= 0) {
+                    // Use prefix sum for optimization
+                    if (j == 0) {
+                        prefixSum = 0;
+                        for (int k = 0; k &lt;= maxPrev; k++) {
+                            prefixSum = (prefixSum + dp[i - 1][k]) % MOD;
+                        }
+                    } else {
+                        int prevMaxPrev = min(j - 1, nums[i - 1] - (nums[i] - (j - 1)));
+                        if (maxPrev &gt; prevMaxPrev) {
+                            for (int k = prevMaxPrev + 1; k &lt;= maxPrev; k++) {
+                                prefixSum = (prefixSum + dp[i - 1][k]) % MOD;
+                            }
+                        } else if (maxPrev &lt; prevMaxPrev) {
+                            for (int k = maxPrev + 1; k &lt;= prevMaxPrev; k++) {
+                                prefixSum = (prefixSum - dp[i - 1][k] + MOD) % MOD;
+                            }
+                        }
+                    }
+                    dp[i][j] = prefixSum;
+                }
+            }
+        }
+        
+        // Sum all possibilities for the last position
+        long long result = 0;
+        for (int j = 0; j &lt;= nums[n - 1]; j++) {
+            result = (result + dp[n - 1][j]) % MOD;
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
