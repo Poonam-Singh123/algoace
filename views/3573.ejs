@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3573. Maximum Number of K-Divisible Substrings</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3573: Maximum Number of K-Divisible Substrings (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string s consisting of digits and an integer k. A substring of s is k-divisible if the integer value it represents is divisible by k. Return the maximum number of disjoint k-divisible substrings of s. Two substrings are disjoint if they do not share any character.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "430043", k = 2<br/>
+                Output: 2<br/>
+                Explanation: We can select the substrings "4" and "0" which are divisible by 2. Maximum number of disjoint substrings is 2.<br/><br/>
+                Input: s = "1357", k = 2<br/>
+                Output: 0<br/>
+                Explanation: No substring is divisible by 2.<br/><br/>
+                Input: s = "2468", k = 2<br/>
+                Output: 4<br/>
+                Explanation: All single digit substrings are divisible by 2: "2", "4", "6", "8".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxKDivisibleSubstrings(string s, int k) {
+        int n = s.length();
+        vector&lt;int&gt; dp(n + 1, 0);
+        
+        for (int i = 1; i &lt;= n; i++) {
+            // Option 1: Don't include s[i-1] in any substring
+            dp[i] = dp[i - 1];
+            
+            // Option 2: Try to form a k-divisible substring ending at i-1
+            long long num = 0;
+            for (int j = i - 1; j &gt;= 0; j--) {
+                num = num + (s[j] - '0') * pow(10, i - 1 - j);
+                
+                // Avoid overflow
+                if (num &gt; 1e18) break;
+                
+                // Check if current substring is k-divisible
+                if (num % k == 0) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        
+        return dp[n];
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
