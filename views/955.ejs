@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>955. Delete Columns to Make Sorted II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 955: Delete Columns to Make Sorted II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of n strings strs, all of the same length. We may choose any deletion indices, and we delete all the characters in those indices for each string. Suppose we chose a set of deletion indices answer such that after deletions, the final array has its elements in lexicographic order (i.e., strs[0] &lt;= strs[1] &lt;= strs[2] &lt;= ... &lt;= strs[n - 1]). Return the minimum possible value of answer.length.
+            </p>
+            <p><strong>Example:</strong>
+                Input: strs = ["ca","bb","ac"]<br/>
+                Output: 1<br/>
+                Explanation: After deleting the first column, strs = ["a", "b", "c"]. Now strs is in lexicographic order (ie. strs[0] &lt;= strs[1] &lt;= strs[2]). We require at least 1 deletion since initially strs was not in lexicographic order, so the answer is 1.<br/><br/>
+                Input: strs = ["xc","yb","za"]<br/>
+                Output: 0<br/>
+                Explanation: strs is already in lexicographic order, so we do not need to delete anything. Note that the rows of strs are not necessarily in lexicographic order.<br/><br/>
+                Input: strs = ["zyx","wvu","tsr"]<br/>
+                Output: 3<br/>
+                Explanation: We have to delete every column.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minDeletionSize(vector&lt;string&gt;&amp; strs) {
+        int n = strs.size();
+        int m = strs[0].length();
+        int deleteCount = 0;
+        
+        // Track which adjacent pairs are already sorted
+        vector&lt;bool&gt; sorted(n - 1, false);
+        
+        for (int col = 0; col &lt; m; col++) {
+            // Check if deleting this column would break the lexicographic order
+            bool shouldDelete = false;
+            
+            for (int row = 0; row &lt; n - 1; row++) {
+                if (!sorted[row] &amp;&amp; strs[row][col] &gt; strs[row + 1][col]) {
+                    shouldDelete = true;
+                    break;
+                }
+            }
+            
+            if (shouldDelete) {
+                deleteCount++;
+            } else {
+                // Keep this column and update sorted status
+                for (int row = 0; row &lt; n - 1; row++) {
+                    if (strs[row][col] &lt; strs[row + 1][col]) {
+                        sorted[row] = true;
+                    }
+                }
+            }
+            
+            // Early termination if all adjacent pairs are sorted
+            bool allSorted = true;
+            for (int row = 0; row &lt; n - 1; row++) {
+                if (!sorted[row]) {
+                    allSorted = false;
+                    break;
+                }
+            }
+            if (allSorted) break;
+        }
+        
+        return deleteCount;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
