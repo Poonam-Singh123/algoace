@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>960. Delete Columns to Make Sorted III</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 960: Delete Columns to Make Sorted III (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array of n strings strs, all of the same length. We may choose any deletion indices, and we delete all the characters in those indices for each string. Suppose we chose a set of deletion indices answer such that after deletions, the final array has every element (row) in lexicographic order. (i.e., (strs[0][0] &lt;= strs[0][1] &lt;= ... &lt;= strs[0][strs[0].length - 1]), and (strs[1][0] &lt;= strs[1][1] &lt;= ... &lt;= strs[1][strs[1].length - 1]), and so on). Return the minimum possible value of answer.length.
+            </p>
+            <p><strong>Example:</strong>
+                Input: strs = ["babca","bbazb"]<br/>
+                Output: 3<br/>
+                Explanation: After deleting columns 0, 1, and 4, the final array is strs = ["bc", "az"]. Both these rows are individually in lexicographic order (ie. strs[0][0] &lt;= strs[0][1] and strs[1][0] &lt;= strs[1][1]). Note that strs[0] &gt; strs[1] - the array strs is not necessarily in lexicographic order.<br/><br/>
+                Input: strs = ["edcba"]<br/>
+                Output: 4<br/>
+                Explanation: If we delete fewer than 4 columns, the only row will not be lexicographically sorted.<br/><br/>
+                Input: strs = ["ghi","def","abc"]<br/>
+                Output: 0<br/>
+                Explanation: All rows are already lexicographically sorted.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minDeletionSize(vector&lt;string&gt;&amp; strs) {
+        int n = strs.size();
+        int m = strs[0].length();
+        
+        // dp[i] = length of longest increasing subsequence ending at column i
+        vector&lt;int&gt; dp(m, 1);
+        
+        for (int i = 0; i &lt; m; i++) {
+            for (int j = 0; j &lt; i; j++) {
+                // Check if we can extend from column j to column i
+                bool canExtend = true;
+                for (int row = 0; row &lt; n; row++) {
+                    if (strs[row][j] &gt; strs[row][i]) {
+                        canExtend = false;
+                        break;
+                    }
+                }
+                
+                if (canExtend) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        
+        // Find the maximum length of columns we can keep
+        int maxKeep = *max_element(dp.begin(), dp.end());
+        
+        // Return number of columns to delete
+        return m - maxKeep;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
