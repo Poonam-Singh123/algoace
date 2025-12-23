@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2054. Two Best Non-Overlapping Events</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2054: Two Best Non-Overlapping Events (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed 2D integer array of events where events[i] = [startTime<sub>i</sub>, endTime<sub>i</sub>, value<sub>i</sub>]. The i<sup>th</sup> event starts at startTime<sub>i</sub> and ends at endTime<sub>i</sub>, and if you attend this event, you will receive a value of value<sub>i</sub>. You can choose at most two non-overlapping events to attend such that the sum of their values is maximized. Return this maximum sum. Note that the start time and end time is inclusive: that is, you cannot attend two events where one of them starts and the other ends at the same time. More specifically, if you attend an event with end time t, the next event must start at or after t + 1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: events = [[1,3,2],[4,5,2],[2,4,3]]<br/>
+                Output: 4<br/>
+                Explanation: Choose the green events, 0 and 1 for a sum of 2 + 2 = 4.<br/><br/>
+                Input: events = [[1,3,2],[4,5,2],[1,5,5]]<br/>
+                Output: 5<br/>
+                Explanation: Choose event 2 for a sum of 5.<br/><br/>
+                Input: events = [[1,5,3],[1,5,1],[6,6,5]]<br/>
+                Output: 8<br/>
+                Explanation: Choose events 0 and 2 for a sum of 3 + 5 = 8.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxTwoEvents(vector&lt;vector&lt;int&gt;&gt;&amp; events) {
+        int n = events.size();
+        
+        // Sort events by start time
+        sort(events.begin(), events.end());
+        
+        // suffix[i] = maximum value from event i to end
+        vector&lt;int&gt; suffix(n);
+        suffix[n - 1] = events[n - 1][2];
+        
+        for (int i = n - 2; i &gt;= 0; i--) {
+            suffix[i] = max(suffix[i + 1], events[i][2]);
+        }
+        
+        int maxSum = 0;
+        
+        for (int i = 0; i &lt; n; i++) {
+            int currentValue = events[i][2];
+            maxSum = max(maxSum, currentValue);
+            
+            // Binary search for the first event that starts after current event ends
+            int left = i + 1, right = n - 1;
+            int nextEvent = -1;
+            
+            while (left &lt;= right) {
+                int mid = left + (right - left) / 2;
+                if (events[mid][0] &gt; events[i][1]) {
+                    nextEvent = mid;
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            
+            if (nextEvent != -1) {
+                maxSum = max(maxSum, currentValue + suffix[nextEvent]);
+            }
+        }
+        
+        return maxSum;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
