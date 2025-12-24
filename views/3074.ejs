@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3074. Apple Redistribution into Boxes</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3074: Apple Redistribution into Boxes (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array apple of size n and an array capacity of size m. There are n packs where the i<sup>th</sup> pack contains apple[i] apples. There are m boxes as well, and the i<sup>th</sup> box has a capacity of capacity[i] apples. Return the minimum number of boxes you need to select to redistribute all the apples.
+            </p>
+            <p><strong>Example:</strong>
+                Input: apple = [1,3,2], capacity = [4,3,1,5,2]<br/>
+                Output: 2<br/>
+                Explanation: We will use boxes with capacities 4 and 5. It is possible to distribute all the apples by using these two boxes.<br/><br/>
+                Input: apple = [5,5,5], capacity = [2,4,2,7]<br/>
+                Output: 4<br/>
+                Explanation: We will need all the boxes to redistribute all the apples.<br/><br/>
+                Input: apple = [9,8,7], capacity = [10,10,5,3]<br/>
+                Output: 2<br/>
+                Explanation: We will use boxes with capacities 10 and 10.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumBoxes(vector&lt;int&gt;&amp; apple, vector&lt;int&gt;&amp; capacity) {
+        // Calculate total apples
+        int totalApples = 0;
+        for (int a : apple) {
+            totalApples += a;
+        }
+        
+        // Sort capacity in descending order to use largest boxes first
+        sort(capacity.begin(), capacity.end(), greater&lt;int&gt;());
+        
+        int boxesUsed = 0;
+        int storedApples = 0;
+        
+        for (int cap : capacity) {
+            storedApples += cap;
+            boxesUsed++;
+            
+            if (storedApples &gt;= totalApples) {
+                break;
+            }
+        }
+        
+        return boxesUsed;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
