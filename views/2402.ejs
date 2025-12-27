@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2402. Meeting Rooms III</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2402: Meeting Rooms III (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer n. There are n rooms numbered from 0 to n - 1. You are given a 2D integer array meetings where meetings[i] = [start<sub>i</sub>, end<sub>i</sub>] means that a meeting will be held during the half-closed time interval [start<sub>i</sub>, end<sub>i</sub>). All the values of start<sub>i</sub> are unique. Meetings are allocated to rooms in the following manner: Each meeting will take place in the unused room with the lowest number. If there are no available rooms, the meeting will be delayed until a room becomes free. The delayed meeting should have the same duration as the original meeting. When a room becomes unused, meetings that have an earlier original start time should be given the room. Return the number of the room that held the most meetings. If there are multiple rooms, return the room with the lowest number.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 2, meetings = [[0,10],[1,5],[2,7],[3,4]]<br/>
+                Output: 0<br/>
+                Explanation: Room 0 holds meetings [0,10), [1,5), [2,7). Room 1 holds meeting [3,4). Room 0 held 3 meetings, so we return 0.<br/><br/>
+                Input: n = 3, meetings = [[1,20],[2,10],[3,5],[4,9],[6,8]]<br/>
+                Output: 1<br/>
+                Explanation: Room 0 holds meeting [1,20). Room 1 holds meetings [2,10), [3,5), [4,9). Room 2 holds meeting [6,8). Room 1 held 3 meetings, so we return 1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int mostBooked(int n, vector&lt;vector&lt;int&gt;&gt;&amp; meetings) {
+        // Sort meetings by start time
+        sort(meetings.begin(), meetings.end());
+        
+        // Priority queue for available rooms (min heap by room number)
+        priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; availableRooms;
+        for (int i = 0; i &lt; n; i++) {
+            availableRooms.push(i);
+        }
+        
+        // Priority queue for busy rooms (min heap by end time, then room number)
+        priority_queue&lt;pair&lt;long long, int&gt;, vector&lt;pair&lt;long long, int&gt;&gt;, greater&lt;pair&lt;long long, int&gt;&gt;&gt; busyRooms;
+        
+        // Count meetings per room
+        vector&lt;int&gt; meetingCount(n, 0);
+        
+        for (auto&amp; meeting : meetings) {
+            long long start = meeting[0];
+            long long end = meeting[1];
+            long long duration = end - start;
+            
+            // Free up rooms that have finished by current start time
+            while (!busyRooms.empty() &amp;&amp; busyRooms.top().first &lt;= start) {
+                availableRooms.push(busyRooms.top().second);
+                busyRooms.pop();
+            }
+            
+            if (!availableRooms.empty()) {
+                // Assign to available room with lowest number
+                int room = availableRooms.top();
+                availableRooms.pop();
+                meetingCount[room]++;
+                busyRooms.push({end, room});
+            } else {
+                // Delay meeting until earliest room is free
+                auto [earliestEnd, room] = busyRooms.top();
+                busyRooms.pop();
+                meetingCount[room]++;
+                busyRooms.push({earliestEnd + duration, room});
+            }
+        }
+        
+        // Find room with most meetings (lowest number if tie)
+        int maxMeetings = 0;
+        int resultRoom = 0;
+        for (int i = 0; i &lt; n; i++) {
+            if (meetingCount[i] &gt; maxMeetings) {
+                maxMeetings = meetingCount[i];
+                resultRoom = i;
+            }
+        }
+        
+        return resultRoom;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
