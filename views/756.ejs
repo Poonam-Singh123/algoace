@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>756. Pyramid Transition Matrix</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 756: Pyramid Transition Matrix (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are stacking blocks to form a pyramid. Each block has a color, which is represented by a single letter. Each row of blocks contains one fewer block than the row beneath it and is centered on top. To make the pyramid aesthetically pleasing, there are only specific triangular patterns that are allowed. A triangular pattern consists of a single block stacked on top of two blocks. The patterns are given as a list of three-letter strings allowed, where the first two characters of a pattern represent the left and right bottom blocks respectively, and the third character represents the top block. You start with a bottom row of blocks bottom, given as a single string, that you must use as the base of the pyramid. Given bottom and allowed, return true if you can build the pyramid all the way to the top such that every triangular pattern in the pyramid is in allowed, or false otherwise.
+            </p>
+            <p><strong>Example:</strong>
+                Input: bottom = "BCD", allowed = ["BCC","CDE","CEA","FFF"]<br/>
+                Output: true<br/>
+                Explanation: The allowed triangular patterns are shown on the right. Starting from the bottom (row 2), we can build "CE" on row 1, and then build "E" on row 0. There are three triangular patterns in the pyramid, which are "BCC", "CDE", and "CEA". All are allowed.<br/><br/>
+                Input: bottom = "AAAA", allowed = ["AAB","AAC","BCD","BBE","DEF"]<br/>
+                Output: false<br/>
+                Explanation: The allowed triangular patterns are shown on the right. Starting from the bottom (row 3), there are multiple ways to build row 2, but none lead to the top. For example, if we build "AAB" on row 2, then neither "AAB", "AAC", nor "BCD" can be built on row 1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool pyramidTransition(string bottom, vector&lt;string&gt;&amp; allowed) {
+        // Build a map for quick lookup of possible top blocks
+        unordered_map&lt;string, vector&lt;char&gt;&gt; patterns;
+        for (const string&amp; pattern : allowed) {
+            string key = pattern.substr(0, 2);
+            patterns[key].push_back(pattern[2]);
+        }
+        
+        return dfs(bottom, "", patterns);
+    }
+    
+private:
+    bool dfs(const string&amp; current, string next, 
+             unordered_map&lt;string, vector&lt;char&gt;&gt;&amp; patterns) {
+        // Base case: if current row has only 1 block, pyramid is complete
+        if (current.length() == 1) {
+            return true;
+        }
+        
+        // If we've built the complete next row, move up
+        if (next.length() == current.length() - 1) {
+            return dfs(next, "", patterns);
+        }
+        
+        // Try to build the next position in the next row
+        int pos = next.length();
+        string key = current.substr(pos, 2);
+        
+        if (patterns.find(key) == patterns.end()) {
+            return false;
+        }
+        
+        // Try all possible blocks for this position
+        for (char c : patterns[key]) {
+            if (dfs(current, next + c, patterns)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
