@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>840. Magic Squares In Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 840: Magic Squares In Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A 3 x 3 magic square is a 3 x 3 grid filled with distinct numbers from 1 to 9 such that each row, column, and both diagonals all have the same sum. Given a row x col grid of integers, how many 3 x 3 contiguous magic square subgrids are there? Note: while a magic square can only contain numbers from 1 to 9, grid may contain numbers up to 15.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[4,3,8,4],[9,5,1,9],[2,7,6,2]]<br/>
+                Output: 1<br/>
+                Explanation: The following subgrid is a 3 x 3 magic square: 4 3 8, 9 5 1, 2 7 6. while this one is not: 3 8 4, 5 1 9, 7 6 2. In total, there is only one magic square inside the given grid.<br/><br/>
+                Input: grid = [[8]]<br/>
+                Output: 0<br/><br/>
+                Input: grid = [[5,5,5],[5,5,5],[5,5,5]]<br/>
+                Output: 0<br/>
+                Explanation: No magic square can be formed with duplicate numbers.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numMagicSquaresInside(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int count = 0;
+        
+        // Check all possible 3x3 subgrids
+        for (int i = 0; i &lt;= rows - 3; i++) {
+            for (int j = 0; j &lt;= cols - 3; j++) {
+                if (isMagicSquare(grid, i, j)) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+private:
+    bool isMagicSquare(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int row, int col) {
+        // Check if all numbers are distinct and between 1-9
+        vector&lt;bool&gt; seen(10, false);
+        for (int i = row; i &lt; row + 3; i++) {
+            for (int j = col; j &lt; col + 3; j++) {
+                int num = grid[i][j];
+                if (num &lt; 1 || num &gt; 9 || seen[num]) {
+                    return false;
+                }
+                seen[num] = true;
+            }
+        }
+        
+        // Check if all rows, columns, and diagonals sum to 15
+        int targetSum = 15;
+        
+        // Check rows
+        for (int i = row; i &lt; row + 3; i++) {
+            if (grid[i][col] + grid[i][col + 1] + grid[i][col + 2] != targetSum) {
+                return false;
+            }
+        }
+        
+        // Check columns
+        for (int j = col; j &lt; col + 3; j++) {
+            if (grid[row][j] + grid[row + 1][j] + grid[row + 2][j] != targetSum) {
+                return false;
+            }
+        }
+        
+        // Check diagonals
+        if (grid[row][col] + grid[row + 1][col + 1] + grid[row + 2][col + 2] != targetSum) {
+            return false;
+        }
+        if (grid[row][col + 2] + grid[row + 1][col + 1] + grid[row + 2][col] != targetSum) {
+            return false;
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
