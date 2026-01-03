@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1411. Number of Ways to Paint N × 3 Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1411: Number of Ways to Paint N × 3 Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You have a grid of size n x 3 and you want to paint each cell of the grid with exactly one of the three colors: Red, Yellow, or Green while making sure that no two adjacent cells have the same color (i.e., no two cells that share vertical or horizontal sides have the same color). Given n the number of rows of the grid, return the number of ways you can paint this grid. As the answer may grow large, the answer must be computed modulo 10<sup>9</sup> + 7.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 1<br/>
+                Output: 12<br/>
+                Explanation: There are 12 possible ways to paint the grid. The 6 ways with 2 colors: RYR, YRY, GRG, RGR, YGY, GYG. The 6 ways with 3 colors: RYG, RGY, YRG, YGR, GRY, GYR.<br/><br/>
+                Input: n = 5000<br/>
+                Output: 30228214<br/>
+                Explanation: There are many ways to paint the grid, the answer modulo 10^9 + 7 is 30228214.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numOfWays(int n) {
+        const int MOD = 1e9 + 7;
+        
+        // Two types of valid patterns for a row:
+        // Type 1: ABA (2 colors, like RYR, YRY, GRG, etc.) - 6 patterns
+        // Type 2: ABC (3 colors, like RYG, RGY, YRG, etc.) - 6 patterns
+        
+        long long twoColor = 6;  // Patterns with 2 colors (ABA)
+        long long threeColor = 6; // Patterns with 3 colors (ABC)
+        
+        for (int i = 2; i &lt;= n; i++) {
+            // A two-color pattern (ABA) can be followed by:
+            // - 3 two-color patterns (different configurations)
+            // - 2 three-color patterns
+            long long newTwoColor = (twoColor * 3 + threeColor * 2) % MOD;
+            
+            // A three-color pattern (ABC) can be followed by:
+            // - 2 two-color patterns
+            // - 2 three-color patterns
+            long long newThreeColor = (twoColor * 2 + threeColor * 2) % MOD;
+            
+            twoColor = newTwoColor;
+            threeColor = newThreeColor;
+        }
+        
+        return (twoColor + threeColor) % MOD;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
