@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1975. Maximum Matrix Sum</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1975: Maximum Matrix Sum (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an n x n integer matrix. You can do the following operation any number of times: Choose any two adjacent elements of matrix and multiply each of them by -1. Two elements are considered adjacent if and only if they share a border. Your goal is to maximize the summation of the matrix's elements. Return the maximum sum of the matrix's elements using the operation mentioned above.
+            </p>
+            <p><strong>Example:</strong>
+                Input: matrix = [[1,-1],[-1,1]]<br/>
+                Output: 4<br/>
+                Explanation: We can follow the following steps to reach sum equals 4: Multiply the two elements in the first row by -1. Multiply the two elements in the first column by -1.<br/><br/>
+                Input: matrix = [[1,2,3],[-1,-2,-3],[1,2,3]]<br/>
+                Output: 16<br/>
+                Explanation: We can follow the following step to reach sum equals 16: Multiply the -1 in the second row with the 1 in the first row.<br/><br/>
+                Input: matrix = [[-1,0,-1],[-2,1,3],[3,2,2]]<br/>
+                Output: 15<br/>
+                Explanation: We can maximize the sum to 15 by performing operations.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maxMatrixSum(vector&lt;vector&lt;int&gt;&gt;&amp; matrix) {
+        int n = matrix.size();
+        long long totalSum = 0;
+        int negativeCount = 0;
+        int minAbsValue = INT_MAX;
+        
+        // Calculate sum of absolute values, count negatives, find minimum absolute value
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                int val = matrix[i][j];
+                totalSum += abs(val);
+                
+                if (val &lt; 0) {
+                    negativeCount++;
+                }
+                
+                minAbsValue = min(minAbsValue, abs(val));
+            }
+        }
+        
+        // If even number of negatives, we can make all positive
+        // If odd number of negatives, one must remain negative (the smallest absolute value)
+        if (negativeCount % 2 == 0) {
+            return totalSum;
+        } else {
+            return totalSum - 2 * minAbsValue;
+        }
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
