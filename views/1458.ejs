@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1458. Max Dot Product of Two Subsequences</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1458: Max Dot Product of Two Subsequences (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two arrays nums1 and nums2. Return the maximum dot product between non-empty subsequences of nums1 and nums2 with the same length. A subsequence of a array is a new array which is formed from the original array by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (ie, [2,3,5] is a subsequence of [1,2,3,4,5] while [1,5,3] is not).
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums1 = [2,1,-2,5], nums2 = [3,0,-6]<br/>
+                Output: 18<br/>
+                Explanation: Take subsequence [2,-2] from nums1 and subsequence [3,-6] from nums2. Their dot product is (2*3 + (-2)*(-6)) = 18.<br/><br/>
+                Input: nums1 = [3,-2], nums2 = [2,-6,7]<br/>
+                Output: 21<br/>
+                Explanation: Take subsequence [3] from nums1 and subsequence [7] from nums2. Their dot product is (3*7) = 21.<br/><br/>
+                Input: nums1 = [-1,-1], nums2 = [1,1]<br/>
+                Output: -1<br/>
+                Explanation: Take subsequence [-1] from nums1 and subsequence [1] from nums2. Their dot product is (-1*1) = -1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maxDotProduct(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        
+        // dp[i][j] = max dot product using nums1[0..i-1] and nums2[0..j-1]
+        vector&lt;vector&lt;int&gt;&gt; dp(m + 1, vector&lt;int&gt;(n + 1, INT_MIN));
+        
+        for (int i = 1; i &lt;= m; i++) {
+            for (int j = 1; j &lt;= n; j++) {
+                int product = nums1[i - 1] * nums2[j - 1];
+                
+                // Option 1: Start fresh with current pair
+                dp[i][j] = product;
+                
+                // Option 2: Extend previous subsequence
+                if (dp[i - 1][j - 1] != INT_MIN) {
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + product);
+                }
+                
+                // Option 3: Skip nums1[i-1]
+                if (dp[i - 1][j] != INT_MIN) {
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j]);
+                }
+                
+                // Option 4: Skip nums2[j-1]
+                if (dp[i][j - 1] != INT_MIN) {
+                    dp[i][j] = max(dp[i][j], dp[i][j - 1]);
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
