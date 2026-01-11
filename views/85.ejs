@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>85. Maximal Rectangle</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 85: Maximal Rectangle (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a rows x cols binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+            </p>
+            <p><strong>Example:</strong>
+                Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]<br/>
+                Output: 6<br/>
+                Explanation: The maximal rectangle is shown in the above picture.<br/><br/>
+                Input: matrix = [["0"]]<br/>
+                Output: 0<br/><br/>
+                Input: matrix = [["1"]]<br/>
+                Output: 1<br/>
+                Explanation: The maximal rectangle consists of the single cell containing "1".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maximalRectangle(vector&lt;vector&lt;char&gt;&gt;&amp; matrix) {
+        if (matrix.empty() || matrix[0].empty()) {
+            return 0;
+        }
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        vector&lt;int&gt; heights(cols, 0);
+        int maxArea = 0;
+        
+        for (int i = 0; i &lt; rows; i++) {
+            // Update heights array
+            for (int j = 0; j &lt; cols; j++) {
+                if (matrix[i][j] == '1') {
+                    heights[j]++;
+                } else {
+                    heights[j] = 0;
+                }
+            }
+            
+            // Calculate max area for current row using histogram approach
+            maxArea = max(maxArea, largestRectangleInHistogram(heights));
+        }
+        
+        return maxArea;
+    }
+    
+private:
+    int largestRectangleInHistogram(vector&lt;int&gt;&amp; heights) {
+        stack&lt;int&gt; st;
+        int maxArea = 0;
+        int n = heights.size();
+        
+        for (int i = 0; i &lt;= n; i++) {
+            int h = (i == n) ? 0 : heights[i];
+            
+            while (!st.empty() &amp;&amp; h &lt; heights[st.top()]) {
+                int height = heights[st.top()];
+                st.pop();
+                int width = st.empty() ? i : i - st.top() - 1;
+                maxArea = max(maxArea, height * width);
+            }
+            
+            st.push(i);
+        }
+        
+        return maxArea;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
