@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetCode 3454 - Separate Squares II</title>
+
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+
+<body>
+<main>
+
+    <h1>LeetCode 3454: Separate Squares II (C++)</h1>
+
+    <div class="problem-description">
+        <p><strong>Problem:</strong> You are given squares on a 2D plane. Find the horizontal line that divides the total area of squares into two equal halves.</p>
+        <p><strong>Example:</strong> Input squares with different sizes and positions. Output the y-coordinate that splits their total area equally.</p>
+    </div>
+
+    <div class="code-container">
+        <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+
+        <pre><code class="language-cpp">
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+class Solution {
+public:
+    double separateSquares(vector&lt;vector&lt;int&gt;&gt;&amp; squares) {
+        double low = 1e18, high = -1e18;
+        
+        for (auto &amp;s : squares) {
+            double y = s[1];
+            double side = s[2];
+            low = min(low, y);
+            high = max(high, y + side);
+        }
+
+        auto areaBelow = [&amp;](double mid) {
+            double area = 0.0;
+            for (auto &amp;s : squares) {
+                double y = s[1];
+                double side = s[2];
+                double top = y + side;
+                
+                if (mid &lt;= y) continue;
+                else if (mid &gt;= top) area += side * side;
+                else area += side * (mid - y);
+            }
+            return area;
+        };
+
+        double total = 0.0;
+        for (auto &amp;s : squares) {
+            double side = s[2];
+            total += side * side;
+        }
+
+        double left = low, right = high;
+        for (int i = 0; i &lt; 80; i++) {
+            double mid = (left + right) / 2.0;
+            if (areaBelow(mid) * 2.0 &lt; total)
+                left = mid;
+            else
+                right = mid;
+        }
+
+        return left;
+    }
+};
+        </code></pre>
+    </div>
+
+    <a href="/" class="back-link">← Back to Home</a>
+
+</main>
+</body>
+</html>
