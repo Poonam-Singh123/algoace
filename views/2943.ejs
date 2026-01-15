@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2943. Maximize Area of Square Hole in Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2943: Maximize Area of Square Hole in Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There is a grid with n + 2 horizontal bars and m + 2 vertical bars, and initially, there is a hole in the grid with dimensions (n x m). You are given two arrays hBars and vBars of size n and m respectively, where hBars[i] represents the y-coordinate of the i<sup>th</sup> horizontal bar in the range [2, n + 1], and vBars[i] represents the x-coordinate of the i<sup>th</sup> vertical bar in the range [2, m + 1]. Return an integer denoting the maximum area of a square hole in the grid after removing some bars (possibly none).
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 2, m = 1, hBars = [2,3], vBars = [2]<br/>
+                Output: 4<br/>
+                Explanation: The left image shows the initial grid formed by the bars. The maximum area of a square hole is obtained by removing horizontal bar at 2 and vertical bar at 2.<br/><br/>
+                Input: n = 1, m = 1, hBars = [2], vBars = [2]<br/>
+                Output: 4<br/><br/>
+                Input: n = 2, m = 3, hBars = [2,3], vBars = [2,3,4]<br/>
+                Output: 9<br/>
+                Explanation: The maximum area is 9 by removing appropriate bars.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maximizeSquareHoleArea(int n, int m, vector&lt;int&gt;&amp; hBars, vector&lt;int&gt;&amp; vBars) {
+        // Sort the bars
+        sort(hBars.begin(), hBars.end());
+        sort(vBars.begin(), vBars.end());
+        
+        // Find longest consecutive sequence in horizontal bars
+        int maxHConsecutive = findMaxConsecutive(hBars);
+        
+        // Find longest consecutive sequence in vertical bars
+        int maxVConsecutive = findMaxConsecutive(vBars);
+        
+        // The side length of the square is the minimum of the two
+        int sideLength = min(maxHConsecutive, maxVConsecutive);
+        
+        return sideLength * sideLength;
+    }
+    
+private:
+    int findMaxConsecutive(vector&lt;int&gt;&amp; bars) {
+        if (bars.empty()) return 1;
+        
+        int maxLen = 1;
+        int currentLen = 1;
+        
+        for (int i = 1; i &lt; bars.size(); i++) {
+            if (bars[i] == bars[i - 1] + 1) {
+                currentLen++;
+                maxLen = max(maxLen, currentLen);
+            } else {
+                currentLen = 1;
+            }
+        }
+        
+        // Add 1 because we can remove consecutive bars to create gaps
+        return maxLen + 1;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
