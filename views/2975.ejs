@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2975. Maximum Square Area by Removing Fences From a Field</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2975: Maximum Square Area by Removing Fences From a Field (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There is a large (m - 1) x (n - 1) rectangular field with corners at (1, 1) and (m, n) containing some horizontal and vertical fences given in arrays hFences and vFences respectively. Horizontal fences are from the coordinates (hFences[i], 1) to (hFences[i], n) and vertical fences are from the coordinates (1, vFences[i]) to (m, vFences[i]). Return the maximum area of a square field that can be formed by removing some fences (possibly none) or -1 if it is impossible to make a square field. Since the answer may be large, return it modulo 10<sup>9</sup> + 7. Note: The field is surrounded by two horizontal fences from the coordinates (1, 1) to (1, n) and (m, 1) to (m, n) and two vertical fences from the coordinates (1, 1) to (m, 1) and (1, n) to (m, n). These fences cannot be removed.
+            </p>
+            <p><strong>Example:</strong>
+                Input: m = 4, n = 3, hFences = [2,3], vFences = [2]<br/>
+                Output: 4<br/>
+                Explanation: Removing the horizontal fence at 2 and the vertical fence at 2 will give a square field of area 4.<br/><br/>
+                Input: m = 6, n = 7, hFences = [2], vFences = [4]<br/>
+                Output: 16<br/>
+                Explanation: The maximum area achievable is 16 by creating a 4x4 square.<br/><br/>
+                Input: m = 3, n = 3, hFences = [], vFences = []<br/>
+                Output: 4<br/>
+                Explanation: With no internal fences, the maximum square is 2x2.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maximizeSquareArea(int m, int n, vector&lt;int&gt;&amp; hFences, vector&lt;int&gt;&amp; vFences) {
+        const int MOD = 1e9 + 7;
+        
+        // Add boundary fences
+        hFences.push_back(1);
+        hFences.push_back(m);
+        vFences.push_back(1);
+        vFences.push_back(n);
+        
+        // Sort fences
+        sort(hFences.begin(), hFences.end());
+        sort(vFences.begin(), vFences.end());
+        
+        // Get all possible horizontal distances
+        unordered_set&lt;int&gt; hDistances;
+        for (int i = 0; i &lt; hFences.size(); i++) {
+            for (int j = i + 1; j &lt; hFences.size(); j++) {
+                hDistances.insert(hFences[j] - hFences[i]);
+            }
+        }
+        
+        // Find maximum common distance with vertical distances
+        int maxSide = 0;
+        for (int i = 0; i &lt; vFences.size(); i++) {
+            for (int j = i + 1; j &lt; vFences.size(); j++) {
+                int vDist = vFences[j] - vFences[i];
+                if (hDistances.count(vDist)) {
+                    maxSide = max(maxSide, vDist);
+                }
+            }
+        }
+        
+        if (maxSide == 0) {
+            return -1;
+        }
+        
+        return (1LL * maxSide * maxSide) % MOD;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
