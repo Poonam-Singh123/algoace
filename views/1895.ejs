@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1895. Largest Magic Square</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1895: Largest Magic Square (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A k x k magic square is a k x k grid filled with integers such that every row sum, every column sum, and both diagonal sums are all equal. The integers in the magic square do not have to be distinct. Every 1 x 1 grid is trivially a magic square. Given an m x n integer grid, return the size (i.e., the side length k) of the largest magic square that can be found within this grid.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[7,1,4,5,6],[2,5,1,6,4],[1,5,4,3,2],[1,2,7,3,4]]<br/>
+                Output: 3<br/>
+                Explanation: The largest magic square has a size of 3. Every row sum, column sum, and diagonal sum of this magic square is equal to 12. (row sums: 5+1+6=5+4+3=2+7+3=12, column sums: 5+4+2=1+4+7=6+3+3=12, diagonal sums: 5+4+3=6+4+2=12)<br/><br/>
+                Input: grid = [[5,1,3,1],[9,3,3,1],[1,3,3,8]]<br/>
+                Output: 2<br/>
+                Explanation: The largest magic square has a size of 2. Every row sum, column sum, and diagonal sum equals 6.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int largestMagicSquare(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        // Compute prefix sums for rows and columns
+        vector&lt;vector&lt;int&gt;&gt; rowSum(m, vector&lt;int&gt;(n + 1, 0));
+        vector&lt;vector&lt;int&gt;&gt; colSum(m + 1, vector&lt;int&gt;(n, 0));
+        
+        for (int i = 0; i &lt; m; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                rowSum[i][j + 1] = rowSum[i][j] + grid[i][j];
+                colSum[i + 1][j] = colSum[i][j] + grid[i][j];
+            }
+        }
+        
+        // Try all possible square sizes from largest to smallest
+        int maxSize = min(m, n);
+        for (int k = maxSize; k &gt;= 1; k--) {
+            for (int i = 0; i &lt;= m - k; i++) {
+                for (int j = 0; j &lt;= n - k; j++) {
+                    if (isMagicSquare(grid, rowSum, colSum, i, j, k)) {
+                        return k;
+                    }
+                }
+            }
+        }
+        
+        return 1;
+    }
+    
+private:
+    bool isMagicSquare(vector&lt;vector&lt;int&gt;&gt;&amp; grid, 
+                       vector&lt;vector&lt;int&gt;&gt;&amp; rowSum,
+                       vector&lt;vector&lt;int&gt;&gt;&amp; colSum,
+                       int row, int col, int k) {
+        // Calculate target sum from first row
+        int targetSum = rowSum[row][col + k] - rowSum[row][col];
+        
+        // Check all rows
+        for (int i = row; i &lt; row + k; i++) {
+            if (rowSum[i][col + k] - rowSum[i][col] != targetSum) {
+                return false;
+            }
+        }
+        
+        // Check all columns
+        for (int j = col; j &lt; col + k; j++) {
+            if (colSum[row + k][j] - colSum[row][j] != targetSum) {
+                return false;
+            }
+        }
+        
+        // Check main diagonal
+        int diagSum1 = 0;
+        for (int i = 0; i &lt; k; i++) {
+            diagSum1 += grid[row + i][col + i];
+        }
+        if (diagSum1 != targetSum) {
+            return false;
+        }
+        
+        // Check anti-diagonal
+        int diagSum2 = 0;
+        for (int i = 0; i &lt; k; i++) {
+            diagSum2 += grid[row + i][col + k - 1 - i];
+        }
+        if (diagSum2 != targetSum) {
+            return false;
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
