@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3507. Find the K-th Character in String Game II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3507: Find the K-th Character in String Game II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Alice and Bob are playing a game. Initially, Alice has a string word = "a". You are given a positive integer k and an integer array operations, where operations[i] represents the type of the i<sup>th</sup> operation. Now Bob will ask Alice to perform all operations in sequence: If operations[i] == 0, append a copy of word to itself. If operations[i] == 1, generate a new string by changing each character in word to its next character in the English alphabet, and append it to the original word. For example, performing the operation on "c" generates "cd" and performing the operation on "zb" generates "zbac". Return the value of the k<sup>th</sup> character in word after performing all the operations. Note that the character 'z' can be changed to 'a' in the second type of operation.
+            </p>
+            <p><strong>Example:</strong>
+                Input: k = 5, operations = [0,0,0]<br/>
+                Output: "a"<br/>
+                Explanation: Initially, word == "a". Alice performs the three operations as follows: Generates "aa" by appending a copy of "a". Generates "aaaa" by appending a copy of "aa". Generates "aaaaaaaa" by appending a copy of "aaaa". Hence, the value of the 5th character is "a".<br/><br/>
+                Input: k = 10, operations = [0,1,0,1]<br/>
+                Output: "b"<br/>
+                Explanation: Initially, word == "a". Alice performs the four operations as follows: Generates "aa" by appending a copy of "a". Generates "aabb" by appending "bb" which is "a" with each character incremented. Generates "aabbaabb" by appending a copy of "aabb". Generates "aabbaabbbbcc" by appending "bbcc" which is "aabb" with each character incremented. Hence, the value of the 10th character is "b".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    char kthCharacter(long long k, vector&lt;int&gt;&amp; operations) {
+        // Find which operation generates the k-th character
+        return findChar(k, operations, operations.size() - 1);
+    }
+    
+private:
+    char findChar(long long k, vector&lt;int&gt;&amp; operations, int opIdx) {
+        // Base case
+        if (k == 1) {
+            return 'a';
+        }
+        
+        // Find the length after operation opIdx
+        long long len = 1LL &lt;&lt; (opIdx + 1); // 2^(opIdx + 1)
+        long long half = len / 2;
+        
+        if (k &lt;= half) {
+            // k is in the first half (original part)
+            return findChar(k, operations, opIdx - 1);
+        } else {
+            // k is in the second half (appended part)
+            char ch = findChar(k - half, operations, opIdx - 1);
+            
+            // If operation type is 1, increment the character
+            if (operations[opIdx] == 1) {
+                ch = (ch == 'z') ? 'a' : ch + 1;
+            }
+            
+            return ch;
+        }
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
