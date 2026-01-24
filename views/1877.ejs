@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1877. Minimize Maximum Pair Sum in Array</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1877: Minimize Maximum Pair Sum in Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                The pair sum of a pair (a,b) is equal to a + b. The maximum pair sum is the largest pair sum in a list of pairs. For example, if we have pairs (1,5), (2,3), and (4,4), the maximum pair sum would be max(1+5, 2+3, 4+4) = max(6, 5, 8) = 8. Given an array nums of even length n, pair up the elements of nums into n / 2 pairs such that: Each element of nums is in exactly one pair, and The maximum pair sum is minimized. Return the minimized maximum pair sum after optimally pairing up the elements.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [3,5,2,3]<br/>
+                Output: 7<br/>
+                Explanation: The elements can be paired up into pairs (3,3) and (5,2). The maximum pair sum is max(3+3, 5+2) = max(6, 7) = 7.<br/><br/>
+                Input: nums = [3,5,4,2,4,6]<br/>
+                Output: 8<br/>
+                Explanation: The elements can be paired up into pairs (3,5), (4,4), and (6,2). The maximum pair sum is max(3+5, 4+4, 6+2) = max(8, 8, 8) = 8.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minPairSum(vector&lt;int&gt;&amp; nums) {
+        // Sort the array
+        sort(nums.begin(), nums.end());
+        
+        int n = nums.size();
+        int maxPairSum = 0;
+        
+        // Pair smallest with largest, second smallest with second largest, etc.
+        for (int i = 0; i &lt; n / 2; i++) {
+            int pairSum = nums[i] + nums[n - 1 - i];
+            maxPairSum = max(maxPairSum, pairSum);
+        }
+        
+        return maxPairSum;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
