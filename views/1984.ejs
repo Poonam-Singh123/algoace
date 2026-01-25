@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1984. Minimum Difference Between Highest and Lowest of K Scores</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1984: Minimum Difference Between Highest and Lowest of K Scores (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed integer array nums, where nums[i] represents the score of the i<sup>th</sup> student. You are also given an integer k. Pick the scores of any k students from the array so that the difference between the highest and the lowest of the k scores is minimized. Return the minimum possible difference.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [90], k = 1<br/>
+                Output: 0<br/>
+                Explanation: There is one way to pick score(s) of one student: [90]. The difference between the highest and lowest score is 90 - 90 = 0. The minimum possible difference is 0.<br/><br/>
+                Input: nums = [9,4,1,7], k = 2<br/>
+                Output: 2<br/>
+                Explanation: There are six ways to pick score(s) of two students: [9,4], [9,1], [9,7], [4,1], [4,7], and [1,7]. The minimum possible difference is min(5, 8, 2, 3, 3, 6) = 2.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumDifference(vector&lt;int&gt;&amp; nums, int k) {
+        if (k == 1) {
+            return 0;
+        }
+        
+        // Sort the array
+        sort(nums.begin(), nums.end());
+        
+        int minDiff = INT_MAX;
+        
+        // Use sliding window of size k
+        for (int i = 0; i &lt;= nums.size() - k; i++) {
+            int diff = nums[i + k - 1] - nums[i];
+            minDiff = min(minDiff, diff);
+        }
+        
+        return minDiff;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
