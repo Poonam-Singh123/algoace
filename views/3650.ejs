@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3650. Find Minimum Operations to Make All Elements Equal</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3650: Find Minimum Operations to Make All Elements Equal (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an array nums of n integers. In one operation, you can increment or decrement any element by 1. Return the minimum number of operations needed to make all elements of the array equal.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,2,3]<br/>
+                Output: 2<br/>
+                Explanation: We can make all elements equal to 2 in 2 operations: Decrement nums[2] by 1, nums becomes [1,2,2]. Increment nums[0] by 1, nums becomes [2,2,2].<br/><br/>
+                Input: nums = [1,5,2,3]<br/>
+                Output: 5<br/>
+                Explanation: We can make all elements equal to 2 or 3. To make all elements 2: 1 operation for 5-&gt;2, 1 operation for 3-&gt;2, 1 operation for 1-&gt;2. Total = 3 + 1 + 1 = 5.<br/><br/>
+                Input: nums = [10,10,10]<br/>
+                Output: 0<br/>
+                Explanation: All elements are already equal.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        // Sort the array
+        sort(nums.begin(), nums.end());
+        
+        int n = nums.size();
+        
+        // The optimal target is the median
+        int median = nums[n / 2];
+        
+        int operations = 0;
+        for (int num : nums) {
+            operations += abs(num - median);
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
