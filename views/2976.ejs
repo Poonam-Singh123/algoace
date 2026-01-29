@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2976. Minimum Cost to Convert String I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2976: Minimum Cost to Convert String I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two 0-indexed strings source and target, both of length n and consisting of lowercase English letters. You are also given two 0-indexed character arrays original and changed, and an integer array cost, where cost[i] represents the cost of changing the character original[i] to the character changed[i]. You start with the string source. In one operation, you can pick a character x from the string and change it to the character y at a cost of z if there exists any index j such that cost[j] == z, original[j] == x, and changed[j] == y. Return the minimum cost to convert the string source to the string target using any number of operations. If it is impossible to convert source to target, return -1. Note that there may exist indices i, j such that original[j] == original[i] and changed[j] == changed[i].
+            </p>
+            <p><strong>Example:</strong>
+                Input: source = "abcd", target = "acbe", original = ["a","b","c","c","e","d"], changed = ["b","c","b","e","b","e"], cost = [2,5,5,1,2,20]<br/>
+                Output: 28<br/>
+                Explanation: To convert "abcd" to "acbe": Change 'b' to 'c' at a cost of 5. Change 'c' to 'e' at a cost of 1. Change 'd' to 'e' at a cost of 20. The total cost is 5 + 1 + 20 + 2 = 28. One of the ways to minimize cost is: a-&gt;b costs 2, b-&gt;c costs 5, c-&gt;e costs 1, d-&gt;e costs 20.<br/><br/>
+                Input: source = "aaaa", target = "bbbb", original = ["a","c"], changed = ["c","b"], cost = [1,2]<br/>
+                Output: 12<br/>
+                Explanation: To convert each 'a' to 'b': a-&gt;c costs 1, c-&gt;b costs 2. Total for one character is 3. For 4 characters: 3 * 4 = 12.<br/><br/>
+                Input: source = "abcd", target = "abce", original = ["a"], changed = ["e"], cost = [10000]<br/>
+                Output: -1<br/>
+                Explanation: It is impossible to convert source to target because the value at index 3 cannot be changed from 'd' to 'e'.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long minimumCost(string source, string target, vector&lt;char&gt;&amp; original, vector&lt;char&gt;&amp; changed, vector&lt;int&gt;&amp; cost) {
+        // Floyd-Warshall to find minimum cost between all pairs of characters
+        const long long INF = 1e18;
+        vector&lt;vector&lt;long long&gt;&gt; dist(26, vector&lt;long long&gt;(26, INF));
+        
+        // Initialize distance from each character to itself as 0
+        for (int i = 0; i &lt; 26; i++) {
+            dist[i][i] = 0;
+        }
+        
+        // Build the graph with given transformations
+        for (int i = 0; i &lt; original.size(); i++) {
+            int from = original[i] - 'a';
+            int to = changed[i] - 'a';
+            dist[from][to] = min(dist[from][to], (long long)cost[i]);
+        }
+        
+        // Floyd-Warshall algorithm
+        for (int k = 0; k &lt; 26; k++) {
+            for (int i = 0; i &lt; 26; i++) {
+                for (int j = 0; j &lt; 26; j++) {
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+        
+        // Calculate total cost
+        long long totalCost = 0;
+        for (int i = 0; i &lt; source.length(); i++) {
+            int from = source[i] - 'a';
+            int to = target[i] - 'a';
+            
+            if (dist[from][to] == INF) {
+                return -1;
+            }
+            
+            totalCost += dist[from][to];
+        }
+        
+        return totalCost;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
