@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3640. Maximize the Number of Target Nodes After Connecting Trees II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3640: Maximize the Number of Target Nodes After Connecting Trees II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There exist two undirected trees with n and m nodes, labeled from [0, n - 1] and [0, m - 1], respectively. You are given two 2D integer arrays edges1 and edges2 of lengths n - 1 and m - 1, respectively, where edges1[i] = [a<sub>i</sub>, b<sub>i</sub>] indicates that there is an edge between nodes a<sub>i</sub> and b<sub>i</sub> in the first tree and edges2[i] = [u<sub>i</sub>, v<sub>i</sub>] indicates that there is an edge between nodes u<sub>i</sub> and v<sub>i</sub> in the second tree. Node u is target to node v if the number of edges on the path from u to v is even. Note that a node is always target to itself. Return an array of n integers answer, where answer[i] is the maximum possible number of nodes that are target to node i of the first tree if you had to connect one node from the first tree to another node in the second tree. Note that queries are independent from each other. That is, for every query you will remove the added edge before proceeding to the next query.
+            </p>
+            <p><strong>Example:</strong>
+                Input: edges1 = [[0,1],[0,2],[2,3],[2,4]], edges2 = [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]<br/>
+                Output: [8,7,7,8,8]<br/>
+                Explanation: For each node in the first tree, the optimal connection maximizes target nodes.<br/><br/>
+                Input: edges1 = [[0,1],[0,2],[0,3],[0,4]], edges2 = [[0,1],[1,2],[2,3]]<br/>
+                Output: [3,6,6,6,6]<br/>
+                Explanation: Different connections yield different counts of target nodes.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; maxTargetNodes(vector&lt;vector&lt;int&gt;&gt;&amp; edges1, vector&lt;vector&lt;int&gt;&gt;&amp; edges2) {
+        int n = edges1.size() + 1;
+        int m = edges2.size() + 1;
+        
+        // Build adjacency lists
+        vector&lt;vector&lt;int&gt;&gt; graph1(n), graph2(m);
+        for (auto&amp; e : edges1) {
+            graph1[e[0]].push_back(e[1]);
+            graph1[e[1]].push_back(e[0]);
+        }
+        for (auto&amp; e : edges2) {
+            graph2[e[0]].push_back(e[1]);
+            graph2[e[1]].push_back(e[0]);
+        }
+        
+        // Color nodes in both trees (bipartite coloring)
+        vector&lt;int&gt; color1 = bipartiteColor(graph1, n);
+        vector&lt;int&gt; color2 = bipartiteColor(graph2, m);
+        
+        // Count nodes of each color in both trees
+        int count1_0 = 0, count1_1 = 0;
+        int count2_0 = 0, count2_1 = 0;
+        
+        for (int c : color1) {
+            if (c == 0) count1_0++;
+            else count1_1++;
+        }
+        
+        for (int c : color2) {
+            if (c == 0) count2_0++;
+            else count2_1++;
+        }
+        
+        // Maximum contribution from tree2
+        int maxTree2 = max(count2_0, count2_1);
+        
+        vector&lt;int&gt; answer(n);
+        for (int i = 0; i &lt; n; i++) {
+            // Nodes in tree1 with even distance from i (same color as i)
+            int sameColor = (color1[i] == 0) ? count1_0 : count1_1;
+            answer[i] = sameColor + maxTree2;
+        }
+        
+        return answer;
+    }
+    
+private:
+    vector&lt;int&gt; bipartiteColor(vector&lt;vector&lt;int&gt;&gt;&amp; graph, int n) {
+        vector&lt;int&gt; color(n, -1);
+        
+        for (int i = 0; i &lt; n; i++) {
+            if (color[i] == -1) {
+                queue&lt;int&gt; q;
+                q.push(i);
+                color[i] = 0;
+                
+                while (!q.empty()) {
+                    int u = q.front();
+                    q.pop();
+                    
+                    for (int v : graph[u]) {
+                        if (color[v] == -1) {
+                            color[v] = 1 - color[u];
+                            q.push(v);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return color;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
