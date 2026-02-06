@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3634. Find the Maximum Factor Score of Array</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3634: Find the Maximum Factor Score of Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array nums. The factor score of an array is defined as the product of the LCM and GCD of all elements of the array. Return the maximum factor score of nums after removing at most one element from it.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [2,4,8,16]<br/>
+                Output: 64<br/>
+                Explanation: On removing 2, the GCD is 4 and the LCM is 16, giving a factor score of 4 * 16 = 64.<br/><br/>
+                Input: nums = [1,2,3,4,5]<br/>
+                Output: 60<br/>
+                Explanation: The maximum factor score of 60 can be obtained without removing any element.<br/><br/>
+                Input: nums = [3]<br/>
+                Output: 9<br/>
+                Explanation: The factor score is 3 * 3 = 9 since both GCD and LCM are 3.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maxScore(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        
+        if (n == 1) {
+            return (long long)nums[0] * nums[0];
+        }
+        
+        long long maxScore = 0;
+        
+        // Case 1: Don't remove any element
+        long long allGcd = nums[0];
+        long long allLcm = nums[0];
+        for (int i = 1; i &lt; n; i++) {
+            allGcd = gcd(allGcd, (long long)nums[i]);
+            allLcm = lcm(allLcm, (long long)nums[i]);
+        }
+        maxScore = allGcd * allLcm;
+        
+        // Case 2: Remove one element
+        for (int skip = 0; skip &lt; n; skip++) {
+            if (n == 1) continue;
+            
+            long long currentGcd = 0;
+            long long currentLcm = 1;
+            
+            for (int i = 0; i &lt; n; i++) {
+                if (i == skip) continue;
+                
+                if (currentGcd == 0) {
+                    currentGcd = nums[i];
+                    currentLcm = nums[i];
+                } else {
+                    currentGcd = gcd(currentGcd, (long long)nums[i]);
+                    currentLcm = lcm(currentLcm, (long long)nums[i]);
+                }
+            }
+            
+            maxScore = max(maxScore, currentGcd * currentLcm);
+        }
+        
+        return maxScore;
+    }
+    
+private:
+    long long gcd(long long a, long long b) {
+        while (b != 0) {
+            long long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+    
+    long long lcm(long long a, long long b) {
+        return (a / gcd(a, b)) * b;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
