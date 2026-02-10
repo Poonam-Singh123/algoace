@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3719. Count of Substrings Containing Every Vowel and K Consonants II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3719: Count of Substrings Containing Every Vowel and K Consonants II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string word and a non-negative integer k. Return the total number of substrings of word that contain every vowel ('a', 'e', 'i', 'o', and 'u') at least once and exactly k consonants.
+            </p>
+            <p><strong>Example:</strong>
+                Input: word = "aeioqq", k = 1<br/>
+                Output: 0<br/>
+                Explanation: There is no substring with every vowel.<br/><br/>
+                Input: word = "aeiou", k = 0<br/>
+                Output: 1<br/>
+                Explanation: The only substring with every vowel and 0 consonants is "aeiou".<br/><br/>
+                Input: word = "ieaouqqieaouqq", k = 1<br/>
+                Output: 3<br/>
+                Explanation: The substrings with every vowel and exactly 1 consonant are "ieaouq", "qieaou", "qqieaou".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long countOfSubstrings(string word, int k) {
+        return countAtMostKConsonants(word, k) - countAtMostKConsonants(word, k - 1);
+    }
+    
+private:
+    bool isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+    }
+    
+    long long countAtMostKConsonants(string&amp; word, int k) {
+        if (k &lt; 0) return 0;
+        
+        int n = word.length();
+        long long count = 0;
+        int left = 0;
+        int consonants = 0;
+        unordered_map&lt;char, int&gt; vowelCount;
+        
+        for (int right = 0; right &lt; n; right++) {
+            if (isVowel(word[right])) {
+                vowelCount[word[right]]++;
+            } else {
+                consonants++;
+            }
+            
+            // Shrink window if consonants exceed k
+            while (consonants &gt; k) {
+                if (isVowel(word[left])) {
+                    vowelCount[word[left]]--;
+                    if (vowelCount[word[left]] == 0) {
+                        vowelCount.erase(word[left]);
+                    }
+                } else {
+                    consonants--;
+                }
+                left++;
+            }
+            
+            // Check if we have all vowels
+            if (vowelCount.size() == 5) {
+                // Count all valid substrings ending at right
+                int tempLeft = left;
+                while (tempLeft &lt;= right &amp;&amp; vowelCount.size() == 5) {
+                    count++;
+                    
+                    if (isVowel(word[tempLeft])) {
+                        vowelCount[word[tempLeft]]--;
+                        if (vowelCount[word[tempLeft]] == 0) {
+                            vowelCount.erase(word[tempLeft]);
+                        }
+                    }
+                    tempLeft++;
+                }
+                
+                // Restore vowel counts
+                for (int i = left; i &lt; tempLeft; i++) {
+                    if (isVowel(word[i])) {
+                        vowelCount[word[i]]++;
+                    }
+                }
+            }
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
