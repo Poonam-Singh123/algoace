@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3721. Count Substrings That Can Be Rearranged to Contain a String II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3721: Count Substrings That Can Be Rearranged to Contain a String II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two strings word1 and word2. A string x is called valid if x can be rearranged to have word2 as a prefix. Return the total number of valid substrings of word1. Note: The memory limits in this problem are smaller than usual, so you must implement a solution with a linear runtime complexity.
+            </p>
+            <p><strong>Example:</strong>
+                Input: word1 = "bcca", word2 = "abc"<br/>
+                Output: 1<br/>
+                Explanation: The only valid substring is "bcca" which can be rearranged to "abcc", "cabc", and other strings. This has "abc" as a prefix.<br/><br/>
+                Input: word1 = "abcabc", word2 = "abc"<br/>
+                Output: 10<br/>
+                Explanation: All the substrings except substrings of size 1 and size 2 are valid.<br/><br/>
+                Input: word1 = "abcabc", word2 = "aaabc"<br/>
+                Output: 0<br/>
+                Explanation: There are no valid substrings.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long validSubstringCount(string word1, string word2) {
+        int n = word1.length();
+        int m = word2.length();
+        
+        // Count frequency of characters in word2
+        vector&lt;int&gt; required(26, 0);
+        for (char c : word2) {
+            required[c - 'a']++;
+        }
+        
+        long long count = 0;
+        int left = 0;
+        vector&lt;int&gt; window(26, 0);
+        
+        // Count how many characters in word2 we still need
+        int needCount = 0;
+        for (int i = 0; i &lt; 26; i++) {
+            if (required[i] &gt; 0) {
+                needCount++;
+            }
+        }
+        
+        int formed = 0;
+        
+        for (int right = 0; right &lt; n; right++) {
+            char c = word1[right];
+            window[c - 'a']++;
+            
+            // Check if frequency of current character matches requirement
+            if (required[c - 'a'] &gt; 0 &amp;&amp; window[c - 'a'] == required[c - 'a']) {
+                formed++;
+            }
+            
+            // Try to contract the window until it ceases to be valid
+            while (left &lt;= right &amp;&amp; formed == needCount) {
+                // All substrings from [left, right] to [left, n-1] are valid
+                count += n - right;
+                
+                char leftChar = word1[left];
+                window[leftChar - 'a']--;
+                
+                if (required[leftChar - 'a'] &gt; 0 &amp;&amp; window[leftChar - 'a'] &lt; required[leftChar - 'a']) {
+                    formed--;
+                }
+                
+                left++;
+            }
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
