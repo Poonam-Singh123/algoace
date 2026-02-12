@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3713. Minimum Cost to Make Arrays Identical</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3713: Minimum Cost to Make Arrays Identical (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two integer arrays arr and brr of the same length, and an integer k. You can perform the following operation any number of times: Select an index i where 0 &lt;= i &lt; arr.length, and update arr[i] to any integer value. The cost of this operation is abs(arr[i] - brr[i]) * k where arr[i] is the value before the operation. Return the minimum total cost to make arr identical to brr.
+            </p>
+            <p><strong>Example:</strong>
+                Input: arr = [1,2,3,4], brr = [2,3,4,5], k = 1<br/>
+                Output: 4<br/>
+                Explanation: We can make arr identical to brr by updating each element with cost |1-2|*1 + |2-3|*1 + |3-4|*1 + |4-5|*1 = 4.<br/><br/>
+                Input: arr = [5,10], brr = [5,10], k = 2<br/>
+                Output: 0<br/>
+                Explanation: Arrays are already identical.<br/><br/>
+                Input: arr = [10,20,30], brr = [30,20,10], k = 5<br/>
+                Output: 200<br/>
+                Explanation: We can swap positions which costs less than direct updates.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long minCost(vector&lt;int&gt;&amp; arr, vector&lt;int&gt;&amp; brr, long long k) {
+        int n = arr.size();
+        
+        // Calculate direct cost of making each element identical
+        long long directCost = 0;
+        for (int i = 0; i &lt; n; i++) {
+            directCost += (long long)abs(arr[i] - brr[i]) * k;
+        }
+        
+        // Try rearranging: sort both arrays and match optimally
+        vector&lt;int&gt; sortedArr = arr;
+        vector&lt;int&gt; sortedBrr = brr;
+        sort(sortedArr.begin(), sortedArr.end());
+        sort(sortedBrr.begin(), sortedBrr.end());
+        
+        long long rearrangeCost = 0;
+        for (int i = 0; i &lt; n; i++) {
+            rearrangeCost += (long long)abs(sortedArr[i] - sortedBrr[i]) * k;
+        }
+        
+        return min(directCost, rearrangeCost);
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
