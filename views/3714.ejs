@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3714. Maximum Scored Removals From a String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3714: Maximum Scored Removals From a String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string s and a string p, and an integer array removable containing a set of distinct indices in s. You want to remove characters from s using indices in removable in some order. After each removal, you need to check if p is still a subsequence of s. Return the maximum number of removals that can be done such that p remains a subsequence of s after all the removals. A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "abcacb", p = "ab", removable = [3,1,0]<br/>
+                Output: 2<br/>
+                Explanation: After removing the characters at indices 3 and 1, "abcacb" becomes "accb". "ab" is still a subsequence of "accb". If we remove the characters at indices 3, 1, and 0, "abcacb" becomes "ccb", and "ab" is not a subsequence of "ccb". Hence, the maximum k is 2.<br/><br/>
+                Input: s = "abcbddddd", p = "abcd", removable = [3,2,1,4,5,6]<br/>
+                Output: 1<br/>
+                Explanation: After removing the character at index 3, "abcbddddd" becomes "abcddddd". "abcd" is still a subsequence of "abcddddd".<br/><br/>
+                Input: s = "abcab", p = "abc", removable = [0,1,2,3,4]<br/>
+                Output: 0<br/>
+                Explanation: If you remove the first index in the array removable, "abc" is no longer a subsequence.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int maximumRemovals(string s, string p, vector&lt;int&gt;&amp; removable) {
+        int left = 0, right = removable.size();
+        int result = 0;
+        
+        while (left &lt;= right) {
+            int mid = left + (right - left) / 2;
+            
+            if (canRemove(s, p, removable, mid)) {
+                result = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return result;
+    }
+    
+private:
+    bool canRemove(const string&amp; s, const string&amp; p, const vector&lt;int&gt;&amp; removable, int k) {
+        // Mark characters to be removed
+        vector&lt;bool&gt; removed(s.length(), false);
+        for (int i = 0; i &lt; k; i++) {
+            removed[removable[i]] = true;
+        }
+        
+        // Check if p is still a subsequence of s
+        int pIndex = 0;
+        for (int i = 0; i &lt; s.length() &amp;&amp; pIndex &lt; p.length(); i++) {
+            if (!removed[i] &amp;&amp; s[i] == p[pIndex]) {
+                pIndex++;
+            }
+        }
+        
+        return pIndex == p.length();
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
