@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>67. Add Binary</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 67: Add Binary (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two binary strings a and b, return their sum as a binary string.
+            </p>
+            <p><strong>Example:</strong>
+                Input: a = "11", b = "1"<br/>
+                Output: "100"<br/><br/>
+                Input: a = "1010", b = "1011"<br/>
+                Output: "10101"<br/><br/>
+                Input: a = "0", b = "0"<br/>
+                Output: "0"
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string addBinary(string a, string b) {
+        string result = "";
+        int carry = 0;
+        int i = a.length() - 1;
+        int j = b.length() - 1;
+        
+        while (i &gt;= 0 || j &gt;= 0 || carry) {
+            int sum = carry;
+            
+            if (i &gt;= 0) {
+                sum += a[i] - '0';
+                i--;
+            }
+            
+            if (j &gt;= 0) {
+                sum += b[j] - '0';
+                j--;
+            }
+            
+            result = char('0' + sum % 2) + result;
+            carry = sum / 2;
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
