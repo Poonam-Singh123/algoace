@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>401. Binary Watch</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 401: Binary Watch (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A binary watch has 4 LEDs on the top to represent the hours (0-11), and 6 LEDs on the bottom to represent the minutes (0-59). Each LED represents a zero or one, with the least significant bit on the right. Given an integer turnedOn which represents the number of LEDs that are currently on (ignoring the PM), return all possible times the watch could represent. You may return the answer in any order. The hour must not contain a leading zero. For example, "01:00" is not valid. It should be "1:00". The minute must consist of two digits and may contain a leading zero. For example, "10:2" is not valid. It should be "10:02".
+            </p>
+            <p><strong>Example:</strong>
+                Input: turnedOn = 1<br/>
+                Output: ["0:01","0:02","0:04","0:08","0:16","0:32","1:00","2:00","4:00","8:00"]<br/><br/>
+                Input: turnedOn = 9<br/>
+                Output: []<br/>
+                Explanation: There are no valid times that can be represented with 9 LEDs turned on since the maximum number of LEDs that can be on is 8 (hours: 1+2+4+8=15 &gt; 11 invalid, so max 3 bits for valid hour &lt;= 11, and minutes: 1+2+4+8+16+32=63 &gt; 59 invalid, so max 5 bits for valid minutes &lt;= 59).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;string&gt; readBinaryWatch(int turnedOn) {
+        vector&lt;string&gt; result;
+        
+        for (int h = 0; h &lt; 12; h++) {
+            for (int m = 0; m &lt; 60; m++) {
+                // Count total bits set in h and m
+                if (__builtin_popcount(h) + __builtin_popcount(m) == turnedOn) {
+                    // Format time string
+                    string time = to_string(h) + ":" + (m &lt; 10 ? "0" : "") + to_string(m);
+                    result.push_back(time);
+                }
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
