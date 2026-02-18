@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>693. Binary Number with Alternating Bits</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 693: Binary Number with Alternating Bits (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a positive integer, check whether it has alternating bits: namely, if two adjacent bits will always have different values.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 5<br/>
+                Output: true<br/>
+                Explanation: The binary representation of 5 is: 101<br/><br/>
+                Input: n = 7<br/>
+                Output: false<br/>
+                Explanation: The binary representation of 7 is: 111.<br/><br/>
+                Input: n = 11<br/>
+                Output: false<br/>
+                Explanation: The binary representation of 11 is: 1011.<br/><br/>
+                Input: n = 10<br/>
+                Output: true<br/>
+                Explanation: The binary representation of 10 is: 1010.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        int prevBit = n &amp; 1;
+        n &gt;&gt;= 1;
+        
+        while (n &gt; 0) {
+            int currBit = n &amp; 1;
+            
+            // Check if current bit is same as previous bit
+            if (currBit == prevBit) {
+                return false;
+            }
+            
+            prevBit = currBit;
+            n &gt;&gt;= 1;
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
