@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>761. Special Binary String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 761: Special Binary String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Special binary strings are binary strings with the following two properties: The number of 0's is equal to the number of 1's. Every prefix of the binary string has at least as many 1's as 0's. You are given a special binary string s. A move consists of choosing two consecutive, non-empty, special substrings of s, and swapping them. Two strings are consecutive if the last character of the first string is exactly one index before the first character of the second string. Return the lexicographically largest resulting string possible after applying the mentioned operations on the string.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "11011000"<br/>
+                Output: "11100100"<br/>
+                Explanation: The strings "10" [occuring at s[1]] and "1100" [at s[3]] are swapped. This is the lexicographically largest string possible after some number of swaps.<br/><br/>
+                Input: s = "10"<br/>
+                Output: "10"<br/>
+                Explanation: The string is already the lexicographically largest.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string makeLargestSpecial(string s) {
+        int count = 0;
+        int i = 0;
+        vector&lt;string&gt; substrings;
+        
+        for (int j = 0; j &lt; s.length(); j++) {
+            // Count balance (1 adds, 0 subtracts)
+            count += (s[j] == '1') ? 1 : -1;
+            
+            // When count reaches 0, we found a complete special substring
+            if (count == 0) {
+                // Recursively process the inner part (excluding outer 1 and 0)
+                string inner = makeLargestSpecial(s.substr(i + 1, j - i - 1));
+                // Wrap with 1 and 0
+                substrings.push_back("1" + inner + "0");
+                i = j + 1;
+            }
+        }
+        
+        // Sort substrings in descending order for lexicographically largest result
+        sort(substrings.begin(), substrings.end(), greater&lt;string&gt;());
+        
+        // Concatenate all substrings
+        string result = "";
+        for (const string&amp; sub : substrings) {
+            result += sub;
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
