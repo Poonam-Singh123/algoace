@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>868. Binary Gap</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 868: Binary Gap (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a positive integer n, find and return the longest distance between any two adjacent 1's in the binary representation of n. If there are no two adjacent 1's, return 0. Two 1's are adjacent if there are only 0's separating them (possibly no 0's). The distance between two 1's is the absolute difference between their bit positions. For example, the two 1's in "1001" have a distance of 3.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 22<br/>
+                Output: 2<br/>
+                Explanation: 22 in binary is "10110". The first adjacent pair of 1's is "10110" with a distance of 2. The second adjacent pair of 1's is "10110" with a distance of 1. The answer is the largest of these two distances, which is 2. Note that "10110" is not a valid pair since there is a 1 separating the two 1's underlined.<br/><br/>
+                Input: n = 8<br/>
+                Output: 0<br/>
+                Explanation: 8 in binary is "1000". There are not any adjacent pairs of 1's in the binary representation of 8, so we return 0.<br/><br/>
+                Input: n = 5<br/>
+                Output: 2<br/>
+                Explanation: 5 in binary is "101".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int binaryGap(int n) {
+        int maxGap = 0;
+        int lastPos = -1;
+        int pos = 0;
+        
+        while (n &gt; 0) {
+            if (n &amp; 1) {
+                // Found a 1
+                if (lastPos != -1) {
+                    maxGap = max(maxGap, pos - lastPos);
+                }
+                lastPos = pos;
+            }
+            n &gt;&gt;= 1;
+            pos++;
+        }
+        
+        return maxGap;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
