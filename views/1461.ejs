@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1461. Check If a String Contains All Binary Codes of Size K</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1461: Check If a String Contains All Binary Codes of Size K (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a binary string s and an integer k, return true if every binary code of length k is a substring of s. Otherwise, return false.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "00110110", k = 2<br/>
+                Output: true<br/>
+                Explanation: The binary codes of length 2 are "00", "01", "10" and "11". They can be all found as substrings at indices 0, 1, 3 and 2 respectively.<br/><br/>
+                Input: s = "0110", k = 1<br/>
+                Output: true<br/>
+                Explanation: The binary codes of length 1 are "0" and "1", it is clear that both exist as a substring.<br/><br/>
+                Input: s = "0110", k = 2<br/>
+                Output: false<br/>
+                Explanation: The binary code "00" is of length 2 and does not exist in the array.<br/><br/>
+                Input: s = "0000000001011100", k = 4<br/>
+                Output: false
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool hasAllCodes(string s, int k) {
+        int n = s.length();
+        
+        // If string is too short to contain all possible codes
+        if (n &lt; k) {
+            return false;
+        }
+        
+        // Total number of binary codes of length k is 2^k
+        int totalCodes = 1 &lt;&lt; k;  // 2^k
+        
+        // If string is too short to contain all codes
+        if (n &lt; totalCodes + k - 1) {
+            return false;
+        }
+        
+        unordered_set&lt;string&gt; seen;
+        
+        // Sliding window of size k
+        for (int i = 0; i &lt;= n - k; i++) {
+            string code = s.substr(i, k);
+            seen.insert(code);
+            
+            // Early exit if we found all codes
+            if (seen.size() == totalCodes) {
+                return true;
+            }
+        }
+        
+        return seen.size() == totalCodes;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
