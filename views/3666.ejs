@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3666. Minimum Sum of Values by Dividing Array</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3666: Minimum Sum of Values by Dividing Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two arrays nums and andValues of length n and m respectively. The value of an array is equal to the last element of that array. You have to divide nums into m disjoint contiguous subarrays such that for the i<sup>th</sup> subarray [l<sub>i</sub>, r<sub>i</sub>], the bitwise AND of the subarray elements is equal to andValues[i], in other words, nums[l<sub>i</sub>] &amp; nums[l<sub>i</sub> + 1] &amp; ... &amp; nums[r<sub>i</sub>] == andValues[i] for all 1 &lt;= i &lt;= m, where &amp; represents the bitwise AND operator. Return the minimum possible sum of the values of the m subarrays nums is divided into. If it is not possible to divide nums into m subarrays satisfying these conditions, return -1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,4,3,3,2], andValues = [0,3,3,2]<br/>
+                Output: 12<br/>
+                Explanation: The only possible way to divide nums is: [1,4] as 1 &amp; 4 == 0. [3] as the bitwise AND of a single element subarray is that element itself. [3] as the bitwise AND of a single element subarray is that element itself. [2] as the bitwise AND of a single element subarray is that element itself. The sum of the values for these subarrays is 4 + 3 + 3 + 2 = 12.<br/><br/>
+                Input: nums = [2,3,5,7,7,7,5], andValues = [0,7,5]<br/>
+                Output: 17<br/>
+                Explanation: There are three ways to divide nums: [[2,3,5],[7,7,7],[5]] with the sum of values 5 + 7 + 5 = 17. [[2,3,5,7],[7,7],[5]] with the sum of values 7 + 7 + 5 = 19. [[2,3,5,7,7],[7],[5]] with the sum of values 7 + 7 + 5 = 19. The minimum possible sum of values is 17.<br/><br/>
+                Input: nums = [1,2,3,4], andValues = [2]<br/>
+                Output: -1<br/>
+                Explanation: The bitwise AND of the entire array nums is 0. As there is no possible way to divide nums into a single subarray to have the bitwise AND of elements equal to 2, return -1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumValueSum(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; andValues) {
+        int n = nums.size();
+        int m = andValues.size();
+        
+        // dp[i][j] = minimum sum using first i elements and first j andValues
+        map&lt;pair&lt;int, int&gt;, int&gt; dp;
+        
+        function&lt;int(int, int, int)&gt; solve = [&amp;](int idx, int andIdx, int currentAnd) -&gt; int {
+            if (andIdx == m) {
+                return (idx == n) ? 0 : INT_MAX / 2;
+            }
+            
+            if (idx == n) {
+                return INT_MAX / 2;
+            }
+            
+            auto key = make_pair(idx * 1000 + andIdx, currentAnd);
+            if (dp.count(key)) {
+                return dp[key];
+            }
+            
+            int newAnd = currentAnd &amp; nums[idx];
+            int result = INT_MAX / 2;
+            
+            // Option 1: Continue current subarray
+            if (newAnd &gt;= andValues[andIdx]) {
+                result = min(result, solve(idx + 1, andIdx, newAnd));
+            }
+            
+            // Option 2: End current subarray if AND matches
+            if (newAnd == andValues[andIdx]) {
+                int nextResult = solve(idx + 1, andIdx + 1, (1 &lt;&lt; 20) - 1);
+                if (nextResult != INT_MAX / 2) {
+                    result = min(result, nums[idx] + nextResult);
+                }
+            }
+            
+            return dp[key] = result;
+        };
+        
+        int result = solve(0, 0, (1 &lt;&lt; 20) - 1);
+        return (result &gt;= INT_MAX / 2) ? -1 : result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
