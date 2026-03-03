@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1545. Find Kth Bit in Nth Binary String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1545: Find Kth Bit in Nth Binary String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two positive integers n and k, the binary string S<sub>n</sub> is formed as follows: S<sub>1</sub> = "0". S<sub>i</sub> = S<sub>i-1</sub> + "1" + reverse(invert(S<sub>i-1</sub>)) for i &gt; 1. Where + denotes the concatenation operation, reverse(x) returns the reversed string x, and invert(x) inverts all the bits in x (0 changes to 1 and 1 changes to 0). For example, the first four strings in the above sequence are: S<sub>1</sub> = "0", S<sub>2</sub> = "011", S<sub>3</sub> = "0111001", S<sub>4</sub> = "011100110110001". Return the k<sup>th</sup> bit in S<sub>n</sub>. It is guaranteed that k is valid for the given n.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 3, k = 1<br/>
+                Output: "0"<br/>
+                Explanation: S<sub>3</sub> is "0111001". The 1st bit is "0".<br/><br/>
+                Input: n = 4, k = 11<br/>
+                Output: "1"<br/>
+                Explanation: S<sub>4</sub> is "011100110110001". The 11th bit is "1".<br/><br/>
+                Input: n = 1, k = 1<br/>
+                Output: "0"
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    char findKthBit(int n, int k) {
+        return findKthBitHelper(n, k);
+    }
+    
+private:
+    char findKthBitHelper(int n, int k) {
+        // Base case
+        if (n == 1) {
+            return '0';
+        }
+        
+        // Length of S_n is 2^n - 1
+        int length = (1 &lt;&lt; n) - 1;
+        int middle = (length / 2) + 1;
+        
+        if (k == middle) {
+            // Middle bit is always '1'
+            return '1';
+        } else if (k &lt; middle) {
+            // k is in the first half (which is S_{n-1})
+            return findKthBitHelper(n - 1, k);
+        } else {
+            // k is in the second half (which is reverse(invert(S_{n-1})))
+            // Find corresponding position in S_{n-1}
+            int mirrorPos = length - k + 1;
+            char bit = findKthBitHelper(n - 1, mirrorPos);
+            
+            // Invert the bit
+            return (bit == '0') ? '1' : '0';
+        }
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
