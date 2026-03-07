@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1888. Minimum Number of Flips to Make the Binary String Alternating</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1888: Minimum Number of Flips to Make the Binary String Alternating (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a binary string s. You are allowed to perform two types of operations on the string in any sequence: Type-1: Remove the character at the start of the string s and append it to the end of the string. Type-2: Pick any character in s and flip its value, i.e., if its value is '0' it becomes '1' and vice-versa. Return the minimum number of type-2 operations you need to perform such that s becomes alternating. The string is called alternating if no two adjacent characters are equal. For example, the strings "010" and "1010" are alternating, while the string "0100" is not.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s = "111000"<br/>
+                Output: 2<br/>
+                Explanation: Use the first operation two times to make s = "100011". Then, use the second operation on the third and sixth elements to make s = "101010".<br/><br/>
+                Input: s = "010"<br/>
+                Output: 0<br/>
+                Explanation: The string is already alternating.<br/><br/>
+                Input: s = "1110"<br/>
+                Output: 1<br/>
+                Explanation: Use the second operation on the second element to make s = "1010".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minFlips(string s) {
+        int n = s.length();
+        s = s + s; // Simulate all possible rotations
+        
+        int minFlips = INT_MAX;
+        int flips1 = 0; // Flips needed for pattern starting with '0'
+        int flips2 = 0; // Flips needed for pattern starting with '1'
+        
+        for (int i = 0; i &lt; s.length(); i++) {
+            // Pattern 1: "010101..."
+            if (i % 2 == 0) {
+                if (s[i] != '0') flips1++;
+            } else {
+                if (s[i] != '1') flips1++;
+            }
+            
+            // Pattern 2: "101010..."
+            if (i % 2 == 0) {
+                if (s[i] != '1') flips2++;
+            } else {
+                if (s[i] != '0') flips2++;
+            }
+            
+            // When we have a valid window of size n
+            if (i &gt;= n) {
+                // Remove contribution of the leftmost character
+                int leftIdx = i - n;
+                
+                // Adjust flips1
+                if (leftIdx % 2 == 0) {
+                    if (s[leftIdx] != '0') flips1--;
+                } else {
+                    if (s[leftIdx] != '1') flips1--;
+                }
+                
+                // Adjust flips2
+                if (leftIdx % 2 == 0) {
+                    if (s[leftIdx] != '1') flips2--;
+                } else {
+                    if (s[leftIdx] != '0') flips2--;
+                }
+            }
+            
+            // Update minimum when we have a full window
+            if (i &gt;= n - 1) {
+                minFlips = min(minFlips, min(flips1, flips2));
+            }
+        }
+        
+        return minFlips;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
