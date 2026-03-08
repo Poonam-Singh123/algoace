@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1980. Find Unique Binary String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1980: Find Unique Binary String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given an array of strings nums containing n unique binary strings each of length n, return a binary string of length n that does not appear in nums. If there are multiple answers, you may return any of them.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = ["01","10"]<br/>
+                Output: "11"<br/>
+                Explanation: "11" does not appear in nums. "00" would also be correct.<br/><br/>
+                Input: nums = ["00","01"]<br/>
+                Output: "11"<br/>
+                Explanation: "11" does not appear in nums. "10" would also be correct.<br/><br/>
+                Input: nums = ["111","011","001"]<br/>
+                Output: "101"<br/>
+                Explanation: "101" does not appear in nums. "000", "010", "100", and "110" would also be correct.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string findDifferentBinaryString(vector&lt;string&gt;&amp; nums) {
+        int n = nums.size();
+        string result = "";
+        
+        // Cantor's diagonal argument
+        // For each position i, make the i-th character different from nums[i][i]
+        for (int i = 0; i &lt; n; i++) {
+            result += (nums[i][i] == '0') ? '1' : '0';
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
