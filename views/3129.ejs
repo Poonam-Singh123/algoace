@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3129. Find All Possible Stable Binary Arrays I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3129: Find All Possible Stable Binary Arrays I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given 3 positive integers zero, one, and limit. A binary array arr is called stable if: The number of occurrences of 0 in arr is exactly zero. The number of occurrences of 1 in arr is exactly one. Each subarray of arr with a size greater than limit must contain both 0 and 1. Return the total number of stable binary arrays. Since the answer may be very large, return it modulo 10<sup>9</sup> + 7.
+            </p>
+            <p><strong>Example:</strong>
+                Input: zero = 1, one = 1, limit = 2<br/>
+                Output: 2<br/>
+                Explanation: The two possible stable binary arrays are [1,0] and [0,1], as both arrays have a single 0 and a single 1, and no subarray has a length greater than 2.<br/><br/>
+                Input: zero = 1, one = 2, limit = 1<br/>
+                Output: 1<br/>
+                Explanation: The only possible stable binary array is [1,0,1]. Note that the binary arrays [1,1,0] and [0,1,1] have subarrays of length 2 with identical elements, so they are not stable.<br/><br/>
+                Input: zero = 3, one = 3, limit = 2<br/>
+                Output: 14<br/>
+                Explanation: All the possible stable binary arrays are [0,0,1,0,1,1], [0,0,1,1,0,1], [0,1,0,0,1,1], [0,1,0,1,0,1], [0,1,0,1,1,0], [0,1,1,0,0,1], [0,1,1,0,1,0], [1,0,0,1,0,1], [1,0,0,1,1,0], [1,0,1,0,0,1], [1,0,1,0,1,0], [1,0,1,1,0,0], [1,1,0,0,1,0], and [1,1,0,1,0,0].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numberOfStableArrays(int zero, int one, int limit) {
+        const int MOD = 1e9 + 7;
+        
+        // dp[i][j][k] = number of ways to place i zeros and j ones ending with k
+        // k = 0 means ending with 0, k = 1 means ending with 1
+        vector&lt;vector&lt;vector&lt;long long&gt;&gt;&gt; dp(zero + 1, 
+            vector&lt;vector&lt;long long&gt;&gt;(one + 1, vector&lt;long long&gt;(2, 0)));
+        
+        dp[0][0][0] = dp[0][0][1] = 1;
+        
+        for (int i = 0; i &lt;= zero; i++) {
+            for (int j = 0; j &lt;= one; j++) {
+                // Place zeros (ending with 0)
+                for (int k = 1; k &lt;= min(i, limit); k++) {
+                    if (i - k &gt;= 0) {
+                        if (k &lt; i || j &gt; 0) {
+                            dp[i][j][0] = (dp[i][j][0] + dp[i - k][j][1]) % MOD;
+                        }
+                    }
+                }
+                
+                // Place ones (ending with 1)
+                for (int k = 1; k &lt;= min(j, limit); k++) {
+                    if (j - k &gt;= 0) {
+                        if (k &lt; j || i &gt; 0) {
+                            dp[i][j][1] = (dp[i][j][1] + dp[i][j - k][0]) % MOD;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (dp[zero][one][0] + dp[zero][one][1]) % MOD;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
