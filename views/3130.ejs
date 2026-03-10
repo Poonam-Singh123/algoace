@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3130. Find All Possible Stable Binary Arrays II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3130: Find All Possible Stable Binary Arrays II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given 3 positive integers zero, one, and limit. A binary array arr is called stable if: The number of occurrences of 0 in arr is exactly zero. The number of occurrences of 1 in arr is exactly one. Each subarray of arr with a size greater than limit must contain both 0 and 1. Return the total number of stable binary arrays. Since the answer may be very large, return it modulo 10<sup>9</sup> + 7. Note: This problem has larger constraints than problem 3129.
+            </p>
+            <p><strong>Example:</strong>
+                Input: zero = 1, one = 1, limit = 2<br/>
+                Output: 2<br/>
+                Explanation: The two possible stable binary arrays are [1,0] and [0,1].<br/><br/>
+                Input: zero = 1, one = 2, limit = 1<br/>
+                Output: 1<br/>
+                Explanation: The only possible stable binary array is [1,0,1].<br/><br/>
+                Input: zero = 3, one = 3, limit = 2<br/>
+                Output: 14<br/>
+                Explanation: There are 14 possible stable binary arrays.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int numberOfStableArrays(int zero, int one, int limit) {
+        const int MOD = 1e9 + 7;
+        
+        // dp[i][j][k] = number of stable arrays with i zeros, j ones, ending with k
+        // k = 0: ending with 0, k = 1: ending with 1
+        vector&lt;vector&lt;vector&lt;long long&gt;&gt;&gt; dp(zero + 1, 
+            vector&lt;vector&lt;long long&gt;&gt;(one + 1, vector&lt;long long&gt;(2, 0)));
+        
+        // prefix[i][j][k] = prefix sum for optimization
+        vector&lt;vector&lt;vector&lt;long long&gt;&gt;&gt; prefix(zero + 1, 
+            vector&lt;vector&lt;long long&gt;&gt;(one + 1, vector&lt;long long&gt;(2, 0)));
+        
+        dp[0][0][0] = dp[0][0][1] = 1;
+        
+        for (int i = 0; i &lt;= zero; i++) {
+            for (int j = 0; j &lt;= one; j++) {
+                if (i == 0 &amp;&amp; j == 0) continue;
+                
+                // Ending with 0
+                if (i &gt; 0) {
+                    for (int k = 1; k &lt;= min(i, limit); k++) {
+                        if (i - k == 0 &amp;&amp; j == 0) {
+                            dp[i][j][0] = (dp[i][j][0] + 1) % MOD;
+                        } else if (i - k &gt;= 0 &amp;&amp; j &gt; 0) {
+                            dp[i][j][0] = (dp[i][j][0] + dp[i - k][j][1]) % MOD;
+                        }
+                    }
+                }
+                
+                // Ending with 1
+                if (j &gt; 0) {
+                    for (int k = 1; k &lt;= min(j, limit); k++) {
+                        if (j - k == 0 &amp;&amp; i == 0) {
+                            dp[i][j][1] = (dp[i][j][1] + 1) % MOD;
+                        } else if (j - k &gt;= 0 &amp;&amp; i &gt; 0) {
+                            dp[i][j][1] = (dp[i][j][1] + dp[i][j - k][0]) % MOD;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (dp[zero][one][0] + dp[zero][one][1]) % MOD;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
