@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3600. Find the Sequence of Strings Appeared on the Screen</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3600: Find the Sequence of Strings Appeared on the Screen (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string target. Alice is going to type target on her computer using a special keyboard that has only two keys: Key 1 appends the character 'a' to the string on the screen. Key 2 changes the last character of the string on the screen to its next character in the English alphabet. For example, 'c' changes to 'd' and 'z' changes to 'a'. Note that initially there is an empty string "" on the screen, so she can only press key 1. Return a list of all strings that appear on the screen as Alice types target, in the order they appear, using the minimum key presses necessary to type target.
+            </p>
+            <p><strong>Example:</strong>
+                Input: target = "abc"<br/>
+                Output: ["a","aa","ab","aba","abb","abc"]<br/>
+                Explanation: The sequence of strings that appear on the screen are: "a" ➝ "aa" ➝ "ab" ➝ "aba" ➝ "abb" ➝ "abc".<br/><br/>
+                Input: target = "he"<br/>
+                Output: ["a","b","c","d","e","f","g","h","ha","hb","hc","hd","he"]<br/>
+                Explanation: The sequence starts with increasing 'a' to 'h', then appending 'a' and increasing it to 'e'.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;string&gt; stringSequence(string target) {
+        vector&lt;string&gt; result;
+        string current = "";
+        
+        for (char targetChar : target) {
+            // Append 'a' first
+            current += 'a';
+            result.push_back(current);
+            
+            // Keep changing last character until it matches targetChar
+            while (current.back() != targetChar) {
+                current.back()++;
+                result.push_back(current);
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
