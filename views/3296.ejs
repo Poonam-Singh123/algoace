@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3296. Minimum Number of Seconds to Make Mountain Height Zero</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3296: Minimum Number of Seconds to Make Mountain Height Zero (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer mountainHeight denoting the height of a mountain. You are also given an integer array workerTimes representing the work time of workers in seconds. The workers work simultaneously to reduce the height of the mountain. For worker i: To decrease the mountain's height by x, it takes workerTimes[i] + workerTimes[i] * 2 + ... + workerTimes[i] * x seconds. For example: To decrease the height by 1, it takes workerTimes[i] seconds. To decrease the height by 2, it takes workerTimes[i] + workerTimes[i] * 2 seconds, and so on. Return an integer representing the minimum number of seconds required for the workers to make the height of the mountain 0.
+            </p>
+            <p><strong>Example:</strong>
+                Input: mountainHeight = 4, workerTimes = [2,1,1]<br/>
+                Output: 3<br/>
+                Explanation: One way the height of the mountain can be reduced to 0 is: Worker 0 reduces the height by 1, taking 2 seconds. Worker 1 reduces the height by 2, taking 1 + 2 = 3 seconds. Worker 2 reduces the height by 1, taking 1 second. Since they work simultaneously, the minimum time needed is max(2, 3, 1) = 3 seconds.<br/><br/>
+                Input: mountainHeight = 10, workerTimes = [3,2,2,4]<br/>
+                Output: 12<br/><br/>
+                Input: mountainHeight = 5, workerTimes = [1]<br/>
+                Output: 15<br/>
+                Explanation: The only worker reduces the height by 5, taking 1 + 2 + 3 + 4 + 5 = 15 seconds.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long minNumberOfSeconds(int mountainHeight, vector&lt;int&gt;&amp; workerTimes) {
+        long long left = 1, right = 1e18;
+        long long result = right;
+        
+        while (left &lt;= right) {
+            long long mid = left + (right - left) / 2;
+            
+            if (canReduceInTime(mountainHeight, workerTimes, mid)) {
+                result = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return result;
+    }
+    
+private:
+    bool canReduceInTime(int mountainHeight, vector&lt;int&gt;&amp; workerTimes, long long maxTime) {
+        long long totalReduction = 0;
+        
+        for (int workerTime : workerTimes) {
+            // Binary search to find max height this worker can reduce in maxTime
+            long long maxHeight = findMaxHeight(workerTime, maxTime);
+            totalReduction += maxHeight;
+            
+            if (totalReduction &gt;= mountainHeight) {
+                return true;
+            }
+        }
+        
+        return totalReduction &gt;= mountainHeight;
+    }
+    
+    long long findMaxHeight(long long workerTime, long long maxTime) {
+        // Find largest h such that workerTime * h * (h + 1) / 2 &lt;= maxTime
+        // Using binary search
+        long long left = 0, right = 2000000;
+        long long result = 0;
+        
+        while (left &lt;= right) {
+            long long mid = left + (right - left) / 2;
+            long long timeNeeded = workerTime * mid * (mid + 1) / 2;
+            
+            if (timeNeeded &lt;= maxTime) {
+                result = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
