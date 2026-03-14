@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1415. The k-th Lexicographical String of All Happy Strings of Length n</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1415: The k-th Lexicographical String of All Happy Strings of Length n (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A happy string is a string that: consists only of letters of the set ['a', 'b', 'c']. s[i] != s[i + 1] for all values of i from 1 to s.length - 1 (string is 1-indexed). For example, strings "abc", "ac", "b" and "abcbabcbcb" are all happy strings and strings "aa", "baa" and "ababbc" are not happy strings. Given two integers n and k, consider a list of all happy strings of length n sorted in lexicographical order. Return the kth string of this list or return an empty string if there are less than k happy strings of length n.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 1, k = 3<br/>
+                Output: "c"<br/>
+                Explanation: The list ["a", "b", "c"] contains all happy strings of length 1. The third string is "c".<br/><br/>
+                Input: n = 1, k = 4<br/>
+                Output: ""<br/>
+                Explanation: There are only 3 happy strings of length 1.<br/><br/>
+                Input: n = 3, k = 9<br/>
+                Output: "cab"<br/>
+                Explanation: There are 12 different happy strings of length 3 ["aba", "abc", "aca", "acb", "bab", "bac", "bca", "bcb", "cab", "cac", "cba", "cbc"]. You will find the 9th string = "cab".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string getHappyString(int n, int k) {
+        vector&lt;string&gt; result;
+        string current = "";
+        backtrack(n, k, current, result);
+        
+        return result.size() &gt;= k ? result[k - 1] : "";
+    }
+    
+private:
+    void backtrack(int n, int k, string&amp; current, vector&lt;string&gt;&amp; result) {
+        // Early termination if we already have k strings
+        if (result.size() &gt;= k) {
+            return;
+        }
+        
+        if (current.length() == n) {
+            result.push_back(current);
+            return;
+        }
+        
+        for (char c : {'a', 'b', 'c'}) {
+            // Check if we can add this character
+            if (current.empty() || current.back() != c) {
+                current += c;
+                backtrack(n, k, current, result);
+                current.pop_back();
+                
+                // Early termination
+                if (result.size() &gt;= k) {
+                    return;
+                }
+            }
+        }
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
