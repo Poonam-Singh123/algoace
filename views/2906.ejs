@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2906. Construct Product Matrix</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2906: Construct Product Matrix (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a 0-indexed 2D integer matrix grid of size n * m, we define a 0-indexed 2D matrix p of size n * m as the product matrix of grid if the following condition is met: Each element p[i][j] is calculated as the product of all elements in grid except for the element grid[i][j]. This product is then taken modulo 12345. Return the product matrix of grid.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[1,2],[3,4]]<br/>
+                Output: [[24,12],[8,6]]<br/>
+                Explanation: p[0][0] = grid[0][1] * grid[1][0] * grid[1][1] = 2 * 3 * 4 = 24. p[0][1] = grid[0][0] * grid[1][0] * grid[1][1] = 1 * 3 * 4 = 12. p[1][0] = grid[0][0] * grid[0][1] * grid[1][1] = 1 * 2 * 4 = 8. p[1][1] = grid[0][0] * grid[0][1] * grid[1][0] = 1 * 2 * 3 = 6. So the answer is [[24,12],[8,6]].<br/><br/>
+                Input: grid = [[12345],[2],[1]]<br/>
+                Output: [[2],[0],[0]]<br/>
+                Explanation: p[0][0] = grid[1][0] * grid[2][0] = 2 * 1 = 2. p[1][0] = grid[0][0] * grid[2][0] = 12345 * 1 = 12345. 12345 % 12345 = 0. So p[1][0] = 0. p[2][0] = grid[0][0] * grid[1][0] = 12345 * 2 = 24690. 24690 % 12345 = 0. So p[2][0] = 0. So the answer is [[2],[0],[0]].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; constructProductMatrix(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        const int MOD = 12345;
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        vector&lt;vector&lt;int&gt;&gt; result(n, vector&lt;int&gt;(m));
+        
+        // Calculate prefix products
+        long long prefixProduct = 1;
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0; j &lt; m; j++) {
+                result[i][j] = prefixProduct;
+                prefixProduct = (prefixProduct * grid[i][j]) % MOD;
+            }
+        }
+        
+        // Calculate suffix products and combine with prefix
+        long long suffixProduct = 1;
+        for (int i = n - 1; i &gt;= 0; i--) {
+            for (int j = m - 1; j &gt;= 0; j--) {
+                result[i][j] = (result[i][j] * suffixProduct) % MOD;
+                suffixProduct = (suffixProduct * grid[i][j]) % MOD;
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
