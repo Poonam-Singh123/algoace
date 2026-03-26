@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3548. Find the Count of Good Integers</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3548: Find the Count of Good Integers (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two positive integers n and k. An integer x is called k-palindromic if: x is a palindrome. x is divisible by k. An integer is called good if its digits can be rearranged to form a k-palindromic integer. For example, for k = 2, 2020 can be rearranged to form the k-palindromic integer 2002, whereas 1010 cannot be rearranged to form a k-palindromic integer. Return the count of good integers containing n digits.
+            </p>
+            <p><strong>Example:</strong>
+                Input: n = 3, k = 5<br/>
+                Output: 27<br/>
+                Explanation: Some of the good integers are: 551 because it can be rearranged to form 515. 525 because it is already k-palindromic.<br/><br/>
+                Input: n = 1, k = 4<br/>
+                Output: 2<br/>
+                Explanation: The two good integers are 4 and 8.<br/><br/>
+                Input: n = 5, k = 6<br/>
+                Output: 2468<br/>
+                Explanation: There are 2468 good integers with 5 digits.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long countGoodIntegers(int n, int k) {
+        set&lt;vector&lt;int&gt;&gt; uniqueDigitCounts;
+        
+        // Generate all palindromes of length n
+        int halfLen = (n + 1) / 2;
+        long long start = pow(10, halfLen - 1);
+        long long end = pow(10, halfLen);
+        
+        for (long long i = start; i &lt; end; i++) {
+            string half = to_string(i);
+            string palindrome = half;
+            
+            // Create palindrome by mirroring
+            for (int j = n % 2 == 0 ? halfLen - 1 : halfLen - 2; j &gt;= 0; j--) {
+                palindrome += half[j];
+            }
+            
+            // Check if divisible by k
+            long long num = stoll(palindrome);
+            if (num % k == 0) {
+                // Count digit frequencies
+                vector&lt;int&gt; digitCount(10, 0);
+                for (char c : palindrome) {
+                    digitCount[c - '0']++;
+                }
+                uniqueDigitCounts.insert(digitCount);
+            }
+        }
+        
+        long long result = 0;
+        
+        // For each unique digit count, calculate permutations
+        for (const auto&amp; digitCount : uniqueDigitCounts) {
+            result += countPermutations(digitCount, n);
+        }
+        
+        return result;
+    }
+    
+private:
+    long long factorial(int n) {
+        long long result = 1;
+        for (int i = 2; i &lt;= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+    
+    long long countPermutations(const vector&lt;int&gt;&amp; digitCount, int n) {
+        // Calculate permutations where first digit is not 0
+        long long totalPerm = factorial(n);
+        
+        // Divide by factorial of each digit count
+        for (int count : digitCount) {
+            if (count &gt; 0) {
+                totalPerm /= factorial(count);
+            }
+        }
+        
+        // Subtract permutations starting with 0
+        if (digitCount[0] &gt; 0) {
+            long long zeroFirstPerm = factorial(n - 1);
+            vector&lt;int&gt; tempCount = digitCount;
+            tempCount[0]--;
+            
+            for (int count : tempCount) {
+                if (count &gt; 0) {
+                    zeroFirstPerm /= factorial(count);
+                }
+            }
+            totalPerm -= zeroFirstPerm;
+        }
+        
+        return totalPerm;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
