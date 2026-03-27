@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2946. Matrix Similarity After Cyclic Shifts</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2946: Matrix Similarity After Cyclic Shifts (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed m x n integer matrix mat and an integer k. You have to cyclically right shift odd indexed rows and cyclically left shift even indexed rows by k positions. Two rows are considered similar if they are identical after being shifted. Return true if all rows in the matrix are similar after the shift, otherwise return false.
+            </p>
+            <p><strong>Example:</strong>
+                Input: mat = [[1,2,1,2],[5,5,5,5],[6,3,6,3]], k = 2<br/>
+                Output: true<br/>
+                Explanation: After shifting, row 0: [1,2,1,2], row 1: [5,5,5,5], row 2: [6,3,6,3]. All rows are similar.<br/><br/>
+                Input: mat = [[2,2],[2,2]], k = 3<br/>
+                Output: true<br/>
+                Explanation: As all rows are identical, they remain similar after any shift.<br/><br/>
+                Input: mat = [[1,2]], k = 1<br/>
+                Output: true<br/>
+                Explanation: Single row remains the same after shift.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool areSimilar(vector&lt;vector&lt;int&gt;&gt;&amp; mat, int k) {
+        int m = mat.size();
+        int n = mat[0].size();
+        
+        // Normalize k to avoid unnecessary full rotations
+        k = k % n;
+        
+        for (int i = 0; i &lt; m; i++) {
+            vector&lt;int&gt; shifted(n);
+            
+            if (i % 2 == 0) {
+                // Even indexed row: shift left by k
+                for (int j = 0; j &lt; n; j++) {
+                    shifted[j] = mat[i][(j + k) % n];
+                }
+            } else {
+                // Odd indexed row: shift right by k
+                for (int j = 0; j &lt; n; j++) {
+                    shifted[j] = mat[i][(j - k + n) % n];
+                }
+            }
+            
+            // Check if shifted row equals original row
+            if (shifted != mat[i]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
