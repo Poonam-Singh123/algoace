@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2839. Check if Strings Can be Made Equal With Operations I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2839: Check if Strings Can be Made Equal With Operations I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two strings s1 and s2, both of length 4, consisting of lowercase English letters. You can apply the following operation on any of the two strings any number of times: Choose any two indices i and j such that j - i = 2, then swap the two characters at those indices in the string. Return true if you can make the strings s1 and s2 equal, and false otherwise.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s1 = "abcd", s2 = "cdab"<br/>
+                Output: true<br/>
+                Explanation: We can do the following operations on s1: Choose indices i = 0, j = 2. The resulting string is s1 = "cbad". Choose indices i = 1, j = 3. The resulting string is s1 = "cdab" = s2.<br/><br/>
+                Input: s1 = "abcd", s2 = "dacb"<br/>
+                Output: false<br/>
+                Explanation: It is not possible to make the two strings equal.<br/><br/>
+                Input: s1 = "bnxw", s2 = "bwxn"<br/>
+                Output: true
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool canBeEqual(string s1, string s2) {
+        // Characters at even indices (0, 2) can be swapped with each other
+        // Characters at odd indices (1, 3) can be swapped with each other
+        
+        // Check even indices
+        vector&lt;char&gt; even1 = {s1[0], s1[2]};
+        vector&lt;char&gt; even2 = {s2[0], s2[2]};
+        sort(even1.begin(), even1.end());
+        sort(even2.begin(), even2.end());
+        
+        // Check odd indices
+        vector&lt;char&gt; odd1 = {s1[1], s1[3]};
+        vector&lt;char&gt; odd2 = {s2[1], s2[3]};
+        sort(odd1.begin(), odd1.end());
+        sort(odd2.begin(), odd2.end());
+        
+        return even1 == even2 &amp;&amp; odd1 == odd2;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
