@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2840. Check if Strings Can be Made Equal With Operations II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2840: Check if Strings Can be Made Equal With Operations II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two strings s1 and s2, both of length n, consisting of lowercase English letters. You can apply the following operation on any of the two strings any number of times: Choose any two indices i and j such that i &lt; j and j - i is even, then swap the two characters at those indices in the string. Return true if you can make the strings s1 and s2 equal, and false otherwise.
+            </p>
+            <p><strong>Example:</strong>
+                Input: s1 = "abcdba", s2 = "cabdab"<br/>
+                Output: true<br/>
+                Explanation: We can apply the following operations on s1: Choose the indices i = 0, j = 2. The resulting string is s1 = "cbadba". Choose the indices i = 2, j = 4. The resulting string is s1 = "cbbdaa". Choose the indices i = 1, j = 5. The resulting string is s1 = "cabdab" = s2.<br/><br/>
+                Input: s1 = "abe", s2 = "bea"<br/>
+                Output: false<br/>
+                Explanation: It is not possible to make the two strings equal.<br/><br/>
+                Input: s1 = "aabbcc", s2 = "ccbbaa"<br/>
+                Output: true
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool checkStrings(string s1, string s2) {
+        // Characters at even indices can be swapped among themselves
+        // Characters at odd indices can be swapped among themselves
+        
+        // Collect and sort characters at even indices
+        string even1 = "", even2 = "";
+        string odd1 = "", odd2 = "";
+        
+        for (int i = 0; i &lt; s1.length(); i++) {
+            if (i % 2 == 0) {
+                even1 += s1[i];
+                even2 += s2[i];
+            } else {
+                odd1 += s1[i];
+                odd2 += s2[i];
+            }
+        }
+        
+        sort(even1.begin(), even1.end());
+        sort(even2.begin(), even2.end());
+        sort(odd1.begin(), odd1.end());
+        sort(odd2.begin(), odd2.end());
+        
+        return even1 == even2 &amp;&amp; odd1 == odd2;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
