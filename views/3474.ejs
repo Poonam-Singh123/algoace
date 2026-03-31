@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3474. Minimum Operations to Make Binary Array Elements Equal to One I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3474: Minimum Operations to Make Binary Array Elements Equal to One I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a binary array nums. You can do the following operation on the array any number of times (possibly zero): Choose any 3 consecutive elements from the array and flip all of them. Flipping an element means changing its value from 0 to 1, and from 1 to 0. Return the minimum number of operations required to make all elements in nums equal to 1. If it is impossible, return -1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [0,1,1,1,0,0]<br/>
+                Output: 3<br/>
+                Explanation: We can do the following operations: Choose the elements at indices 0, 1 and 2. The resulting array is nums = [1,0,0,1,0,0]. Choose the elements at indices 1, 2 and 3. The resulting array is nums = [1,1,1,0,0,0]. Choose the elements at indices 3, 4 and 5. The resulting array is nums = [1,1,1,1,1,1].<br/><br/>
+                Input: nums = [0,1,1,1]<br/>
+                Output: -1<br/>
+                Explanation: It is impossible to make all elements equal to 1.<br/><br/>
+                Input: nums = [1,1,1]<br/>
+                Output: 0<br/>
+                Explanation: All elements are already equal to 1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        int operations = 0;
+        
+        for (int i = 0; i &lt;= n - 3; i++) {
+            if (nums[i] == 0) {
+                // Flip elements at i, i+1, i+2
+                nums[i] = 1 - nums[i];
+                nums[i + 1] = 1 - nums[i + 1];
+                nums[i + 2] = 1 - nums[i + 2];
+                operations++;
+            }
+        }
+        
+        // Check if all elements are 1
+        for (int i = 0; i &lt; n; i++) {
+            if (nums[i] == 0) {
+                return -1;
+            }
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
