@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2751. Robot Collisions</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2751: Robot Collisions (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There are n 1-indexed robots, each having a position on a line, health, and movement direction. You are given 0-indexed integer arrays positions, healths, and a string directions (directions[i] is either 'L' for left or 'R' for right). All integers in positions are unique. All robots start moving on the line simultaneously at the same speed in their given directions. If two robots ever share the same position while moving, they will collide. If two robots collide, the robot with lower health is removed from the line, and the health of the other robot decreases by one. The surviving robot continues in the same direction it was going. If both robots have the same health, they are both removed from the line. Your task is to determine the health of the robots that survive the collisions, in the same order that the robots were given, i.e. final heath of robot 1 (if survived), final health of robot 2 (if survived), and so on. If there are no survivors, return an empty array. Return an array containing the health of the remaining robots (in the order they were given in the input), after no further collisions can occur. Note: The positions may be unsorted.
+            </p>
+            <p><strong>Example:</strong>
+                Input: positions = [5,4,3,2,1], healths = [2,17,9,15,10], directions = "RRRRR"<br/>
+                Output: [2,17,9,15,10]<br/>
+                Explanation: No collision occurs in this example, since all robots are moving in the same direction. So, the health of the robots in order from the first robot is returned, [2, 17, 9, 15, 10].<br/><br/>
+                Input: positions = [3,5,2,6], healths = [10,10,15,12], directions = "RLRL"<br/>
+                Output: [14]<br/>
+                Explanation: There are 2 collisions in this example. Firstly, robot 1 and robot 2 will collide, and since both have the same health, they will be removed from the line. Next, robot 3 and robot 4 will collide and since robot 4's health is smaller, it gets removed, and robot 3's health becomes 15 - 1 = 14. Only robot 3 survives, so we return [14].<br/><br/>
+                Input: positions = [1,2,5,6], healths = [10,10,11,11], directions = "RLRL"<br/>
+                Output: []<br/>
+                Explanation: Robot 1 and robot 2 will collide and since both have the same health, they are both removed. Robot 3 and 4 will collide and since both have the same health, they are both removed. So, we return an empty array, [].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; survivedRobotsHealths(vector&lt;int&gt;&amp; positions, vector&lt;int&gt;&amp; healths, string directions) {
+        int n = positions.size();
+        vector&lt;int&gt; indices(n);
+        
+        for (int i = 0; i &lt; n; i++) {
+            indices[i] = i;
+        }
+        
+        // Sort by position
+        sort(indices.begin(), indices.end(), [&amp;](int i, int j) {
+            return positions[i] &lt; positions[j];
+        });
+        
+        stack&lt;int&gt; st; // Stack to store robots moving right
+        
+        for (int idx : indices) {
+            if (directions[idx] == 'R') {
+                st.push(idx);
+            } else {
+                // Robot moving left
+                while (!st.empty() &amp;&amp; healths[idx] &gt; 0) {
+                    int rightIdx = st.top();
+                    
+                    if (healths[rightIdx] &gt; healths[idx]) {
+                        healths[rightIdx]--;
+                        healths[idx] = 0;
+                    } else if (healths[rightIdx] &lt; healths[idx]) {
+                        st.pop();
+                        healths[rightIdx] = 0;
+                        healths[idx]--;
+                    } else {
+                        st.pop();
+                        healths[rightIdx] = 0;
+                        healths[idx] = 0;
+                    }
+                }
+            }
+        }
+        
+        vector&lt;int&gt; result;
+        for (int i = 0; i &lt; n; i++) {
+            if (healths[i] &gt; 0) {
+                result.push_back(healths[i]);
+            }
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
