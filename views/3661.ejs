@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3661. Minimum Operations to Make Binary Array Elements Equal to One II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3661: Minimum Operations to Make Binary Array Elements Equal to One II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a binary array nums. You can do the following operation on the array any number of times (possibly zero): Choose any index i from the array and flip all the elements from index i to the end of the array. Flipping an element means changing its value from 0 to 1, and from 1 to 0. Return the minimum number of operations required to make all elements in nums equal to 1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [0,1,1,0,1]<br/>
+                Output: 4<br/>
+                Explanation: We can do the following operations: Choose the index i = 1. The resulting array will be nums = [0,0,0,1,0]. Choose the index i = 0. The resulting array will be nums = [1,1,1,0,1]. Choose the index i = 4. The resulting array will be nums = [1,1,1,0,0]. Choose the index i = 3. The resulting array will be nums = [1,1,1,1,1].<br/><br/>
+                Input: nums = [1,0,0,0]<br/>
+                Output: 1<br/>
+                Explanation: We can do the following operation: Choose the index i = 1. The resulting array will be nums = [1,1,1,1].<br/><br/>
+                Input: nums = [1,1,1]<br/>
+                Output: 0<br/>
+                Explanation: All elements are already equal to 1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        int operations = 0;
+        int flipped = 0; // Track if we're in a flipped state
+        
+        for (int i = 0; i &lt; n; i++) {
+            // Current value after considering all previous flips
+            int currentValue = (nums[i] + flipped) % 2;
+            
+            // If current value is 0, we need to flip from this position
+            if (currentValue == 0) {
+                operations++;
+                flipped = 1 - flipped; // Toggle flip state
+            }
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
