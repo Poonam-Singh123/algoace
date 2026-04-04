@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2075. Decode the Slanted Ciphertext</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2075: Decode the Slanted Ciphertext (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A string originalText is encoded using a slanted transposition cipher to a string encodedText with the help of a matrix having a fixed number of rows rows. originalText is placed first in a top-left to bottom-right manner. The blue cells are filled first, followed by the red cells, then the yellow cells, and so on, until we reach the end of originalText. The arrow indicates the order in which the cells are filled. All empty cells are filled with ' '. The number of columns is chosen such that the rightmost column will not be empty after filling in originalText. encodedText is then formed by appending all characters of the matrix in a row-wise fashion. The characters in the blue cells are appended first to encodedText, then the red cells, and so on, and finally the yellow cells. The arrow indicates the order in which the cells are accessed. For example, if originalText = "cipher" and rows = 3, then we encode it in the following manner: The blue arrows depict how originalText is placed in the matrix, and the red arrows denote the order in which encodedText is formed. In the above example, encodedText = "ch ie pr". Given the encoded string encodedText and number of rows rows, return the original string originalText. Note: originalText does not have any trailing spaces ' '. The test cases are generated such that there is only one possible originalText.
+            </p>
+            <p><strong>Example:</strong>
+                Input: encodedText = "ch   ie   pr", rows = 3<br/>
+                Output: "cipher"<br/>
+                Explanation: This is the same example described in the problem description.<br/><br/>
+                Input: encodedText = "iveo    eed   l te   olc", rows = 4<br/>
+                Output: "i love leetcode"<br/>
+                Explanation: The figure above denotes the matrix that was used to encode originalText. The blue arrows show how we can find originalText from encodedText.<br/><br/>
+                Input: encodedText = "coding", rows = 1<br/>
+                Output: "coding"<br/>
+                Explanation: Since there is only 1 row, both originalText and encodedText are the same.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    string decodeCiphertext(string encodedText, int rows) {
+        if (rows == 1) {
+            // Remove trailing spaces
+            while (!encodedText.empty() &amp;&amp; encodedText.back() == ' ') {
+                encodedText.pop_back();
+            }
+            return encodedText;
+        }
+        
+        int n = encodedText.length();
+        int cols = n / rows;
+        string result = "";
+        
+        // Read diagonally from each starting position in first row
+        for (int startCol = 0; startCol &lt; cols; startCol++) {
+            int row = 0;
+            int col = startCol;
+            
+            while (row &lt; rows &amp;&amp; col &lt; cols) {
+                int index = row * cols + col;
+                result += encodedText[index];
+                row++;
+                col++;
+            }
+        }
+        
+        // Remove trailing spaces
+        while (!result.empty() &amp;&amp; result.back() == ' ') {
+            result.pop_back();
+        }
+        
+        return result;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
