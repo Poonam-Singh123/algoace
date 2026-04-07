@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2069. Walking Robot Simulation II</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2069: Walking Robot Simulation II (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                A width x height grid is on an XY-plane with the bottom-left cell at (0, 0) and the top-right cell at (width - 1, height - 1). The grid is aligned with the four cardinal directions ("North", "East", "South", and "West"). A robot is initially at cell (0, 0) facing direction "East". The robot can be instructed to move for a specific number of steps. For each step, it does the following: Attempts to move forward one cell in the direction it is facing. If the cell the robot is moving to is out of bounds, the robot instead turns 90 degrees counterclockwise and retries the step. After the robot finishes moving the number of steps required, it stops and awaits the next instruction. Implement the Robot class: Robot(int width, int height) Initializes the width x height grid with the robot at (0, 0) facing "East". void step(int num) Instructs the robot to move forward num steps. int[] getPos() Returns the current cell the robot is at, as an array of length 2, [x, y]. String getDir() Returns the current direction of the robot, "North", "East", "South", or "West".
+            </p>
+            <p><strong>Example:</strong>
+                Input: ["Robot", "step", "step", "getPos", "getDir", "step", "step", "step", "getPos", "getDir"]<br/>
+                [[6, 3], [2], [2], [], [], [2], [1], [4], [], []]<br/>
+                Output: [null, null, null, [4, 0], "East", null, null, null, [1, 2], "West"]<br/>
+                Explanation: Robot robot = new Robot(6, 3); robot.step(2); robot.step(2); robot.getPos(); // return [4, 0]; robot.getDir(); // return "East"; robot.step(2); robot.step(1); robot.step(4); robot.getPos(); // return [1, 2]; robot.getDir(); // return "West".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Robot {
+private:
+    int width, height;
+    int x, y;
+    int direction; // 0: East, 1: North, 2: West, 3: South
+    int perimeter;
+    int totalSteps;
+    
+public:
+    Robot(int width, int height) {
+        this-&gt;width = width;
+        this-&gt;height = height;
+        this-&gt;x = 0;
+        this-&gt;y = 0;
+        this-&gt;direction = 0; // Start facing East
+        this-&gt;perimeter = 2 * (width + height - 2);
+        this-&gt;totalSteps = 0;
+    }
+    
+    void step(int num) {
+        totalSteps += num;
+        // Normalize steps to avoid unnecessary loops
+        totalSteps %= perimeter;
+        if (totalSteps == 0 &amp;&amp; num &gt; 0) {
+            totalSteps = perimeter;
+        }
+        
+        // Calculate position based on total steps
+        int steps = totalSteps;
+        x = 0;
+        y = 0;
+        direction = 0;
+        
+        // Move East along bottom
+        if (steps &lt;= width - 1) {
+            x = steps;
+            direction = 0; // East
+            return;
+        }
+        steps -= (width - 1);
+        x = width - 1;
+        
+        // Move North along right edge
+        if (steps &lt;= height - 1) {
+            y = steps;
+            direction = 1; // North
+            return;
+        }
+        steps -= (height - 1);
+        y = height - 1;
+        
+        // Move West along top
+        if (steps &lt;= width - 1) {
+            x = width - 1 - steps;
+            direction = 2; // West
+            return;
+        }
+        steps -= (width - 1);
+        x = 0;
+        
+        // Move South along left edge
+        y = height - 1 - steps;
+        direction = 3; // South
+    }
+    
+    vector&lt;int&gt; getPos() {
+        return {x, y};
+    }
+    
+    string getDir() {
+        string directions[] = {"East", "North", "West", "South"};
+        return directions[direction];
+    }
+};
+
+/**
+ * Your Robot object will be instantiated and called as such:
+ * Robot* obj = new Robot(width, height);
+ * obj-&gt;step(num);
+ * vector&lt;int&gt; param_2 = obj-&gt;getPos();
+ * string param_3 = obj-&gt;getDir();
+ */</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
