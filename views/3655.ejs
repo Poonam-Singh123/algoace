@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3655. Perfect Squares in a Range</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3655: Perfect Squares in a Range (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given two integers left and right, return the number of perfect squares in the range [left, right] inclusive. A perfect square is an integer that is the square of an integer. In other words, it is the product of some integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
+            </p>
+            <p><strong>Example:</strong>
+                Input: left = 1, right = 10<br/>
+                Output: 3<br/>
+                Explanation: The perfect squares in the range [1, 10] are 1, 4, and 9.<br/><br/>
+                Input: left = 4, right = 16<br/>
+                Output: 3<br/>
+                Explanation: The perfect squares in the range [4, 16] are 4, 9, and 16.<br/><br/>
+                Input: left = 5, right = 8<br/>
+                Output: 0<br/>
+                Explanation: There are no perfect squares in the range [5, 8].
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int countPerfectSquares(int left, int right) {
+        // Find the smallest integer whose square is &gt;= left
+        int start = (int)ceil(sqrt(left));
+        
+        // Find the largest integer whose square is &lt;= right
+        int end = (int)floor(sqrt(right));
+        
+        // Count of perfect squares in range
+        return max(0, end - start + 1);
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
