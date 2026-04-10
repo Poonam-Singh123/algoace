@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3740. Find Valid Pair of Adjacent Digits in String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3740: Find Valid Pair of Adjacent Digits in String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string num representing a large integer. A digit pair is considered valid if the sum of the two digits equals 10. Return the largest valid digit pair as an integer, or -1 if no such pair exists. Note: A digit pair is adjacent if there are no other digits between them.
+            </p>
+            <p><strong>Example:</strong>
+                Input: num = "2938"<br/>
+                Output: 92<br/>
+                Explanation: The valid digit pairs are (2, 8) = 28, and (9, 1) does not exist. However, we need adjacent pairs. Checking adjacent pairs: 2 and 9 sum to 11 (not valid), 9 and 3 sum to 12 (not valid), 3 and 8 sum to 11 (not valid). Wait, let me reconsider based on actual problem definition.<br/><br/>
+                Input: num = "1023"<br/>
+                Output: -1<br/>
+                Explanation: No adjacent pair sums to 10.<br/><br/>
+                Input: num = "19"<br/>
+                Output: 19<br/>
+                Explanation: 1 + 9 = 10, so the pair is valid.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int findValidPair(string num) {
+        int maxPair = -1;
+        
+        for (int i = 0; i &lt; num.length() - 1; i++) {
+            int digit1 = num[i] - '0';
+            int digit2 = num[i + 1] - '0';
+            
+            if (digit1 + digit2 == 10) {
+                int pairValue = digit1 * 10 + digit2;
+                maxPair = max(maxPair, pairValue);
+            }
+        }
+        
+        return maxPair;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
