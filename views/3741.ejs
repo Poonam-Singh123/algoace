@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3741. Minimum Additions to Make Valid String</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3741: Minimum Additions to Make Valid String (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a string word, you can insert letters to it to make it a valid string. A string is considered valid if it can be formed by concatenating the word "abc" several times. Return the minimum number of characters that should be added to word to make it valid.
+            </p>
+            <p><strong>Example:</strong>
+                Input: word = "b"<br/>
+                Output: 2<br/>
+                Explanation: Insert "a" before "b" and "c" after "b" to get "abc".<br/><br/>
+                Input: word = "aaa"<br/>
+                Output: 6<br/>
+                Explanation: Insert "bc" after each "a" to get "abcabcabc".<br/><br/>
+                Input: word = "abc"<br/>
+                Output: 0<br/>
+                Explanation: word is already valid.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int addMinimum(string word) {
+        int n = word.length();
+        int additions = 0;
+        int i = 0;
+        
+        while (i &lt; n) {
+            int count = 0; // Count how many characters of "abc" we have in current group
+            
+            // Check for 'a'
+            if (i &lt; n &amp;&amp; word[i] == 'a') {
+                count++;
+                i++;
+            }
+            
+            // Check for 'b'
+            if (i &lt; n &amp;&amp; word[i] == 'b') {
+                count++;
+                i++;
+            }
+            
+            // Check for 'c'
+            if (i &lt; n &amp;&amp; word[i] == 'c') {
+                count++;
+                i++;
+            }
+            
+            // We need 3 characters for a complete "abc"
+            // Add the missing ones
+            additions += (3 - count);
+        }
+        
+        return additions;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
