@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1320. Minimum Distance to Type a Word Using Two Fingers</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1320: Minimum Distance to Type a Word Using Two Fingers (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You have a keyboard layout as shown above in the XY plane, where each English uppercase letter is located at some coordinate. For example, the letter A is located at coordinate (0, 0), the letter B is located at coordinate (0, 1), the letter P is located at coordinate (2, 3) and the letter Z is located at coordinate (4, 1). Given the string word, return the minimum total distance to type such string using only two fingers. The distance between coordinates (x<sub>1</sub>, y<sub>1</sub>) and (x<sub>2</sub>, y<sub>2</sub>) is |x<sub>1</sub> - x<sub>2</sub>| + |y<sub>1</sub> - y<sub>2</sub>|. Note that the initial positions of your two fingers are considered free so do not count towards your total distance.
+            </p>
+            <p><strong>Example:</strong>
+                Input: word = "CAKE"<br/>
+                Output: 3<br/>
+                Explanation: Using two fingers, one optimal way to type "CAKE" is: Finger 1 on letter 'C' -&gt; cost = 0. Finger 1 on letter 'A' -&gt; cost = Distance from letter 'C' to letter 'A' = 2. Finger 2 on letter 'K' -&gt; cost = 0. Finger 2 on letter 'E' -&gt; cost = Distance from letter 'K' to letter 'E' = 1. Total distance = 3.<br/><br/>
+                Input: word = "HAPPY"<br/>
+                Output: 6<br/>
+                Explanation: Using two fingers, one optimal way to type "HAPPY" is: Finger 1 on letter 'H' -&gt; cost = 0. Finger 1 on letter 'A' -&gt; cost = Distance from letter 'H' to letter 'A' = 2. Finger 2 on letter 'P' -&gt; cost = 0. Finger 2 on letter 'P' -&gt; cost = Distance from letter 'P' to letter 'P' = 0. Finger 1 on letter 'Y' -&gt; cost = Distance from letter 'A' to letter 'Y' = 4. Total distance = 6.<br/><br/>
+                Input: word = "NEW"<br/>
+                Output: 3
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumDistance(string word) {
+        int n = word.length();
+        
+        // Memoization map: (index, finger1_pos, finger2_pos) -&gt; min distance
+        map&lt;tuple&lt;int, int, int&gt;, int&gt; memo;
+        
+        return solve(0, -1, -1, word, memo);
+    }
+    
+private:
+    int solve(int idx, int pos1, int pos2, const string&amp; word, 
+              map&lt;tuple&lt;int, int, int&gt;, int&gt;&amp; memo) {
+        if (idx == word.length()) {
+            return 0;
+        }
+        
+        auto key = make_tuple(idx, pos1, pos2);
+        if (memo.find(key) != memo.end()) {
+            return memo[key];
+        }
+        
+        int target = word[idx] - 'A';
+        
+        // Option 1: Move finger 1
+        int cost1 = (pos1 == -1 ? 0 : getDist(pos1, target)) + 
+                    solve(idx + 1, target, pos2, word, memo);
+        
+        // Option 2: Move finger 2
+        int cost2 = (pos2 == -1 ? 0 : getDist(pos2, target)) + 
+                    solve(idx + 1, pos1, target, word, memo);
+        
+        memo[key] = min(cost1, cost2);
+        return memo[key];
+    }
+    
+    int getDist(int from, int to) {
+        int x1 = from / 6, y1 = from % 6;
+        int x2 = to / 6, y2 = to % 6;
+        return abs(x1 - x2) + abs(y1 - y2);
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
