@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2515. Shortest Distance to Target String in a Circular Array</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2515: Shortest Distance to Target String in a Circular Array (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 0-indexed circular string array words and a string target. A circular array means that the array's end connects to the array's beginning. Formally, the next element of words[i] is words[(i + 1) % n] and the previous element of words[i] is words[(i - 1 + n) % n], where n is the length of words. Starting from startIndex, you can move to either the next word or the previous word with 1 step at a time. Return the shortest distance needed to reach the string target. If the string target does not exist in words, return -1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: words = ["hello","i","am","leetcode","hello"], target = "hello", startIndex = 1<br/>
+                Output: 1<br/>
+                Explanation: We start from index 1 and can reach "hello" by: Move 3 units to the right to reach index 4. Move 2 units to the left to reach index 4. Move 4 units to the right to reach index 0. Move 1 unit to the left to reach index 0. The shortest distance to reach "hello" is 1.<br/><br/>
+                Input: words = ["a","b","leetcode"], target = "leetcode", startIndex = 0<br/>
+                Output: 1<br/>
+                Explanation: We start from index 0 and can reach "leetcode" by: Move 2 units to the right to reach index 2. Move 1 unit to the left to reach index 2. The shortest distance to reach "leetcode" is 1.<br/><br/>
+                Input: words = ["i","eat","leetcode"], target = "ate", startIndex = 0<br/>
+                Output: -1<br/>
+                Explanation: Since "ate" does not exist in words, we return -1.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int closetTarget(vector&lt;string&gt;&amp; words, string target, int startIndex) {
+        int n = words.size();
+        int minDist = INT_MAX;
+        
+        for (int i = 0; i &lt; n; i++) {
+            if (words[i] == target) {
+                // Calculate distance moving right
+                int rightDist = (i - startIndex + n) % n;
+                
+                // Calculate distance moving left
+                int leftDist = (startIndex - i + n) % n;
+                
+                minDist = min(minDist, min(rightDist, leftDist));
+            }
+        }
+        
+        return minDist == INT_MAX ? -1 : minDist;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
