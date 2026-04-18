@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3783. Maximize the Number of Target Nodes After Connecting Trees I</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3783: Maximize the Number of Target Nodes After Connecting Trees I (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                There exist two undirected trees with n and m nodes, labeled from [0, n - 1] and [0, m - 1], respectively. You are given two 2D integer arrays edges1 and edges2 of lengths n - 1 and m - 1, respectively, where edges1[i] = [a<sub>i</sub>, b<sub>i</sub>] indicates that there is an edge between nodes a<sub>i</sub> and b<sub>i</sub> in the first tree and edges2[i] = [u<sub>i</sub>, v<sub>i</sub>] indicates that there is an edge between nodes u<sub>i</sub> and v<sub>i</sub> in the second tree. You are also given an integer k. Node u is target to node v if the number of edges on the path from u to v is less than or equal to k. Note that a node is always target to itself. Return an array of n integers answer, where answer[i] is the maximum possible number of nodes target to node i of the first tree if you have to connect one node from the first tree to another node in the second tree. Note that queries are independent from each other. That is, for every query you will remove the added edge before proceeding to the next query.
+            </p>
+            <p><strong>Example:</strong>
+                Input: edges1 = [[0,1],[0,2],[2,3],[2,4]], edges2 = [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]], k = 2<br/>
+                Output: [9,7,9,8,8]<br/>
+                Explanation: For each node in the first tree, the optimal connection maximizes target nodes within distance k.<br/><br/>
+                Input: edges1 = [[0,1],[0,2],[0,3],[0,4]], edges2 = [[0,1],[1,2],[2,3]], k = 1<br/>
+                Output: [6,3,3,3,3]<br/>
+                Explanation: Different connections yield different counts of target nodes.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; maxTargetNodes(vector&lt;vector&lt;int&gt;&gt;&amp; edges1, vector&lt;vector&lt;int&gt;&gt;&amp; edges2, int k) {
+        int n = edges1.size() + 1;
+        int m = edges2.size() + 1;
+        
+        // Build adjacency lists
+        vector&lt;vector&lt;int&gt;&gt; adj1(n), adj2(m);
+        for (const auto&amp; e : edges1) {
+            adj1[e[0]].push_back(e[1]);
+            adj1[e[1]].push_back(e[0]);
+        }
+        for (const auto&amp; e : edges2) {
+            adj2[e[0]].push_back(e[1]);
+            adj2[e[1]].push_back(e[0]);
+        }
+        
+        // For each node in tree1, count nodes within distance k
+        vector&lt;int&gt; count1(n);
+        for (int i = 0; i &lt; n; i++) {
+            count1[i] = countNodesWithinDistance(i, adj1, k);
+        }
+        
+        // Find max nodes in tree2 within distance k-1
+        int maxTree2 = 0;
+        for (int i = 0; i &lt; m; i++) {
+            maxTree2 = max(maxTree2, countNodesWithinDistance(i, adj2, k - 1));
+        }
+        
+        // Answer for each node in tree1
+        vector&lt;int&gt; answer(n);
+        for (int i = 0; i &lt; n; i++) {
+            answer[i] = count1[i] + maxTree2;
+        }
+        
+        return answer;
+    }
+    
+private:
+    int countNodesWithinDistance(int start, vector&lt;vector&lt;int&gt;&gt;&amp; adj, int maxDist) {
+        if (maxDist &lt; 0) return 0;
+        
+        queue&lt;pair&lt;int, int&gt;&gt; q; // {node, distance}
+        vector&lt;bool&gt; visited(adj.size(), false);
+        q.push({start, 0});
+        visited[start] = true;
+        int count = 0;
+        
+        while (!q.empty()) {
+            auto [node, dist] = q.front();
+            q.pop();
+            count++;
+            
+            if (dist &lt; maxDist) {
+                for (int neighbor : adj[node]) {
+                    if (!visited[neighbor]) {
+                        visited[neighbor] = true;
+                        q.push({neighbor, dist + 1});
+                    }
+                }
+            }
+        }
+        
+        return count;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
