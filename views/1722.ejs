@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1722. Minimize Hamming Distance After Swap Operations</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1722: Minimize Hamming Distance After Swap Operations (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two integer arrays, source and target, both of length n. You are also given an array allowedSwaps where each allowedSwaps[i] = [a<sub>i</sub>, b<sub>i</sub>] indicates that you are allowed to swap the elements at index a<sub>i</sub> and index b<sub>i</sub> (0-indexed) of array source. Note that you can swap elements at a specific pair of indices multiple times and in any order. The Hamming distance of two arrays of the same length, source and target, is the number of positions where the elements are different. Formally, it is the number of indices i for 0 &lt;= i &lt;= n-1 where source[i] != target[i] (0-indexed). Return the minimum Hamming distance of source and target after performing any amount of swap operations on array source.
+            </p>
+            <p><strong>Example:</strong>
+                Input: source = [1,2,3,4], target = [2,1,4,5], allowedSwaps = [[0,1],[2,3]]<br/>
+                Output: 1<br/>
+                Explanation: source can be transformed the following way: - Swap indices 0 and 1: source = [2,1,3,4]. - Swap indices 2 and 3: source = [2,1,4,3]. The Hamming distance of source and target is 1 as they differ in 1 position: index 3.<br/><br/>
+                Input: source = [1,2,3,4], target = [1,3,2,4], allowedSwaps = []<br/>
+                Output: 2<br/>
+                Explanation: There are no allowed swaps. The Hamming distance of source and target is 2 as they differ in 2 positions: index 1 and index 2.<br/><br/>
+                Input: source = [5,1,2,4,3], target = [1,5,4,2,3], allowedSwaps = [[0,4],[4,2],[1,3],[1,4]]<br/>
+                Output: 0
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minimumHammingDistance(vector&lt;int&gt;&amp; source, vector&lt;int&gt;&amp; target, vector&lt;vector&lt;int&gt;&gt;&amp; allowedSwaps) {
+        int n = source.size();
+        
+        // Build union-find structure
+        vector&lt;int&gt; parent(n);
+        for (int i = 0; i &lt; n; i++) {
+            parent[i] = i;
+        }
+        
+        // Union allowed swap pairs
+        for (const auto&amp; swap : allowedSwaps) {
+            unionSets(parent, swap[0], swap[1]);
+        }
+        
+        // Group indices by their root parent
+        unordered_map&lt;int, unordered_map&lt;int, int&gt;&gt; sourceGroups;
+        unordered_map&lt;int, unordered_map&lt;int, int&gt;&gt; targetGroups;
+        
+        for (int i = 0; i &lt; n; i++) {
+            int root = find(parent, i);
+            sourceGroups[root][source[i]]++;
+            targetGroups[root][target[i]]++;
+        }
+        
+        // Calculate minimum Hamming distance
+        int hamming = 0;
+        for (const auto&amp; [root, sourceMap] : sourceGroups) {
+            const auto&amp; targetMap = targetGroups[root];
+            
+            for (const auto&amp; [val, count] : sourceMap) {
+                int targetCount = targetMap.count(val) ? targetMap.at(val) : 0;
+                hamming += max(0, count - targetCount);
+            }
+        }
+        
+        return hamming;
+    }
+    
+private:
+    int find(vector&lt;int&gt;&amp; parent, int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent, parent[x]);
+        }
+        return parent[x];
+    }
+    
+    void unionSets(vector&lt;int&gt;&amp; parent, int x, int y) {
+        int rootX = find(parent, x);
+        int rootY = find(parent, y);
+        if (rootX != rootY) {
+            parent[rootX] = rootY;
+        }
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
