@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2452. Words Within Two Edits of Dictionary</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2452: Words Within Two Edits of Dictionary (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given two string arrays, queries and dictionary. All words in each array comprise of lowercase English letters and have the same length. In one edit you can take a word from queries, and change any letter in it to any other letter. Find all words from queries that, after a maximum of two edits, equal some word from dictionary. Return a list of all words from queries, that match with some word from dictionary after a maximum of two edits. Return the words in the same order they appear in queries.
+            </p>
+            <p><strong>Example:</strong>
+                Input: queries = ["word","note","ants","wood"], dictionary = ["wood","joke","moat"]<br/>
+                Output: ["word","note","wood"]<br/>
+                Explanation: - Changing the 'r' in "word" to 'o' allows it to equal the dictionary word "wood". - Changing the 'n' in "note" to 'j' and the 't' to 'k' allows it to equal the dictionary word "joke". - It would take more than 2 edits for "ants" to equal a dictionary word. - "wood" can remain unchanged (0 edits) and match the corresponding dictionary word "wood". Thus, we return ["word","note","wood"].<br/><br/>
+                Input: queries = ["yes"], dictionary = ["not"]<br/>
+                Output: []<br/>
+                Explanation: Applying any two edits to "yes" cannot make it equal to "not". Thus, we return an empty array.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;string&gt; twoEditWords(vector&lt;string&gt;&amp; queries, vector&lt;string&gt;&amp; dictionary) {
+        vector&lt;string&gt; result;
+        
+        for (const string&amp; query : queries) {
+            bool found = false;
+            
+            for (const string&amp; word : dictionary) {
+                if (canMatch(query, word)) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found) {
+                result.push_back(query);
+            }
+        }
+        
+        return result;
+    }
+    
+private:
+    bool canMatch(const string&amp; s1, const string&amp; s2) {
+        int differences = 0;
+        
+        for (int i = 0; i &lt; s1.length(); i++) {
+            if (s1[i] != s2[i]) {
+                differences++;
+                if (differences &gt; 2) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
