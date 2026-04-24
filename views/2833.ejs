@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2833. Furthest Point From Origin</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2833: Furthest Point From Origin (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a string moves of length n consisting only of characters 'L', 'R', and '_'. The string represents your movement on a number line starting from the origin 0. In the i<sup>th</sup> move, you can choose one of the following directions: move to the left if moves[i] = 'L' or moves[i] = '_', move to the right if moves[i] = 'R' or moves[i] = '_'. Return the distance from the origin of the furthest point you can get to after n moves.
+            </p>
+            <p><strong>Example:</strong>
+                Input: moves = "L_RL__R"<br/>
+                Output: 3<br/>
+                Explanation: The furthest we can reach from the origin 0 is point -3 through the following sequence of moves "LLRLLLR".<br/><br/>
+                Input: moves = "_R__LL_"<br/>
+                Output: 5<br/>
+                Explanation: The furthest we can reach from the origin 0 is point -5 through the following sequence of moves "LRLLLLL".<br/><br/>
+                Input: moves = "_______"<br/>
+                Output: 7<br/>
+                Explanation: The furthest we can reach from the origin 0 is point 7 through the following sequence of moves "RRRRRRR".
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int furthestDistanceFromOrigin(string moves) {
+        int left = 0, right = 0, blank = 0;
+        
+        for (char move : moves) {
+            if (move == 'L') {
+                left++;
+            } else if (move == 'R') {
+                right++;
+            } else {
+                blank++;
+            }
+        }
+        
+        // Use all blanks to maximize distance in one direction
+        return abs(left - right) + blank;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
