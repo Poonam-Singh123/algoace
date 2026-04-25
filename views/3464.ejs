@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3464. Maximize Total Cost of Alternating Subarrays</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3464: Maximize Total Cost of Alternating Subarrays (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an integer array nums with length n. The cost of a subarray nums[l..r], where 0 &lt;= l &lt;= r &lt; n, is defined as: cost(l, r) = nums[l] - nums[l + 1] + nums[l + 2] - nums[l + 3] + ... + nums[r] * (-1)<sup>r - l</sup>. Your task is to split nums into subarrays such that the total cost of the subarrays is maximized, ensuring each element belongs to exactly one subarray. Formally, if nums is split into k subarrays, where k &gt; 1, at indices i<sub>1</sub>, i<sub>2</sub>, ..., i<sub>k-1</sub>, where 0 &lt;= i<sub>1</sub> &lt; i<sub>2</sub> &lt; ... &lt; i<sub>k-1</sub> &lt; n - 1, then the total cost will be: cost(0, i<sub>1</sub>) + cost(i<sub>1</sub> + 1, i<sub>2</sub>) + ... + cost(i<sub>k-1</sub> + 1, n - 1). Return the maximum total cost of the subarrays.
+            </p>
+            <p><strong>Example:</strong>
+                Input: nums = [1,-2,3,4]<br/>
+                Output: 10<br/>
+                Explanation: We can split the array into [1, -2, 3] and [4]. The total cost is (1 - (-2) + 3) + 4 = 10.<br/><br/>
+                Input: nums = [1,-1,1,-1]<br/>
+                Output: 4<br/>
+                Explanation: We can split the array into [1], [-1], [1], [-1]. The total cost is 1 + (-1) + 1 + (-1) = 0. However, keeping it as one array gives 1 - (-1) + 1 - (-1) = 4.<br/><br/>
+                Input: nums = [0]<br/>
+                Output: 0<br/>
+                Explanation: The array has only one element, so the cost is 0.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maximumTotalCost(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        if (n == 1) return nums[0];
+        
+        // dp[i][0] = max cost ending at i with positive sign
+        // dp[i][1] = max cost ending at i with negative sign
+        vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(2, LLONG_MIN));
+        
+        dp[0][0] = nums[0];
+        
+        for (int i = 1; i &lt; n; i++) {
+            // Start new subarray at i (always positive)
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]) + nums[i];
+            
+            // Continue subarray with negative sign
+            dp[i][1] = dp[i - 1][0] - nums[i];
+        }
+        
+        return max(dp[n - 1][0], dp[n - 1][1]);
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
