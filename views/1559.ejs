@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1559. Detect Cycles in 2D Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1559: Detect Cycles in 2D Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                Given a 2D array of characters grid of size m x n, you need to find if there exists any cycle consisting of the same value in grid. A cycle is a path of length 4 or more in the grid that starts and ends at the same cell. From a given cell, you can move to one of the cells adjacent to it - in one of the four directions (up, down, left, or right), if it has the same value of the current cell. Also, you cannot move to the cell that you visited in your last move. For example, the cycle (1, 1) -&gt; (1, 2) -&gt; (1, 1) is invalid because from (1, 2) we visited (1, 1) which was the last visited cell. Return true if any cycle of the same value exists in grid, otherwise, return false.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [["a","a","a","a"],["a","b","b","a"],["a","b","b","a"],["a","a","a","a"]]<br/>
+                Output: true<br/>
+                Explanation: There are two valid cycles shown in different colors in the image below.<br/><br/>
+                Input: grid = [["c","c","c","a"],["c","d","c","c"],["c","c","e","c"],["f","c","c","c"]]<br/>
+                Output: true<br/>
+                Explanation: There is only one valid cycle highlighted in the image below.<br/><br/>
+                Input: grid = [["a","b","b"],["b","z","b"],["b","b","a"]]<br/>
+                Output: false
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool containsCycle(vector&lt;vector&lt;char&gt;&gt;&amp; grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector&lt;vector&lt;bool&gt;&gt; visited(m, vector&lt;bool&gt;(n, false));
+        
+        for (int i = 0; i &lt; m; i++) {
+            for (int j = 0; j &lt; n; j++) {
+                if (!visited[i][j]) {
+                    if (dfs(grid, visited, i, j, -1, -1, grid[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+private:
+    bool dfs(vector&lt;vector&lt;char&gt;&gt;&amp; grid, vector&lt;vector&lt;bool&gt;&gt;&amp; visited,
+             int row, int col, int prevRow, int prevCol, char target) {
+        if (row &lt; 0 || row &gt;= grid.size() || col &lt; 0 || col &gt;= grid[0].size()) {
+            return false;
+        }
+        
+        if (grid[row][col] != target) {
+            return false;
+        }
+        
+        if (visited[row][col]) {
+            return true; // Found a cycle
+        }
+        
+        visited[row][col] = true;
+        
+        int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        for (auto&amp; dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            
+            // Skip the cell we came from
+            if (newRow == prevRow &amp;&amp; newCol == prevCol) {
+                continue;
+            }
+            
+            if (dfs(grid, visited, newRow, newCol, row, col, target)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
