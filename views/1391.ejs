@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1391. Check if There is a Valid Path in a Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 1391: Check if There is a Valid Path in a Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given an m x n grid. Each cell of grid represents a street. The street of grid[i][j] can be: 1 which means a street connecting the left cell and the right cell. 2 which means a street connecting the upper cell and the lower cell. 3 which means a street connecting the left cell and the lower cell. 4 which means a street connecting the right cell and the lower cell. 5 which means a street connecting the left cell and the upper cell. 6 which means a street connecting the right cell and the upper cell. You will initially start at the street of the upper-left cell (0, 0). A valid path in the grid is a path that starts from the upper left cell (0, 0) and ends at the bottom-right cell (m - 1, n - 1). The path should only follow the streets. Notice that you are not allowed to change any street. Return true if there is a valid path in the grid or false otherwise.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[2,4,3],[6,5,2]]<br/>
+                Output: true<br/>
+                Explanation: As shown you can start at cell (0, 0) and visit all the cells of the grid to reach (m - 1, n - 1).<br/><br/>
+                Input: grid = [[1,2,1],[1,2,1]]<br/>
+                Output: false<br/>
+                Explanation: As shown you the street at cell (0, 0) is not connected with any street of any other cell and you will get stuck at cell (0, 0).<br/><br/>
+                Input: grid = [[1,1,2]]<br/>
+                Output: false<br/>
+                Explanation: You will get stuck at cell (0, 1) and you cannot reach cell (0, 2).
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    bool hasValidPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        // Define directions for each street type
+        // {direction_index, {row_offset, col_offset}}
+        // 0: up, 1: right, 2: down, 3: left
+        vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; streets = {
+            {},
+            {{1, 0}, {3, 0}},      // Street 1: left-right
+            {{0, -1}, {2, 1}},     // Street 2: up-down
+            {{3, 0}, {2, 1}},      // Street 3: left-down
+            {{1, 0}, {2, 1}},      // Street 4: right-down
+            {{3, 0}, {0, -1}},     // Street 5: left-up
+            {{1, 0}, {0, -1}}      // Street 6: right-up
+        };
+        
+        // Direction mappings: {dr, dc, opposite_direction}
+        int directions[4][3] = {
+            {-1, 0, 2}, // up, opposite is down (2)
+            {0, 1, 3},  // right, opposite is left (3)
+            {1, 0, 0},  // down, opposite is up (0)
+            {0, -1, 1}  // left, opposite is right (1)
+        };
+        
+        queue&lt;pair&lt;int, int&gt;&gt; q;
+        vector&lt;vector&lt;bool&gt;&gt; visited(m, vector&lt;bool&gt;(n, false));
+        
+        q.push({0, 0});
+        visited[0][0] = true;
+        
+        while (!q.empty()) {
+            auto [r, c] = q.front();
+            q.pop();
+            
+            if (r == m - 1 &amp;&amp; c == n - 1) {
+                return true;
+            }
+            
+            int streetType = grid[r][c];
+            
+            // Try each direction this street allows
+            for (auto [dir, _] : streets[streetType]) {
+                int nr = r + directions[dir][0];
+                int nc = c + directions[dir][1];
+                int oppositeDir = directions[dir][2];
+                
+                if (nr &gt;= 0 &amp;&amp; nr &lt; m &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; n &amp;&amp; !visited[nr][nc]) {
+                    int nextStreet = grid[nr][nc];
+                    
+                    // Check if the next street can connect back
+                    bool canConnect = false;
+                    for (auto [nextDir, __] : streets[nextStreet]) {
+                        if (nextDir == oppositeDir) {
+                            canConnect = true;
+                            break;
+                        }
+                    }
+                    
+                    if (canConnect) {
+                        visited[nr][nc] = true;
+                        q.push({nr, nc});
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
