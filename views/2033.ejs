@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2033. Minimum Operations to Make a Uni-Value Grid</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 2033: Minimum Operations to Make a Uni-Value Grid (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 2D integer grid of size m x n and an integer x. In one operation, you can add x to or subtract x from any element in the grid. A uni-value grid is a grid where all the elements of it are equal. Return the minimum number of operations to make the grid uni-value. If it is not possible, return -1.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[2,4],[6,8]], x = 2<br/>
+                Output: 4<br/>
+                Explanation: We can make every element equal to 4 by doing the following: - Add x to 2 once. - Subtract x from 6 once. - Subtract x from 8 twice. A total of 4 operations were used.<br/><br/>
+                Input: grid = [[1,5],[2,3]], x = 1<br/>
+                Output: 5<br/>
+                Explanation: We can make every element equal to 3.<br/><br/>
+                Input: grid = [[1,2],[3,4]], x = 2<br/>
+                Output: -1<br/>
+                Explanation: It is impossible to make every element equal.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    int minOperations(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int x) {
+        vector&lt;int&gt; nums;
+        
+        // Flatten grid into vector
+        for (const auto&amp; row : grid) {
+            for (int val : row) {
+                nums.push_back(val);
+            }
+        }
+        
+        // Check if all elements have same remainder when divided by x
+        int remainder = nums[0] % x;
+        for (int num : nums) {
+            if (num % x != remainder) {
+                return -1;
+            }
+        }
+        
+        // Find median (optimal target value)
+        sort(nums.begin(), nums.end());
+        int median = nums[nums.size() / 2];
+        
+        // Calculate operations needed
+        int operations = 0;
+        for (int num : nums) {
+            operations += abs(num - median) / x;
+        }
+        
+        return operations;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
