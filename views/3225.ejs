@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3225. Maximum Score From Grid Operations</title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode 3225: Maximum Score From Grid Operations (C++)</h1>
+
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                You are given a 2D matrix grid of size n x n. Initially, all cells of the grid are colored white. In one operation, you can select any cell of the grid and color it black. After coloring a cell black, you gain points equal to the sum of all the values in the column up to the colored cell (including the colored cell). Return the maximum total points you can achieve after performing any number of operations.
+            </p>
+            <p><strong>Example:</strong>
+                Input: grid = [[0,0,0,0,0],[0,0,3,0,0],[0,1,0,0,0],[5,0,0,3,0],[0,0,0,0,2]]<br/>
+                Output: 11<br/>
+                Explanation: The optimal strategy achieves a score of 11 points.<br/><br/>
+                Input: grid = [[10,9,0,0,15],[7,1,0,8,0],[5,20,0,11,0],[0,0,0,1,2],[8,12,1,10,3]]<br/>
+                Output: 94<br/>
+                Explanation: The optimal strategy achieves a score of 94 points.
+            </p>
+        </div>
+
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maximumScore(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        int n = grid.size();
+        
+        // Compute prefix sums for each column
+        vector&lt;vector&lt;long long&gt;&gt; prefix(n, vector&lt;long long&gt;(n + 1, 0));
+        for (int j = 0; j &lt; n; j++) {
+            for (int i = 0; i &lt; n; i++) {
+                prefix[j][i + 1] = prefix[j][i] + grid[i][j];
+            }
+        }
+        
+        // dp[col][height] = max score for columns 0..col where column col is colored up to height
+        // height ranges from 0 to n (0 means not colored, n means fully colored)
+        vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(n + 1, LLONG_MIN));
+        
+        // Initialize first column
+        for (int h = 0; h &lt;= n; h++) {
+            dp[0][h] = 0;
+        }
+        
+        for (int col = 0; col &lt; n - 1; col++) {
+            for (int h1 = 0; h1 &lt;= n; h1++) {
+                if (dp[col][h1] == LLONG_MIN) continue;
+                
+                for (int h2 = 0; h2 &lt;= n; h2++) {
+                    long long score = dp[col][h1];
+                    
+                    // Add points from the gap between columns col and col+1
+                    int minH = min(h1, h2);
+                    for (int row = minH; row &lt; n; row++) {
+                        score += grid[row][col + 1];
+                    }
+                    
+                    dp[col + 1][h2] = max(dp[col + 1][h2], score);
+                }
+            }
+        }
+        
+        long long maxScore = 0;
+        for (int h = 0; h &lt;= n; h++) {
+            maxScore = max(maxScore, dp[n - 1][h]);
+        }
+        
+        return maxScore;
+    }
+};</code></pre>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+</body>
+</html>
