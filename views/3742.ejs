@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    long long maxScore(vector&lt;vector&lt;int&gt;&gt;&amp; grid, vector&lt;int&gt;&amp; k) {
+        int m = grid.size(), n = grid[0].size();
+        int sz = k.size();
+
+        // dp[i][j] = max score ending at cell (i, j)
+        vector&lt;vector&lt;long long&gt;&gt; dp(m, vector&lt;long long&gt;(n, LLONG_MIN));
+
+        // We can start from any cell in the first column
+        for (int i = 0; i &lt; m; i++) {
+            dp[i][0] = grid[i][0];
+        }
+
+        // Transition: move right or down
+        // From (r, c) we can go to (r, c+1) or (r+1, c)
+        // The score is sum of grid values along the path
+        // multiplied by corresponding k values
+
+        // Actually, re-reading the problem:
+        // Path goes from any cell, moving only right or down,
+        // for exactly (sz) steps selecting sz cells.
+        // Score = sum of grid[r][c] * k[step]
+
+        // dp[i][j][step] = max score using step+1 k-values ending at (i,j)
+        // But that might be large; optimize with prefix max.
+
+        // dp2[i][j] = max score of a path of length `col+1` ending at (i,j)
+        // where the path started from column 0.
+        // At each column c, we pick k[c] and multiply with grid[i][c].
+
+        // Reset dp for proper formulation:
+        // dp[i][j] = best score for path ending at (i, j) using k[0..j]
+        // Transition: dp[i][j] = grid[i][j] * k[j] + max(dp[i][j-1], dp[i-1][j])
+        //   (came from left or from above in same column)
+        // But we can also come from (i-1, j) meaning we moved down within column j
+
+        // Let's define:
+        // dp[i][j] = maximum path score where path has visited exactly j+1 columns
+        //            and is currently at row i, column j.
+
+        // Fill column 0:
+        for (int i = 0; i &lt; m; i++) {
+            dp[i][0] = (long long)grid[i][0] * k[0];
+        }
+        // Within column 0, we can move down: prefix max
+        for (int i = 1; i &lt; m; i++) {
+            dp[i][0] = max(dp[i][0], dp[i-1][0]);
+            // No: the path must be a sequence of cells moving right or down.
+            // Moving down within col 0 is valid. But each step uses a k value.
+            // Actually the path length must equal sz (number of k values).
+            // Columns visited = 0..n-1, rows visited along the way.
+            // The key insight: we must pick exactly one cell per column? No.
+            // Re-read: path = sequence of cells moving right or down, length = sz.
+        }
+
+        // Correct interpretation:
+        // A path of length sz means sz cells chosen, each step moves right or down.
+        // The i-th cell (0-indexed) contributes grid[r][c] * k[i].
+        // We want to maximize total score.
+
+        // dp[step][i][j] = max score using exactly step+1 cells, ending at (i,j)
+        // Too large. Use rolling array on step.
+
+        // Since sz can be up to m*n, use 2D DP with step axis compressed:
+        // After each step, carry forward the best dp values.
+
+        // Let prev[i][j] = best score of path of length `step` ending at (i,j)
+        // curr[i][j] = best score of path of length `step+1` ending at (i,j)
+        //            = k[step] * grid[i][j] + max over predecessors of prev
+
+        vector&lt;vector&lt;long long&gt;&gt; prev2(m, vector&lt;long long&gt;(n, LLONG_MIN / 2));
+        vector&lt;vector&lt;long long&gt;&gt; curr2(m, vector&lt;long long&gt;(n, LLONG_MIN / 2));
+
+        // Step 0: start anywhere
+        for (int i = 0; i &lt; m; i++)
+            for (int j = 0; j &lt; n; j++)
+                prev2[i][j] = (long long)grid[i][j] * k[0];
+
+        for (int step = 1; step &lt; sz; step++) {
+            // Reset curr2
+            for (int i = 0; i &lt; m; i++)
+                fill(curr2[i].begin(), curr2[i].end(), LLONG_MIN / 2);
+
+            // Compute prefix max from top-left going right then down
+            // A cell (i,j) can be reached from (i, j-1) [right move] or (i-1, j) [down move]
+            // So best predecessor = max(prev2[i][j-1], prev2[i-1][j])
+            // But predecessor must have been reachable (not LLONG_MIN/2)
+
+            // We need prefix max of prev2 considering paths:
+            // Build rowMax[i][j] = max of prev2[i][0..j] (came from left)
+            // and colMax[i][j] = max of prev2[0..i][j] (came from top)
+            // best pred of (i,j) = max(rowMax[i][j-1], colMax[i-1][j])
+
+            vector&lt;vector&lt;long long&gt;&gt; rowMax(m, vector&lt;long long&gt;(n, LLONG_MIN / 2));
+            vector&lt;vector&lt;long long&gt;&gt; colMax(m, vector&lt;long long&gt;(n, LLONG_MIN / 2));
+
+            for (int i = 0; i &lt; m; i++) {
+                rowMax[i][0] = prev2[i][0];
+                for (int j = 1; j &lt; n; j++)
+                    rowMax[i][j] = max(rowMax[i][j-1], prev2[i][j]);
+            }
+            for (int j = 0; j &lt; n; j++) {
+                colMax[0][j] = prev2[0][j];
+                for (int i = 1; i &lt; m; i++)
+                    colMax[i][j] = max(colMax[i-1][j], prev2[i][j]);
+            }
+
+            for (int i = 0; i &lt; m; i++) {
+                for (int j = 0; j &lt; n; j++) {
+                    long long best = LLONG_MIN / 2;
+                    if (j &gt; 0 &amp;&amp; rowMax[i][j-1] &gt; LLONG_MIN / 2)
+                        best = max(best, rowMax[i][j-1]);
+                    if (i &gt; 0 &amp;&amp; colMax[i-1][j] &gt; LLONG_MIN / 2)
+                        best = max(best, colMax[i-1][j]);
+                    if (best &gt; LLONG_MIN / 2)
+                        curr2[i][j] = best + (long long)grid[i][j] * k[step];
+                }
+            }
+
+            swap(prev2, curr2);
+        }
+
+        long long ans = LLONG_MIN;
+        for (int i = 0; i &lt; m; i++)
+            for (int j = 0; j &lt; n; j++)
+                ans = max(ans, prev2[i][j]);
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
