@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        // Edge cases: empty list, single node, or no rotation needed
+        if (!head || !head-&gt;next || k == 0) return head;
+
+        // Step 1: Find the length of the list and the tail node
+        int len = 1;
+        ListNode* tail = head;
+        while (tail-&gt;next) {
+            tail = tail-&gt;next;
+            len++;
+        }
+
+        // Step 2: Compute effective rotation
+        // Rotating by `len` steps brings list back to original.
+        // So only (k % len) steps matter.
+        k = k % len;
+        if (k == 0) return head;  // No change needed
+
+        // Step 3: Form a circular linked list
+        // Connect tail back to head to make a ring.
+        tail-&gt;next = head;
+
+        // Step 4: Find the new tail
+        // The new tail is at position (len - k - 1) from the original head.
+        // The new head is at position (len - k) from the original head.
+        //
+        // Example: 1-&gt;2-&gt;3-&gt;4-&gt;5, k=2
+        //   len=5, new tail at index 2 (node 3), new head at index 3 (node 4)
+        //   Result: 4-&gt;5-&gt;1-&gt;2-&gt;3
+
+        ListNode* newTail = head;
+        for (int i = 0; i &lt; len - k - 1; i++) {
+            newTail = newTail-&gt;next;
+        }
+
+        // Step 5: Break the circle
+        ListNode* newHead = newTail-&gt;next;
+        newTail-&gt;next = nullptr;
+
+        return newHead;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
