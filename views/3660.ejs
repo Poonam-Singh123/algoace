@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; maxValue(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+
+        // Jump rules:
+        //   Forward  (j &gt; i): allowed only if nums[j] &lt; nums[i]
+        //   Backward (j &lt; i): allowed only if nums[j] &gt; nums[i]
+        //
+        // Key observations:
+        //
+        // 1) From index i we can jump FORWARD to any j &gt; i with nums[j] &lt; nums[i].
+        //    The best reachable value via forward jumps is the prefix max of nums
+        //    up to index i — because any larger element to the left would have been
+        //    able to jump forward to the same positions we can, and chain further.
+        //    preMax[i] = max(nums[0..i])
+        //
+        // 2) We can jump BACKWARD to any j &lt; i with nums[j] &gt; nums[i].
+        //    If sufMin (the suffix minimum from i+1 onward) is LESS THAN preMax[i],
+        //    it means there exists some element to our right that is smaller than us,
+        //    which can eventually reach a larger element via a backward jump.
+        //    In that case, ans[i] = ans[i+1] (propagate the answer rightward).
+        //
+        // 3) Traverse right-to-left:
+        //    - Track sufMin = minimum of nums seen so far from the right.
+        //    - If preMax[i] &gt; sufMin: a forward jump from i leads somewhere that
+        //      can then jump backward to a larger value, so ans[i] = ans[i+1].
+        //    - Otherwise: best reachable is simply preMax[i].
+
+        // Step 1: Build prefix maximum array
+        vector&lt;int&gt; preMax(n);
+        preMax[0] = nums[0];
+        for (int i = 1; i &lt; n; i++) {
+            preMax[i] = max(preMax[i - 1], nums[i]);
+        }
+
+        // Step 2: Sweep right-to-left with suffix minimum
+        vector&lt;int&gt; ans(n);
+        int sufMin = INT_MAX;
+
+        for (int i = n - 1; i &gt;= 0; i--) {
+            // Can we make a forward jump to something that then jumps back higher?
+            // Yes, if preMax[i] &gt; sufMin (there's a smaller element ahead that can
+            // act as a stepping stone to reach a larger value).
+            if (preMax[i] &gt; sufMin) {
+                ans[i] = ans[i + 1];   // inherit best answer from the right
+            } else {
+                ans[i] = preMax[i];    // best reachable is the prefix max
+            }
+            sufMin = min(sufMin, nums[i]);
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
