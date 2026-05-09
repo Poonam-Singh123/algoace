@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Helper: extract, rotate, and write back one concentric layer.
+    // Layer `p` is the p-th ring from the outside (0-indexed).
+    // Elements are traversed counter-clockwise starting from top-left:
+    //   top row (left -> right), right col (top -> bottom),
+    //   bottom row (right -> left), left col (bottom -> top).
+    void rotateLayer(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int p, int k) {
+        int m = grid.size(), n = grid[0].size();
+        vector&lt;int&gt; layer;
+
+        // Top row: left to right
+        for (int j = p; j &lt; n - p - 1; j++)
+            layer.push_back(grid[p][j]);
+
+        // Right column: top to bottom
+        for (int i = p; i &lt; m - p - 1; i++)
+            layer.push_back(grid[i][n - p - 1]);
+
+        // Bottom row: right to left
+        for (int j = n - p - 1; j &gt; p; j--)
+            layer.push_back(grid[m - p - 1][j]);
+
+        // Left column: bottom to top
+        for (int i = m - p - 1; i &gt; p; i--)
+            layer.push_back(grid[i][p]);
+
+        int len = layer.size();
+        k %= len;           // Effective rotation (full loops cancel out)
+        if (k == 0) return; // No change needed
+
+        // Rotate left by k: new[i] = old[(i + k) % len]
+        // Write rotated values back to the grid in the same traversal order.
+        int idx = k;
+        for (int j = p; j &lt; n - p - 1; j++)
+            grid[p][j] = layer[idx++ % len];
+
+        for (int i = p; i &lt; m - p - 1; i++)
+            grid[i][n - p - 1] = layer[idx++ % len];
+
+        for (int j = n - p - 1; j &gt; p; j--)
+            grid[m - p - 1][j] = layer[idx++ % len];
+
+        for (int i = m - p - 1; i &gt; p; i--)
+            grid[i][p] = layer[idx++ % len];
+    }
+
+    vector&lt;vector&lt;int&gt;&gt; rotateGrid(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int k) {
+        int m = grid.size(), n = grid[0].size();
+
+        // There are min(m, n) / 2 concentric layers.
+        // Process each layer independently.
+        for (int p = 0; p &lt; min(m, n) / 2; p++) {
+            rotateLayer(grid, p, k);
+        }
+
+        return grid;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
