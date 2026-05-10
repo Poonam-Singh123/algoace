@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Jump rule: from index i you may jump to index j where:
+    //   i &lt; j  AND  |nums[j] - nums[i]| &lt;= target
+    //
+    // Goal: maximise the NUMBER of jumps taken to reach index n-1.
+    //       Return -1 if n-1 is unreachable.
+    //
+    // Approach: Bottom-up DP (left to right)
+    //   dp[i] = maximum jumps to reach index i from index 0.
+    //           -1  means index i is unreachable.
+    //
+    // Transition:
+    //   For every pair (j, i) with j &lt; i:
+    //     if dp[j] != -1  AND  |nums[i] - nums[j]| &lt;= target:
+    //       dp[i] = max(dp[i], dp[j] + 1)
+    //
+    // Time : O(n^2)   Space: O(n)
+
+    int maximumJumps(vector&lt;int&gt;&amp; nums, int target) {
+        int n = nums.size();
+
+        // Initialise all positions as unreachable except the start.
+        vector&lt;int&gt; dp(n, -1);
+        dp[0] = 0;  // 0 jumps needed to be at index 0
+
+        for (int i = 1; i &lt; n; i++) {
+            for (int j = 0; j &lt; i; j++) {
+                // Can we jump from j to i?
+                if (dp[j] != -1 &amp;&amp;
+                    abs(nums[i] - nums[j]) &lt;= target) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+
+        // dp[n-1] holds the answer; already -1 if unreachable.
+        return dp[n - 1];
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
