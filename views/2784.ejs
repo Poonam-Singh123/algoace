@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // An array is "good" if it is a permutation of base[n], where:
+    //   base[n] = [1, 2, ..., n-1, n, n]
+    // i.e. contains 1..(n-1) exactly once, and n exactly twice.
+    //
+    // Since nums must be a permutation of base[n], the only candidate for n
+    // is the MAXIMUM element of nums (any value &gt; max cannot appear in base[n]).
+    //
+    // Checks required:
+    //   1. len(nums) == n + 1          (base[n] has exactly n+1 elements)
+    //   2. n appears exactly twice
+    //   3. every integer 1..(n-1) appears exactly once
+    //      (equivalently: no value outside [1, n] exists, and no duplicates
+    //       among 1..n-1 — verified cleanly with a frequency map)
+    //
+    // Time : O(n)    Space: O(n)
+
+    bool isGood(vector&lt;int&gt;&amp; nums) {
+        int n = *max_element(nums.begin(), nums.end());
+
+        // Check 1: length must be n + 1
+        if ((int)nums.size() != n + 1) return false;
+
+        // Build frequency map
+        unordered_map&lt;int, int&gt; freq;
+        for (int x : nums) freq[x]++;
+
+        // Check 2: n must appear exactly twice
+        if (freq[n] != 2) return false;
+
+        // Check 3: every integer 1..(n-1) must appear exactly once
+        for (int i = 1; i &lt; n; i++) {
+            if (freq[i] != 1) return false;
+        }
+
+        return true;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>

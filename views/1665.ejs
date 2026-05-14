@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // tasks[i] = [actual_i, minimum_i]
+    //   actual_i   : energy consumed to complete task i
+    //   minimum_i  : energy required to START task i  (minimum_i &gt;= actual_i)
+    //
+    // Goal: find the minimum initial energy to finish ALL tasks in some order.
+    //
+    // Greedy insight:
+    //   Consider two adjacent tasks A and B in our chosen order.
+    //   Let E = energy we have when we reach task A.
+    //   We need E &gt;= minA  to start A, then E - actA &gt;= minB to start B.
+    //   If we swap and do B first:
+    //   We need E &gt;= minB, then E - actB &gt;= minA.
+    //
+    //   A before B is better when the required initial E for A-then-B
+    //   is &lt;= the required E for B-then-A:
+    //     max(minA, minB + actA) &lt;= max(minB, minA + actB)
+    //
+    //   This simplifies to:
+    //     minA - actA &gt;= minB - actB
+    //   i.e. sort tasks by (minimum - actual) in DESCENDING order.
+    //   Tasks with a larger "buffer" (minimum - actual) go first.
+    //
+    // After sorting, simulate forward:
+    //   Track `cur` = current energy available.
+    //   If cur &lt; task.minimum, we must have started with more energy;
+    //   increase the initial energy by the deficit (minimum - cur),
+    //   and set cur = actual (energy left after completing the task).
+    //
+    // Time : O(n log n)   Space: O(1)
+
+    int minimumEffort(vector&lt;vector&lt;int&gt;&gt;&amp; tasks) {
+        // Sort descending by (minimum - actual) = the "buffer" of each task
+        sort(tasks.begin(), tasks.end(), [](const vector&lt;int&gt;&amp; a,
+                                            const vector&lt;int&gt;&amp; b) {
+            return (a[1] - a[0]) &gt; (b[1] - b[0]);
+        });
+
+        int ans = 0;  // minimum initial energy
+        int cur = 0;  // current energy as we simulate
+
+        for (auto&amp; t : tasks) {
+            int actual  = t[0];
+            int minimum = t[1];
+
+            if (cur &lt; minimum) {
+                // We don't have enough energy to start this task.
+                // Top up the initial energy by the deficit.
+                ans += minimum - cur;
+                cur  = minimum;
+            }
+
+            // Complete the task: spend actual energy
+            cur -= actual;
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
