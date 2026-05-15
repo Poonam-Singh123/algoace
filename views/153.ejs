@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // A sorted array has been rotated at some unknown pivot.
+    // All elements are DISTINCT.
+    // Find the minimum element in O(log n).
+    //
+    // Key insight (Binary Search):
+    //   The array consists of two sorted "halves" separated by the pivot.
+    //   The minimum is always the first element of the right half.
+    //
+    //   At any midpoint `mid`:
+    //   - If nums[mid] &gt; nums[r]:
+    //       The right half is NOT sorted, so the pivot (and minimum)
+    //       lies in the right portion  →  lo = mid + 1
+    //   - If nums[mid] &lt;= nums[r]:
+    //       The right half IS sorted, so nums[mid] could be the minimum
+    //       or the minimum is further left  →  hi = mid
+    //
+    //   Loop terminates when lo == hi, which points to the minimum.
+    //
+    // Example:
+    //   nums = [4, 5, 6, 7, 0, 1, 2]
+    //                          ^
+    //   mid=3: nums[3]=7 &gt; nums[6]=2  →  lo=4
+    //   mid=5: nums[5]=1 &lt;= nums[6]=2 →  hi=5
+    //   mid=4: nums[4]=0 &lt;= nums[5]=1 →  hi=4
+    //   lo==hi==4  →  answer = nums[4] = 0  ✓
+    //
+    // Time : O(log n)    Space: O(1)
+
+    int findMin(vector&lt;int&gt;&amp; nums) {
+        int lo = 0, hi = (int)nums.size() - 1;
+
+        while (lo &lt; hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] &gt; nums[hi]) {
+                // Minimum is in the right portion (excluding mid)
+                lo = mid + 1;
+            } else {
+                // Minimum is in the left portion (including mid)
+                hi = mid;
+            }
+        }
+
+        // lo == hi: converged on the minimum element
+        return nums[lo];
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
