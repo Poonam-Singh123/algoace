@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Follow-up of LC 153: the array may now contain DUPLICATES.
+    // Still find the minimum in as few comparisons as possible.
+    //
+    // The same binary search logic from LC 153 applies, but duplicates
+    // introduce one ambiguous case:
+    //
+    //   nums[mid] == nums[hi]
+    //
+    // When this happens we cannot determine which half contains the minimum.
+    // Example:
+    //   [3, 1, 3, 3, 3]  →  mid=2: nums[2]=3 == nums[4]=3
+    //   The minimum (1) is in the LEFT half, but the right half also starts with 3.
+    //   We cannot safely move lo or collapse hi to mid.
+    //
+    // Safe resolution: shrink hi by 1 (hi--).
+    //   - We never lose the minimum because nums[hi] == nums[mid],
+    //     so even if nums[hi] were the minimum, nums[mid] is an identical copy.
+    //   - Worst case (all duplicates): O(n). Average case: O(log n).
+    //
+    // The three cases:
+    //   nums[mid] &gt; nums[hi]  →  pivot in right half  →  lo = mid + 1
+    //   nums[mid] &lt; nums[hi]  →  right half sorted, min at mid or left  →  hi = mid
+    //   nums[mid] == nums[hi] →  ambiguous, safely shrink right  →  hi--
+    //
+    // Time : O(log n) average, O(n) worst case (all duplicates)
+    // Space: O(1)
+
+    int findMin(vector&lt;int&gt;&amp; nums) {
+        int lo = 0, hi = (int)nums.size() - 1;
+
+        while (lo &lt; hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] &gt; nums[hi]) {
+                // Minimum is strictly in the right portion (excluding mid)
+                lo = mid + 1;
+            } else if (nums[mid] &lt; nums[hi]) {
+                // Right half is sorted; minimum is at mid or further left
+                hi = mid;
+            } else {
+                // nums[mid] == nums[hi]: ambiguous — safely drop hi
+                // (nums[hi] is a duplicate of nums[mid], so we lose nothing)
+                hi--;
+            }
+        }
+
+        // lo == hi: converged on the minimum element
+        return nums[lo];
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
