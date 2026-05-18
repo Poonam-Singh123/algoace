@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // From index i, one step can go to:
+    //   i + 1  (if in bounds)
+    //   i - 1  (if in bounds)
+    //   j      (any j where arr[j] == arr[i] and j != i)
+    //
+    // Return minimum steps to reach index n-1 from index 0.
+    //
+    // Approach: BFS on an implicit graph.
+    //   - Each index is a node.
+    //   - Edges: left neighbour, right neighbour, all same-value indices.
+    //   - BFS gives the shortest path (min steps) in an unweighted graph.
+    //
+    // Key optimisation — clear the value-group after first use:
+    //   Once we enqueue all indices sharing a value, any future visit to
+    //   that value group adds nothing new (those nodes are already queued).
+    //   Erasing the group from the hash map prevents O(n^2) re-processing
+    //   of large duplicate groups (e.g. [7,7,7,...,7]).
+    //   This keeps the overall complexity at O(n).
+    //
+    // Time : O(n)    Space: O(n)
+
+    int minJumps(vector&lt;int&gt;&amp; arr) {
+        int n = arr.size();
+        if (n == 1) return 0;
+
+        // Build value -&gt; list of indices map
+        unordered_map&lt;int, vector&lt;int&gt;&gt; valToIdx;
+        for (int i = 0; i &lt; n; i++) {
+            valToIdx[arr[i]].push_back(i);
+        }
+
+        vector&lt;bool&gt; visited(n, false);
+        queue&lt;int&gt; q;
+        q.push(0);
+        visited[0] = true;
+        int steps = 0;
+
+        while (!q.empty()) {
+            int sz = q.size();
+            steps++;
+
+            // Process all nodes at the current BFS level
+            while (sz--) {
+                int i = q.front();
+                q.pop();
+
+                // Collect all neighbours: left, right, same-value indices
+                vector&lt;int&gt; neighbours = {i - 1, i + 1};
+
+                // Append all same-value indices (if group still exists)
+                if (valToIdx.count(arr[i])) {
+                    for (int j : valToIdx[arr[i]]) {
+                        neighbours.push_back(j);
+                    }
+                    // Clear group: all those indices are now queued;
+                    // no future node needs to re-expand this group.
+                    valToIdx.erase(arr[i]);
+                }
+
+                for (int nb : neighbours) {
+                    if (nb &lt; 0 || nb &gt;= n || visited[nb]) continue;
+                    if (nb == n - 1) return steps;  // Reached destination
+                    visited[nb] = true;
+                    q.push(nb);
+                }
+            }
+        }
+
+        return -1;  // Unreachable (guaranteed reachable by constraints)
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
