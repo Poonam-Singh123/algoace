@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // A sorted array of DISTINCT integers has been rotated at an unknown pivot.
+    // Search for target and return its index, or -1 if not found.
+    // Must run in O(log n).
+    //
+    // Key insight:
+    //   Even after rotation, at least ONE of the two halves [lo, mid]
+    //   or [mid, hi] is always fully sorted. We identify which half is
+    //   sorted, check if target lies within it, and binary search there.
+    //
+    // Two cases at each step (comparing nums[mid] with nums[lo]):
+    //
+    //   Case 1: Left half [lo, mid] is sorted  (nums[lo] &lt;= nums[mid])
+    //     - If target is in [nums[lo], nums[mid])  →  hi = mid - 1
+    //     - Otherwise                              →  lo = mid + 1
+    //
+    //   Case 2: Right half [mid, hi] is sorted  (nums[lo] &gt; nums[mid])
+    //     - If target is in (nums[mid], nums[hi]]  →  lo = mid + 1
+    //     - Otherwise                              →  hi = mid - 1
+    //
+    // Example: nums = [4,5,6,7,0,1,2], target = 0
+    //   lo=0,hi=6 → mid=3: nums[0]=4 &lt;= nums[3]=7  (left sorted)
+    //               target 0 NOT in [4,7) → lo=4
+    //   lo=4,hi=6 → mid=5: nums[4]=0 &lt;= nums[5]=1  (left sorted)
+    //               target 0 IN [0,1) → hi=4
+    //   lo=4,hi=4 → mid=4: nums[4]=0 == target → return 4 ✓
+    //
+    // Time : O(log n)    Space: O(1)
+
+    int search(vector&lt;int&gt;&amp; nums, int target) {
+        int lo = 0, hi = (int)nums.size() - 1;
+
+        while (lo &lt;= hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] == target) return mid;
+
+            // Determine which half is sorted
+            if (nums[lo] &lt;= nums[mid]) {
+                // Left half [lo, mid] is sorted
+                if (nums[lo] &lt;= target &amp;&amp; target &lt; nums[mid]) {
+                    hi = mid - 1;   // Target is in the sorted left half
+                } else {
+                    lo = mid + 1;   // Target must be in the right half
+                }
+            } else {
+                // Right half [mid, hi] is sorted
+                if (nums[mid] &lt; target &amp;&amp; target &lt;= nums[hi]) {
+                    lo = mid + 1;   // Target is in the sorted right half
+                } else {
+                    hi = mid - 1;   // Target must be in the left half
+                }
+            }
+        }
+
+        return -1;  // Target not found
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
