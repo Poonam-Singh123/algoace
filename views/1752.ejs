@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given an array nums, return true if it could be a rotation of a
+    // non-decreasing sorted array. Duplicates are allowed.
+    //
+    // Key insight:
+    //   A valid rotated sorted array has AT MOST ONE "drop" —
+    //   a position i where nums[i] &gt; nums[(i+1) % n].
+    //
+    //   Why at most one?
+    //   - A sorted (non-decreasing) array has 0 drops.
+    //   - Rotating it shifts the single wrap-around point to some
+    //     interior position, creating exactly 1 drop.
+    //   - If there are 2 or more drops, the array cannot be a rotation
+    //     of any sorted sequence.
+    //
+    // We compare each element with its CIRCULAR next neighbour
+    // (using modulo) and count how many drops occur.
+    // If drops &lt;= 1 → valid rotation, return true.
+    // If drops &gt;= 2 → impossible, return false.
+    //
+    // Examples:
+    //   [3,4,5,1,2]  drops at index 2 (5&gt;1)            → 1 drop  → true
+    //   [2,1,3,4]    drops at index 0 (2&gt;1) and 3 (4&gt;2)→ 2 drops → false
+    //   [1,2,3]      no drops                            → 0 drops → true
+    //   [1,1,1]      no drops                            → 0 drops → true
+    //
+    // Time : O(n)    Space: O(1)
+
+    bool check(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+        int drops = 0;
+
+        for (int i = 0; i &lt; n; i++) {
+            // Compare current element with the next one (circularly)
+            if (nums[i] &gt; nums[(i + 1) % n]) {
+                drops++;
+            }
+            // More than one drop → cannot be a rotated sorted array
+            if (drops &gt; 1) return false;
+        }
+
+        return true;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
