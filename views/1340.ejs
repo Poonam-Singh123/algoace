@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // From index i you can jump to index j (left or right) if:
+    //   1. |i - j| &lt;= d                        (within jump distance)
+    //   2. arr[i] &gt; arr[j]                      (destination is strictly lower)
+    //   3. arr[i] &gt; arr[k] for all k between i and j  (no blocker in between)
+    //
+    // Choose any starting index. Return the maximum number of indices visitable.
+    //
+    // Approach: DP with Memoization (top-down DFS)
+    //   dp[i] = maximum indices reachable starting from index i.
+    //
+    //   For each i, scan LEFT up to d steps and RIGHT up to d steps.
+    //   Stop scanning in a direction as soon as we hit an element &gt;= arr[i]
+    //   (it acts as a blocker — we can neither jump over it nor to it).
+    //   For valid jump targets j: dp[i] = max(dp[i], 1 + dfs(j))
+    //
+    //   Memoization ensures each index is computed at most once.
+    //
+    // Why DFS over sorting-based DP?
+    //   Sorting gives O(n log n + n*d); DFS with memo gives O(n*d) directly.
+    //   Both are valid — DFS is more intuitive for this problem.
+    //
+    // Time : O(n * d)    Space: O(n)
+
+    vector&lt;int&gt; memo;
+
+    int dfs(vector&lt;int&gt;&amp; arr, int i, int d) {
+        if (memo[i] != -1) return memo[i];
+
+        int n = arr.size();
+        int best = 1;   // At minimum we can visit index i itself
+
+        // Jump RIGHT: i+1, i+2, ..., min(i+d, n-1)
+        for (int j = i + 1; j &lt;= min(i + d, n - 1); j++) {
+            if (arr[j] &gt;= arr[i]) break;   // Blocker: stop scanning right
+            best = max(best, 1 + dfs(arr, j, d));
+        }
+
+        // Jump LEFT: i-1, i-2, ..., max(i-d, 0)
+        for (int j = i - 1; j &gt;= max(i - d, 0); j--) {
+            if (arr[j] &gt;= arr[i]) break;   // Blocker: stop scanning left
+            best = max(best, 1 + dfs(arr, j, d));
+        }
+
+        return memo[i] = best;
+    }
+
+    int maxJumps(vector&lt;int&gt;&amp; arr, int d) {
+        int n = arr.size();
+        memo.assign(n, -1);
+
+        int ans = 1;
+        for (int i = 0; i &lt; n; i++) {
+            ans = max(ans, dfs(arr, i, d));
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
