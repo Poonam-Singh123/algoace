@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given a 0-indexed binary string s and integers minJump, maxJump.
+    // Start at index 0 (which is '0'). Move from index i to index j if:
+    //   i + minJump &lt;= j &lt;= min(i + maxJump, n-1)  AND  s[j] == '0'
+    // Return true if index n-1 is reachable.
+    //
+    // Naive DP: dp[i] = true if index i is reachable.
+    //   For each reachable i, mark dp[j] = true for all valid j.
+    //   This is O(n * (maxJump - minJump)) — up to O(n^2), causes TLE.
+    //
+    // Optimised approach: DP + Prefix Sum  O(n)
+    //   preSum[i] = number of reachable '0' positions in s[0..i-1].
+    //
+    //   For each index i where s[i] == '0':
+    //     Count reachable predecessors in the window [i-maxJump, i-minJump].
+    //     If preSum[r+1] - preSum[l] > 0, at least one predecessor can jump
+    //     to i, so dp[i] = true.
+    //
+    //   The prefix sum turns an O(n) window scan into an O(1) query,
+    //   giving an overall O(n) solution.
+    //
+    // Time : O(n)    Space: O(n)
+
+    bool canReach(string s, int minJump, int maxJump) {
+        int n = s.size();
+
+        // Quick exit: last position must be '0' to be landable
+        if (s[n - 1] == '1') return false;
+
+        // dp[i] = true if index i is reachable from index 0
+        vector&lt;bool&gt; dp(n, false);
+        dp[0] = true;
+
+        // preSum[i] = number of reachable positions in s[0..i-1]
+        // preSum[i+1] = preSum[i] + dp[i]
+        vector&lt;int&gt; preSum(n + 1, 0);
+        preSum[1] = 1;  // dp[0] = true
+
+        for (int i = 1; i &lt; n; i++) {
+            if (s[i] == '0') {
+                // Valid predecessor window: [l, r]
+                int l = max(0, i - maxJump);
+                int r = i - minJump;
+
+                // Check if any reachable index exists in [l, r]
+                if (r &gt;= 0 &amp;&amp; preSum[r + 1] - preSum[l] &gt; 0) {
+                    dp[i] = true;
+                }
+            }
+            preSum[i + 1] = preSum[i] + (dp[i] ? 1 : 0);
+        }
+
+        return dp[n - 1];
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
