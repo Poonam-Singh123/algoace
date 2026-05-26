@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // A letter is "special" if it appears BOTH in lowercase AND uppercase
+    // somewhere in the string word.
+    // Return the count of such special letters (26 possible: a-z).
+    //
+    // Approach: Boolean presence array  O(n + 26)
+    //   Use a boolean array seen[128] indexed by ASCII value.
+    //   Mark each character encountered as seen.
+    //   Then, for each lowercase letter c in 'a'..'z', check if both
+    //   c (lowercase) and c - 32 (its uppercase counterpart) are present.
+    //
+    // Why a boolean array over an unordered_set?
+    //   Both are O(n) for building and O(1) for lookup.
+    //   The array avoids hashing overhead and is cache-friendly —
+    //   preferable for a small fixed alphabet (128 ASCII values).
+    //
+    // ASCII relationship:
+    //   'A' = 65, 'a' = 97  →  'a' - 'A' = 32
+    //   So uppercase of c  =  c - 32
+    //      lowercase of C  =  C + 32
+    //
+    // Time : O(n + 26) = O(n)    Space: O(1)  (fixed-size array)
+
+    int numberOfSpecialChars(string word) {
+        // seen[c] = true if character c was found in word
+        vector&lt;bool&gt; seen(128, false);
+        for (char c : word) seen[c] = true;
+
+        int ans = 0;
+        // Check each of the 26 lowercase letters
+        for (char c = 'a'; c &lt;= 'z'; c++) {
+            // c - 32 converts lowercase to uppercase (e.g. 'a' -&gt; 'A')
+            if (seen[c] &amp;&amp; seen[c - 32]) {
+                ans++;
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
