@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // A letter c is "special" if:
+    //   1. It appears in BOTH lowercase and uppercase in word, AND
+    //   2. Every lowercase occurrence of c comes BEFORE the first
+    //      uppercase occurrence of c.
+    //
+    // Approach: Track lastLower and firstUpper per letter.
+    //   For each letter c in 'a'..'z':
+    //     - lastLower[c]  = index of the LAST  lowercase c in word
+    //     - firstUpper[c] = index of the FIRST uppercase C in word
+    //
+    //   c is special iff:
+    //     lastLower[c] exists  AND
+    //     firstUpper[c] exists AND
+    //     lastLower[c] &lt; firstUpper[c]
+    //
+    //   The condition lastLower &lt; firstUpper guarantees ALL lowercase
+    //   occurrences precede the first uppercase occurrence, because:
+    //   - If the LAST lowercase c is before the FIRST uppercase C,
+    //     then every lowercase c (which appears at or before the last)
+    //     is also before every uppercase C (which appears at or after the first).
+    //
+    // Example: word = "aaAbcBC"
+    //   'a': lastLower=1, firstUpper=2  → 1 &lt; 2 ✓ special
+    //   'b': lastLower=3, firstUpper=5  → 3 &lt; 5 ✓ special
+    //   'c': lastLower=4, firstUpper=6  → 4 &lt; 6 ✓ special
+    //   Output: 3 ✓
+    //
+    // Example: word = "AbBCab"
+    //   'a': lastLower=4, firstUpper=0  → 4 &gt; 0 ✗ not special
+    //   'b': lastLower=5, firstUpper=2  → 5 &gt; 2 ✗ not special
+    //   Output: 0 ✓
+    //
+    // Time : O(n + 26) = O(n)    Space: O(1)  (fixed 26-element arrays)
+
+    int numberOfSpecialChars(string word) {
+        // Initialise with -1 meaning "not seen"
+        vector&lt;int&gt; lastLower(26, -1);
+        vector&lt;int&gt; firstUpper(26, -1);
+
+        for (int i = 0; i &lt; (int)word.size(); i++) {
+            char c = word[i];
+            if (islower(c)) {
+                // Update last seen index for this lowercase letter
+                lastLower[c - 'a'] = i;
+            } else {
+                // Record first seen index for this uppercase letter
+                if (firstUpper[c - 'A'] == -1) {
+                    firstUpper[c - 'A'] = i;
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i &lt; 26; i++) {
+            // Both must exist AND last lowercase must precede first uppercase
+            if (lastLower[i] != -1 &amp;&amp;
+                firstUpper[i] != -1 &amp;&amp;
+                lastLower[i] &lt; firstUpper[i]) {
+                ans++;
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
