@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // For each wordsQuery[i], find the index in wordsContainer of the string
+    // that shares the LONGEST COMMON SUFFIX with wordsQuery[i].
+    // Tie-break 1: shortest string length.
+    // Tie-break 2: earlier index in wordsContainer.
+    //
+    // Approach: Reversed Trie (Suffix Trie)
+    //   Inserting strings REVERSED into a Trie turns suffix matching
+    //   into standard prefix matching — much simpler to implement.
+    //
+    //   Each Trie node stores:
+    //     children[26]  : child pointers for each letter.
+    //     bestIdx       : index (in wordsContainer) of the best candidate
+    //                     reachable from this node — i.e. the shortest
+    //                     (and earliest) string that passes through here.
+    //
+    //   Build phase — insert every wordsContainer[i] reversed:
+    //     At each node along the path, update bestIdx if wordsContainer[i]
+    //     is shorter (or same length but earlier index) than the current best.
+    //     This ensures every node already knows the answer for queries that
+    //     run out of characters at that node.
+    //
+    //   Query phase — for each wordsQuery[i] reversed:
+    //     Walk the Trie character by character.
+    //     If a child is missing, stop — no deeper common suffix exists.
+    //     Return the bestIdx of the deepest node reached.
+    //     (The root always holds the globally best fallback.)
+    //
+    // Time : O(L_c + L_q)  where L_c = total chars in wordsContainer,
+    //                             L_q = total chars in wordsQuery.
+    // Space: O(L_c * 26)   for the Trie nodes.
+
+    struct TrieNode {
+        TrieNode* children[26];
+        int bestIdx;            // index of best wordsContainer candidate here
+        TrieNode() : bestIdx(-1) {
+            fill(children, children + 26, nullptr);
+        }
+    };
+
+    // Insert reversed word into Trie; update bestIdx at every node.
+    void insert(TrieNode* root, const string&amp; word, int idx,
+                const vector&lt;string&gt;&amp; wordsContainer) {
+        TrieNode* node = root;
+        // Update root's best candidate first (covers zero-suffix case)
+        if (node-&gt;bestIdx == -1 ||
+            wordsContainer[idx].size() &lt; wordsContainer[node-&gt;bestIdx].size()) {
+            node-&gt;bestIdx = idx;
+        }
+
+        // Walk reversed word, creating nodes as needed
+        for (int i = (int)word.size() - 1; i &gt;= 0; i--) {
+            int c = word[i] - 'a';
+            if (!node-&gt;children[c]) {
+                node-&gt;children[c] = new TrieNode();
+            }
+            node = node-&gt;children[c];
+
+            // Update bestIdx: prefer shorter string; tie-break by earlier index
+            if (node-&gt;bestIdx == -1 ||
+                wordsContainer[idx].size() &lt; wordsContainer[node-&gt;bestIdx].size()) {
+                node-&gt;bestIdx = idx;
+            }
+        }
+    }
+
+    // Query: walk reversed query string; return bestIdx of deepest reachable node.
+    int query(TrieNode* root, const string&amp; word) {
+        TrieNode* node = root;
+        for (int i = (int)word.size() - 1; i &gt;= 0; i--) {
+            int c = word[i] - 'a';
+            if (!node-&gt;children[c]) break;  // No further common suffix
+            node = node-&gt;children[c];
+        }
+        return node-&gt;bestIdx;
+    }
+
+    vector&lt;int&gt; stringIndices(vector&lt;string&gt;&amp; wordsContainer,
+                               vector&lt;string&gt;&amp; wordsQuery) {
+        TrieNode* root = new TrieNode();
+
+        // Build the suffix Trie from all container words
+        for (int i = 0; i &lt; (int)wordsContainer.size(); i++) {
+            insert(root, wordsContainer[i], i, wordsContainer);
+        }
+
+        // Answer each query
+        vector&lt;int&gt; ans;
+        for (const string&amp; q : wordsQuery) {
+            ans.push_back(query(root, q));
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
