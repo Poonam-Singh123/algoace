@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Number line from 0 to infinity. Two query types:
+    //   Type 1: [1, x]      — place an obstacle at position x.
+    //   Type 2: [2, x, sz]  — can a block of size sz fit in [0, x]
+    //                          without overlapping any obstacle?
+    //                          (touching is allowed; only return true/false)
+    //
+    // Key observations:
+    //   - A block of size sz fits in a gap [L, R] iff (R - L) &gt;= sz.
+    //   - We only need to check gaps that START before or at x.
+    //   - The gap containing x is [prev_obstacle, next_obstacle].
+    //     Its effective right boundary for this query is min(next_obs, x).
+    //   - Among all gaps fully left of x, we want the MAXIMUM gap size.
+    //
+    // Approach: Sorted set of obstacles + Segment Tree for max gap
+    //
+    //   obstacles (std::set&lt;int&gt;):
+    //     Always contains 0 (left sentinel). Tracks all placed obstacles.
+    //     Lets us find the predecessor of any position in O(log n).
+    //
+    //   Segment Tree (1-indexed, range max):
+    //     Node i stores the maximum gap starting at position i
+    //     that is entirely within [0, i].
+    //     Specifically, seg[x] = max gap size whose LEFT endpoint &lt;= x.
+    //     After placing obstacle at x with predecessor p:
+    //       - The old gap [p, old_next] is split into [p, x] and [x, old_next].
+    //       - Update seg[x]   = x - p   (new gap ending at x).
+    //       - Update seg[old_next-1] = old_next - x  (gap from x onwards).
+    //         But since we use prefix max, we only need to update the
+    //         LEFT endpoint of each gap.
+    //       - More precisely: update position x with value (x - p),
+    //         and update position (old_next) with value (old_next - x)
+    //         [overwriting the gap that no longer starts at p].
+    //
+    //   Query [2, x, sz]:
+    //     1. Find the obstacle p = largest obstacle &lt;= x.
+    //     2. The gap containing x has size x - p (clipped at x).
+    //        If (x - p) &gt;= sz → true.
+    //     3. Otherwise query seg tree for max gap in [0, p] (prefix max up to p).
+    //        If that max &gt;= sz → true. Else false.
+    //
+    // Time : O(q log M)  where M = max position (~5*10^4)
+    // Space: O(M)
+
+    // ── Segment Tree (range max, point update) ──────────────────────
+    static const int MAXN = 50002;
+    int seg[4 * MAXN];
+
+    void update(int node, int lo, int hi, int pos, int val) {
+        if (lo == hi) {
+            seg[node] = max(seg[node], val);
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        if (pos &lt;= mid) update(2*node,   lo,    mid, pos, val);
+        else             update(2*node+1, mid+1, hi,  pos, val);
+        seg[node] = max(seg[2*node], seg[2*node+1]);
+    }
+
+    // Range max query on [ql, qr]
+    int query(int node, int lo, int hi, int ql, int qr) {
+        if (qr &lt; lo || hi &lt; ql) return 0;
+        if (ql &lt;= lo &amp;&amp; hi &lt;= qr) return seg[node];
+        int mid = (lo + hi) / 2;
+        return max(query(2*node,   lo,    mid, ql, qr),
+                   query(2*node+1, mid+1, hi,  ql, qr));
+    }
+    // ────────────────────────────────────────────────────────────────
+
+    vector&lt;bool&gt; getResults(vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+        // Determine the coordinate upper bound
+        int M = 0;
+        for (auto&amp; q : queries) M = max(M, q[1]);
+
+        // Initialise segment tree to all zeros
+        fill(seg, seg + 4 * (M + 2), 0);
+
+        // Obstacle set; 0 is always an implicit left wall / obstacle
+        set&lt;int&gt; obs;
+        obs.insert(0);
+        obs.insert(M + 1);  // right sentinel (never queried)
+
+        // Initial gap: [0, M+1], represented as starting at position 0
+        // We will add proper gaps as obstacles are inserted.
+        // The gap [0, first_obstacle) is tracked lazily via the set.
+
+        vector&lt;bool&gt; ans;
+
+        for (auto&amp; q : queries) {
+            if (q[0] == 1) {
+                // ── Type 1: insert obstacle at x ──────────────────
+                int x = q[1];
+                auto it  = obs.insert(x).first;
+                auto nxt = next(it);
+                auto prv = prev(it);
+                int p = *prv;
+                int n = *nxt;
+
+                // Gap [p, x] starts at p, size = x - p
+                // Update seg at position x (the right end of this gap)
+                // We store gap size at the LEFT boundary of the gap.
+                // Convention: seg[right_end_of_gap] = gap_size (simpler indexing).
+                // Actually we store at position = left endpoint of gap:
+                update(1, 0, M, x, x - p);
+
+                // The old gap [p, n] is now split; update gap [x, n]
+                // Its left endpoint is x, right endpoint is n-1 conceptually.
+                // We store at position n (right sentinel of that gap):
+                if (n &lt;= M) update(1, 0, M, n, n - x);
+
+            } else {
+                // ── Type 2: query [2, x, sz] ──────────────────────
+                int x  = q[1];
+                int sz = q[2];
+
+                // Find the largest obstacle &lt;= x
+                auto it = obs.upper_bound(x);
+                --it;
+                int p = *it;  // predecessor obstacle
+
+                // Gap that contains x: from p to x (clipped at x)
+                if (x - p &gt;= sz) {
+                    ans.push_back(true);
+                    continue;
+                }
+
+                // Check all complete gaps entirely within [0, p]
+                // Their max size is stored in seg[1..p]
+                int best = (p &gt; 0) ? query(1, 0, M, 0, p) : 0;
+                ans.push_back(best &gt;= sz);
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
