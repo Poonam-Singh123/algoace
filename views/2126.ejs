@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // You are given integer mass (planet's initial mass) and array asteroids.
+    // You may collide the planet with asteroids in ANY order.
+    //   - If planet mass &gt;= asteroid mass: asteroid destroyed, planet gains mass.
+    //   - If planet mass &lt;  asteroid mass: planet destroyed → return false.
+    // Return true if ALL asteroids can be destroyed.
+    //
+    // Greedy insight — sort ascending:
+    //   Always destroy the smallest remaining asteroid first.
+    //
+    //   Proof: Suppose we can destroy all asteroids in some order.
+    //   If the planet can survive asteroid A (with mass &gt; next smallest B),
+    //   then after gaining A's mass it can certainly handle B too.
+    //   Conversely, if the planet cannot destroy the smallest remaining
+    //   asteroid, it cannot destroy any asteroid (they are all larger),
+    //   so it fails regardless of ordering.
+    //   Therefore, sorting ascending is always optimal.
+    //
+    // ⚠️  Overflow caution:
+    //   mass is up to 10^5 and there can be up to 10^5 asteroids each
+    //   up to 10^5 in mass, so the accumulated mass can reach 10^10 —
+    //   beyond int range (2^31 - 1 ≈ 2.1 * 10^9).
+    //   Use long long throughout.
+    //
+    // Time : O(n log n)  for sorting    Space: O(1)
+
+    bool asteroidsDestroyed(int mass, vector&lt;int&gt;&amp; asteroids) {
+        // Sort asteroids in ascending order — tackle smallest first
+        sort(asteroids.begin(), asteroids.end());
+
+        long long cur = mass;   // Use long long to avoid overflow
+
+        for (int a : asteroids) {
+            if (cur &lt; a) {
+                // Planet cannot absorb this asteroid — destroyed
+                return false;
+            }
+            cur += a;   // Planet grows by absorbing the asteroid
+        }
+
+        // All asteroids destroyed
+        return true;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
