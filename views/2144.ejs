@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // For every TWO candies bought, the shop gives a THIRD candy for free.
+    // The free candy must cost &lt;= the cheaper of the two bought candies.
+    // Return the minimum total cost to buy ALL candies.
+    //
+    // Greedy insight — sort descending, skip every third:
+    //   To minimise cost, maximise the VALUE of free candies.
+    //   Sort cost[] in descending order and group into triples:
+    //     [0], [1] are bought (most expensive pair)
+    //     [2]      is taken for free (third most expensive — within limit)
+    //     [3], [4] are bought
+    //     [5]      is free
+    //     ...
+    //   In a sorted descending array, cost[i] &lt;= cost[i-1] &lt;= cost[i-2],
+    //   so the free candy rule is always satisfied automatically.
+    //   Skipping every index where (i % 3 == 2) gives the optimal result.
+    //
+    // Why is this optimal?
+    //   We want the most expensive possible candy to be free each round.
+    //   Sorting descending ensures the third element of each group is as
+    //   large as possible while still satisfying the &lt;= constraint.
+    //   Any other grouping would waste the free slot on a cheaper candy.
+    //
+    // Example: cost = [6,5,7,9,2,2]
+    //   Sorted desc: [9,7,6,5,2,2]
+    //   i=0 (9): buy   → ans += 9
+    //   i=1 (7): buy   → ans += 7
+    //   i=2 (6): FREE  → skip
+    //   i=3 (5): buy   → ans += 5
+    //   i=4 (2): buy   → ans += 2
+    //   i=5 (2): FREE  → skip
+    //   Total = 9 + 7 + 5 + 2 = 23 ✓
+    //
+    // Time : O(n log n)    Space: O(1)
+
+    int minimumCost(vector&lt;int&gt;&amp; cost) {
+        // Sort in descending order to maximise value of free candies
+        sort(cost.begin(), cost.end(), greater&lt;int&gt;());
+
+        int ans = 0;
+        int n   = cost.size();
+
+        for (int i = 0; i &lt; n; i++) {
+            // Every third candy (0-indexed positions 2, 5, 8, ...) is free
+            if (i % 3 == 2) continue;
+            ans += cost[i];
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
