@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // You have n land rides and m water rides.
+    // Each ride i has an opening time (startTime[i]) and a duration[i].
+    // A ride started at time t finishes at t + duration.
+    // You must do exactly ONE land ride and ONE water ride (in either order).
+    // You may wait between rides. Return the minimum possible finish time.
+    //
+    // Key insight:
+    //   For a fixed ordering (e.g. land first, then water):
+    //     1. Find the earliest possible finish of any land ride:
+    //          minLandEnd = min over all i of (landStart[i] + landDur[i])
+    //     2. For each water ride j, the earliest start is:
+    //          max(waterStart[j], minLandEnd)    (wait if needed)
+    //        and finish time is:
+    //          max(waterStart[j], minLandEnd) + waterDur[j]
+    //     3. Take the minimum finish time over all water rides j.
+    //
+    //   Repeat symmetrically for (water first, then land).
+    //   Answer = min of the two orderings.
+    //
+    // Why "minimum end of first ride"?
+    //   Finishing the first ride as early as possible gives the second ride
+    //   the maximum opportunity to start (and therefore finish) early.
+    //   No other choice of first ride can result in a better second-ride start.
+    //
+    // Time : O(n + m)    Space: O(1)
+
+    // Helper: given rides of type A done first, then type B second,
+    // return the minimum finish time over all (A_i, B_j) pairs.
+    long long calc(vector&lt;int&gt;&amp; startA, vector&lt;int&gt;&amp; durA,
+                   vector&lt;int&gt;&amp; startB, vector&lt;int&gt;&amp; durB) {
+        // Step 1: earliest finish among all A rides
+        long long minEndA = LLONG_MAX;
+        for (int i = 0; i &lt; (int)startA.size(); i++) {
+            minEndA = min(minEndA, (long long)startA[i] + durA[i]);
+        }
+
+        // Step 2: for each B ride, compute earliest finish given minEndA
+        long long best = LLONG_MAX;
+        for (int j = 0; j &lt; (int)startB.size(); j++) {
+            long long startTime = max((long long)startB[j], minEndA);
+            best = min(best, startTime + durB[j]);
+        }
+
+        return best;
+    }
+
+    long long earliestFinishTime(vector&lt;int&gt;&amp; landStartTime,
+                                 vector&lt;int&gt;&amp; landDuration,
+                                 vector&lt;int&gt;&amp; waterStartTime,
+                                 vector&lt;int&gt;&amp; waterDuration) {
+        // Try both orderings: land first or water first
+        long long landThenWater = calc(landStartTime,  landDuration,
+                                       waterStartTime, waterDuration);
+        long long waterThenLand = calc(waterStartTime, waterDuration,
+                                       landStartTime,  landDuration);
+
+        return min(landThenWater, waterThenLand);
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
