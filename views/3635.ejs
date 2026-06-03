@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Same problem as LC 3633 but with MUCH LARGER constraints
+    // (n, m up to 10^5). The O(n * m) brute force TLEs here.
+    //
+    // Problem recap:
+    //   One land ride + one water ride (in either order).
+    //   Each ride i has openTime[i] and duration[i].
+    //   You start a ride at max(openTime, prevFinish).
+    //   Minimise the finish time of the SECOND ride.
+    //
+    // Optimal O(n + m) greedy:
+    //   For a fixed order (say A first, then B):
+    //
+    //   Step 1 — Find minEndA = min over all A rides of (startA[i] + durA[i]).
+    //     Choosing the A ride that finishes earliest leaves the most time
+    //     for the B ride. Any other A choice is suboptimal or equivalent.
+    //
+    //   Step 2 — For each B ride j, compute:
+    //     finishB[j] = max(startB[j], minEndA) + durB[j]
+    //     Take the minimum over all j.
+    //
+    //   Repeat for (B first, A second).
+    //   Answer = min of both orderings.
+    //
+    // Why Step 1 is optimal:
+    //   If we pick A ride p instead of the earliest-finishing ride q,
+    //   then minEndA(p) &gt;= minEndA(q), so the second-ride start can only
+    //   be the same or later — never better. Hence the greedy holds.
+    //
+    // Why Step 2 is correct:
+    //   Once minEndA is fixed, the second ride MUST start at
+    //   max(openB[j], minEndA). We scan all B rides and take the
+    //   one that gives the smallest finish time (not necessarily the
+    //   earliest-opening or shortest — it's the combined minimum).
+    //
+    // Time : O(n + m)    Space: O(1)
+
+    // Helper: A rides done first, B rides done second.
+    // Returns the minimum possible finish time for this ordering.
+    long long calc(vector&lt;int&gt;&amp; startA, vector&lt;int&gt;&amp; durA,
+                   vector&lt;int&gt;&amp; startB, vector&lt;int&gt;&amp; durB) {
+        // Step 1: earliest finish time among all A rides
+        long long minEndA = LLONG_MAX;
+        for (int i = 0; i &lt; (int)startA.size(); i++) {
+            minEndA = min(minEndA, (long long)startA[i] + durA[i]);
+        }
+
+        // Step 2: for each B ride, find the minimum possible finish time
+        long long best = LLONG_MAX;
+        for (int j = 0; j &lt; (int)startB.size(); j++) {
+            // Can't start B before it opens OR before we finish A
+            long long start = max((long long)startB[j], minEndA);
+            best = min(best, start + durB[j]);
+        }
+
+        return best;
+    }
+
+    long long earliestFinishTime(vector&lt;int&gt;&amp; landStartTime,
+                                 vector&lt;int&gt;&amp; landDuration,
+                                 vector&lt;int&gt;&amp; waterStartTime,
+                                 vector&lt;int&gt;&amp; waterDuration) {
+        // Ordering 1: land ride first, then water ride
+        long long landFirst = calc(landStartTime,  landDuration,
+                                   waterStartTime, waterDuration);
+
+        // Ordering 2: water ride first, then land ride
+        long long waterFirst = calc(waterStartTime, waterDuration,
+                                    landStartTime,  landDuration);
+
+        return min(landFirst, waterFirst);
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
