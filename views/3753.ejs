@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Same problem definition as LC 3751 but with MUCH LARGER constraints
+    // (num1, num2 up to 10^13). A brute-force loop over the range is impossible.
+    //
+    // Waviness recap:
+    //   Peak:   interior digit strictly greater than both neighbours.
+    //   Valley: interior digit strictly less than both neighbours.
+    //   First/last digits are never peaks/valleys. &lt;3 digits → waviness = 0.
+    //
+    // Approach: Digit DP (count = solve(num2) - solve(num1 - 1))
+    //   solve(X) = total waviness of all integers in [1, X].
+    //
+    // DP state: dp[pos][prevDigit][cmp][tight][started]
+    //   pos       : current digit position (0 = most significant)
+    //   prevDigit : last digit placed (0-9), needed to check peak/valley
+    //   cmp       : comparison of prevDigit vs the digit before it:
+    //                 0 = no previous comparison (first digit placed)
+    //                 1 = prevDigit &gt; digit before prev (went up)
+    //                 2 = prevDigit &lt; digit before prev (went down)
+    //                 3 = prevDigit == digit before prev (equal)
+    //   tight     : are we still bounded by X's digits?
+    //   started   : have we placed a non-zero digit yet? (handles leading zeros)
+    //
+    // Return value: total waviness contributed by all completions from this state.
+    //
+    // At each interior position we check if the PREVIOUS digit is a peak/valley
+    // (we now know both its left and right neighbours):
+    //   If cmp == 1 (prev went up) and curDigit &lt; prevDigit → peak, +1
+    //   If cmp == 2 (prev went down) and curDigit &gt; prevDigit → valley, +1
+    //
+    // Time : O(d * 10 * 3 * 2 * 2 * 10) = O(d * 1200) per call,
+    //        where d = number of digits in num2 (&lt;= 14 for 10^13).
+    // Space: O(d * 10 * 3 * 2 * 2)
+
+    // Digit array of the upper bound
+    vector&lt;int&gt; digits;
+    // memo[pos][prev][cmp][tight][started] = total waviness
+    // Use -1 as "not computed". tight and started make it 2 booleans.
+    long long memo[14][10][4][2][2];
+
+    // dfs: returns total waviness for all numbers completable from this state
+    long long dfs(int pos, int prev, int cmp, bool tight, bool started) {
+        if (pos == (int)digits.size()) {
+            return 0;  // Reached the end; waviness was accumulated during traversal
+        }
+
+        int t = tight  ? 1 : 0;
+        int s = started ? 1 : 0;
+        if (memo[pos][prev][cmp][t][s] != -1)
+            return memo[pos][prev][cmp][t][s];
+
+        int limit = tight ? digits[pos] : 9;
+        long long res = 0;
+
+        for (int d = 0; d &lt;= limit; d++) {
+            bool newTight   = tight &amp;&amp; (d == limit);
+            bool newStarted = started || (d != 0);
+
+            if (!newStarted) {
+                // Still leading zeros: recurse without updating state
+                res += dfs(pos + 1, 0, 0, newTight, false);
+                continue;
+            }
+
+            if (!started) {
+                // Placing the very first significant digit
+                res += dfs(pos + 1, d, 0, newTight, true);
+                continue;
+            }
+
+            // We have a previous digit `prev` with comparison `cmp`
+            // Now placing digit `d` to the RIGHT of `prev`.
+            // Check if `prev` is a peak or valley (it now has both neighbours):
+            //   Left  neighbour comparison encoded in `cmp`
+            //   Right neighbour is `d`
+            long long bonus = 0;
+            if (cmp == 1 &amp;&amp; d &lt; prev) bonus = 1;  // prev went up then down → peak
+            if (cmp == 2 &amp;&amp; d &gt; prev) bonus = 1;  // prev went down then up → valley
+
+            // New comparison: how does d relate to prev?
+            int newCmp;
+            if      (d &gt; prev) newCmp = 1;
+            else if (d &lt; prev) newCmp = 2;
+            else               newCmp = 3;
+
+            res += bonus + dfs(pos + 1, d, newCmp, newTight, true);
+        }
+
+        return memo[pos][prev][cmp][t][s] = res;
+    }
+
+    // Compute total waviness of all integers in [1, x]
+    long long solve(long long x) {
+        if (x &lt;= 0) return 0;
+
+        digits.clear();
+        long long tmp = x;
+        while (tmp &gt; 0) {
+            digits.push_back(tmp % 10);
+            tmp /= 10;
+        }
+        reverse(digits.begin(), digits.end());
+
+        memset(memo, -1, sizeof(memo));
+        return dfs(0, 0, 0, true, false);
+    }
+
+    long long totalWaviness(long long num1, long long num2) {
+        return solve(num2) - solve(num1 - 1);
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
