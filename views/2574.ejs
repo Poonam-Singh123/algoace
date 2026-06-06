@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given 0-indexed array nums of size n, return array answer where:
+    //   answer[i] = |leftSum[i] - rightSum[i]|
+    //   leftSum[i]  = sum of elements BEFORE index i  (0 if i == 0)
+    //   rightSum[i] = sum of elements AFTER  index i  (0 if i == n-1)
+    //
+    // Approach: One-pass with running left sum + total sum
+    //   Instead of computing leftSum and rightSum separately in two passes,
+    //   observe that:
+    //     rightSum[i] = total - leftSum[i] - nums[i]
+    //
+    //   So we only need:
+    //     1. total = sum of all elements  (one pass)
+    //     2. A running variable `left` updated as we scan left to right.
+    //
+    //   For each index i:
+    //     right     = total - left - nums[i]
+    //     answer[i] = abs(left - right)
+    //     left     += nums[i]          (update AFTER computing answer)
+    //
+    // ⚠️  Update order matters:
+    //   left must be updated AFTER computing answer[i],
+    //   otherwise nums[i] would be included in leftSum[i].
+    //
+    // Example: nums = [10, 4, 8, 3], total = 25
+    //   i=0: left=0,  right=25-0-10=15, ans=|0-15|=15,  left=10
+    //   i=1: left=10, right=25-10-4=11, ans=|10-11|=1,  left=14
+    //   i=2: left=14, right=25-14-8=3,  ans=|14-3|=11,  left=22
+    //   i=3: left=22, right=25-22-3=0,  ans=|22-0|=22,  left=25
+    //   Output: [15, 1, 11, 22] ✓
+    //
+    // Time : O(n)    Space: O(1) extra (excluding output array)
+
+    vector&lt;int&gt; leftRightDifference(vector&lt;int&gt;&amp; nums) {
+        int n = nums.size();
+
+        // Compute total sum
+        long long total = 0;
+        for (int x : nums) total += x;
+
+        vector&lt;int&gt; ans(n);
+        long long left = 0;
+
+        for (int i = 0; i &lt; n; i++) {
+            long long right = total - left - nums[i];
+            ans[i] = (int)abs(left - right);
+            left += nums[i];    // Update AFTER computing answer[i]
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
