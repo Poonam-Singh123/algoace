@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    // descriptions[i] = [parent, child, isLeft]
+    //   isLeft == 1 → child is the LEFT  child of parent
+    //   isLeft == 0 → child is the RIGHT child of parent
+    //
+    // Approach: Hash Map + Child Set
+    //   1. Use an unordered_map&lt;int, TreeNode*&gt; (valToNode) to create/retrieve
+    //      nodes by value, ensuring each value maps to exactly one node object.
+    //   2. Use an unordered_set&lt;int&gt; (children) to record every value that
+    //      appears as a child in any description.
+    //   3. For each description, create (or look up) parent and child nodes,
+    //      link child to parent's left or right pointer, and mark child as seen.
+    //   4. The ROOT is the unique node whose value never appears in `children`
+    //      (it has no parent). Find it by scanning valToNode.
+    //
+    // Why a children set instead of a parent map?
+    //   We only need to know which nodes are NOT roots — i.e., appear as children.
+    //   A simple set suffices; no need to store the actual parent pointer.
+    //
+    // Example:
+    //   descriptions = [[20,15,1],[20,17,0],[50,20,1],[50,80,0],[80,19,1]]
+    //   children = {15, 17, 20, 80, 19}
+    //   valToNode keys = {20, 15, 17, 50, 80, 19}
+    //   Root = 50 (not in children) ✓
+    //
+    // Time : O(n)    Space: O(n)
+
+    TreeNode* createBinaryTree(vector&lt;vector&lt;int&gt;&gt;&amp; descriptions) {
+        unordered_map&lt;int, TreeNode*&gt; valToNode;
+        unordered_set&lt;int&gt; children;
+
+        // Helper lambda: get or create a node for value v
+        auto getNode = [&amp;](int v) -&gt; TreeNode* {
+            if (!valToNode.count(v))
+                valToNode[v] = new TreeNode(v);
+            return valToNode[v];
+        };
+
+        for (auto&amp; d : descriptions) {
+            int parentVal = d[0];
+            int childVal  = d[1];
+            bool isLeft   = d[2];
+
+            TreeNode* parent = getNode(parentVal);
+            TreeNode* child  = getNode(childVal);
+
+            if (isLeft) parent-&gt;left  = child;
+            else        parent-&gt;right = child;
+
+            children.insert(childVal);  // Mark as non-root
+        }
+
+        // Root is the node that never appeared as a child
+        for (auto&amp; [val, node] : valToNode) {
+            if (!children.count(val)) {
+                return node;
+            }
+        }
+
+        return nullptr;  // Guaranteed valid input; never reached
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
