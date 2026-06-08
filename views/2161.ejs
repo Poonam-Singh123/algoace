@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given array nums and integer pivot, rearrange so that:
+    //   1. All elements &lt; pivot come first  (relative order preserved)
+    //   2. All elements == pivot come next
+    //   3. All elements &gt; pivot come last   (relative order preserved)
+    // Return the rearranged array.
+    //
+    // Approach: Three-bucket partition  O(n) time, O(n) space
+    //   Scan nums once and route each element into one of three vectors:
+    //     less    → elements strictly less than pivot
+    //     equal   → elements equal to pivot
+    //     greater → elements strictly greater than pivot
+    //
+    //   Because we scan left-to-right and append in order, the relative
+    //   ordering within each group is automatically preserved.
+    //   Finally concatenate: less + equal + greater.
+    //
+    // Why not in-place (e.g. Dutch National Flag)?
+    //   The Dutch National Flag algorithm runs in O(n) time and O(1) space
+    //   but does NOT preserve the relative order within the less/greater groups.
+    //   Since this problem requires stable relative ordering, the three-bucket
+    //   approach is the correct O(n) + O(n) solution.
+    //
+    // Example:
+    //   nums = [9,12,5,10,14,3,10], pivot = 10
+    //   less    = [9, 5, 3]
+    //   equal   = [10, 10]
+    //   greater = [12, 14]
+    //   Output  = [9,5,3,10,10,12,14] ✓
+    //
+    // Time : O(n)    Space: O(n)
+
+    vector&lt;int&gt; pivotArray(vector&lt;int&gt;&amp; nums, int pivot) {
+        vector&lt;int&gt; less, equal, greater;
+
+        for (int x : nums) {
+            if      (x &lt; pivot) less.push_back(x);
+            else if (x == pivot) equal.push_back(x);
+            else                 greater.push_back(x);
+        }
+
+        // Concatenate the three buckets into the result
+        vector&lt;int&gt; ans;
+        ans.reserve(nums.size());
+
+        for (int x : less)    ans.push_back(x);
+        for (int x : equal)   ans.push_back(x);
+        for (int x : greater) ans.push_back(x);
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
