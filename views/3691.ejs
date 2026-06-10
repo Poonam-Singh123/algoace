@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given integer array nums and integer k:
+    //   Choose exactly k DISTINCT non-empty subarrays (same l,r cannot repeat).
+    //   Overlaps are allowed but not exact duplicates.
+    //   Value of subarray nums[l..r] = max(nums[l..r]) - min(nums[l..r]).
+    //   Return the maximum possible sum of values.
+    //
+    // Key insight — decompose value into max contribution and min contribution:
+    //   value(l,r) = max(nums[l..r]) - min(nums[l..r])
+    //   Sum over k subarrays = Sum of maxima - Sum of minima
+    //
+    //   So we want the top-k values among all O(n^2) subarrays, which equals
+    //   picking subarrays that maximise (max - min).
+    //
+    // Approach: Monotonic stacks + Max-heap (greedy top-k)
+    //
+    //   Step 1: For each pair (i, j) where i &lt;= j, the subarray [i,j] has a
+    //   value determined by its range. We need to pick the k largest among
+    //   O(n^2) values without enumerating all of them.
+    //
+    //   Step 2: Use a priority queue to greedily select.
+    //   Start by seeding the heap with all single-element subarrays [i,i]
+    //   (value = 0). When we expand subarray [l,r] to [l,r+1] or [l-1,r],
+    //   we produce candidate subarrays. We process the globally best candidate
+    //   each step, expanding it in both directions.
+    //
+    //   More precisely:
+    //   - Represent candidate as (value, l, r) in a max-heap.
+    //   - Seed: for each i, push (value(i,i), i, i) = (0, i, i).
+    //   - Each extraction: pop (v, l, r), add v to answer.
+    //     Then push (value(l, r+1), l, r+1) and (value(l-1, r), l-1, r)
+    //     if not yet visited.
+    //   - Use a visited set to avoid re-adding same (l, r).
+    //
+    //   Precompute sparse tables for O(1) range max and range min queries
+    //   to evaluate value(l, r) in O(1) during heap operations.
+    //
+    // Time : O(n log n + k log(k + n))
+    // Space: O(n log n) for sparse tables
+
+    // ── Sparse Table for O(1) range max / min ────────────────────────
+    struct SparseTable {
+        vector&lt;vector&lt;int&gt;&gt; table;
+        vector&lt;int&gt; log2_;
+        bool isMax;
+
+        SparseTable() {}
+        SparseTable(const vector&lt;int&gt;&amp; a, bool isMax) : isMax(isMax) {
+            int n = a.size();
+            int LOG = __lg(n) + 1;
+            table.assign(LOG, vector&lt;int&gt;(n));
+            log2_.resize(n + 1);
+            log2_[1] = 0;
+            for (int i = 2; i &lt;= n; i++) log2_[i] = log2_[i / 2] + 1;
+            table[0] = a;
+            for (int j = 1; j &lt; LOG; j++) {
+                for (int i = 0; i + (1 &lt;&lt; j) &lt;= n; i++) {
+                    if (isMax)
+                        table[j][i] = max(table[j-1][i], table[j-1][i + (1 &lt;&lt; (j-1))]);
+                    else
+                        table[j][i] = min(table[j-1][i], table[j-1][i + (1 &lt;&lt; (j-1))]);
+                }
+            }
+        }
+
+        int query(int l, int r) {
+            int k = log2_[r - l + 1];
+            if (isMax)
+                return max(table[k][l], table[k][r - (1 &lt;&lt; k) + 1]);
+            else
+                return min(table[k][l], table[k][r - (1 &lt;&lt; k) + 1]);
+        }
+    };
+
+    long long maxSubarrayValue(vector&lt;int&gt;&amp; nums, long long k) {
+        int n = nums.size();
+        SparseTable maxST(nums, true);
+        SparseTable minST(nums, false);
+
+        // val(l, r) = range max - range min
+        auto val = [&amp;](int l, int r) -&gt; long long {
+            return maxST.query(l, r) - minST.query(l, r);
+        };
+
+        // Max-heap: (value, l, r)
+        using T = tuple&lt;long long, int, int&gt;;
+        priority_queue&lt;T&gt; pq;
+        set&lt;pair&lt;int,int&gt;&gt; visited;
+
+        // Seed with all single-element subarrays (value = 0)
+        for (int i = 0; i &lt; n; i++) {
+            pq.push({0LL, i, i});
+            visited.insert({i, i});
+        }
+
+        long long ans = 0;
+        while (k-- &gt; 0 &amp;&amp; !pq.empty()) {
+            auto [v, l, r] = pq.top();
+            pq.pop();
+            ans += v;
+
+            // Expand right: [l, r+1]
+            if (r + 1 &lt; n &amp;&amp; !visited.count({l, r+1})) {
+                visited.insert({l, r+1});
+                pq.push({val(l, r+1), l, r+1});
+            }
+            // Expand left: [l-1, r]
+            if (l - 1 &gt;= 0 &amp;&amp; !visited.count({l-1, r})) {
+                visited.insert({l-1, r});
+                pq.push({val(l-1, r), l-1, r});
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
