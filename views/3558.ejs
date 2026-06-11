@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Undirected tree with n nodes rooted at node 1.
+    // Assign each edge weight 1 or 2.
+    // Select any node x at MAXIMUM depth.
+    // Return the number of ways to assign edge weights on the path
+    // from node 1 to x such that the total path cost is ODD.
+    //
+    // Key observations:
+    //
+    //   1. We only care about the path from root (1) to a deepest node x.
+    //      All other edges are irrelevant (ignored per problem statement).
+    //
+    //   2. The path has exactly `maxDepth` edges (since x is at max depth).
+    //
+    //   3. A sum of k values, each 1 or 2, is odd iff the number of 1s is odd
+    //      (since 2 contributes 0 to parity, 1 contributes 1).
+    //      So we need an ODD number of 1s among the k edges.
+    //
+    //   4. The total number of assignments where an odd number of edges = 1
+    //      out of k edges = 2^(k-1).
+    //      (By symmetry: exactly half of all 2^k assignments have an odd
+    //       number of 1s, giving 2^k / 2 = 2^(k-1).)
+    //
+    //   5. Edge case: if k == 0 (root is the only node, maxDepth = 0),
+    //      the path is empty and its cost is 0 (even) → answer = 0.
+    //      But the tree has at least 2 nodes per constraints, so k &gt;= 1.
+    //
+    // Algorithm:
+    //   BFS or DFS from node 1 to find the maximum depth (= number of edges
+    //   on the longest root-to-leaf path).
+    //   Answer = 2^(maxDepth - 1) mod (10^9 + 7).
+    //
+    // Example 1: edges = [[1,2]]  →  maxDepth=1  →  2^0 = 1 ✓
+    // Example 2: edges = [[1,2],[1,3],[3,4],[3,5]]
+    //   maxDepth=2 (nodes 4 and 5)  →  2^1 = 2 ✓
+    //
+    // Time : O(n)    Space: O(n)
+
+    const int MOD = 1e9 + 7;
+
+    // Fast modular exponentiation: base^exp % mod
+    long long power(long long base, long long exp, long long mod) {
+        long long result = 1;
+        base %= mod;
+        while (exp &gt; 0) {
+            if (exp &amp; 1) result = result * base % mod;
+            base = base * base % mod;
+            exp &gt;&gt;= 1;
+        }
+        return result;
+    }
+
+    int assignEdgeWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+        int n = edges.size() + 1;
+
+        // Build adjacency list (1-indexed)
+        vector&lt;vector&lt;int&gt;&gt; adj(n + 1);
+        for (auto&amp; e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+
+        // BFS from node 1 to find maximum depth
+        int maxDepth = 0;
+        vector&lt;bool&gt; visited(n + 1, false);
+        queue&lt;int&gt; q;
+        q.push(1);
+        visited[1] = true;
+
+        while (!q.empty()) {
+            int sz = q.size();
+            maxDepth++;
+            while (sz--) {
+                int u = q.front();
+                q.pop();
+                for (int v : adj[u]) {
+                    if (!visited[v]) {
+                        visited[v] = true;
+                        q.push(v);
+                    }
+                }
+            }
+        }
+        // maxDepth was incremented one extra time after the last level
+        maxDepth--;
+
+        // Number of edges on the longest path = maxDepth
+        // Answer = 2^(maxDepth - 1) mod MOD
+        if (maxDepth == 0) return 0;  // Degenerate (only root node)
+        return (int)power(2, maxDepth - 1, MOD);
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
