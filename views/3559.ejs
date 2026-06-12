@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Same parity insight as LC 3558:
+    //   For a path with k edges (each weight 1 or 2):
+    //     - If k == 0: cost is 0 (even)  →  answer = 0
+    //     - If k >= 1: answer = 2^(k-1) mod (10^9+7)
+    //       (exactly half of 2^k assignments yield odd cost, by symmetry)
+    //
+    // The key difference from LC 3558:
+    //   We now handle MULTIPLE arbitrary queries [u, v] instead of a
+    //   single root-to-deepest-leaf path.
+    //   For each query [u, v]:
+    //     k = number of edges on the path u → LCA(u,v) → v
+    //       = depth[u] + depth[v] - 2 * depth[LCA(u,v)]
+    //
+    // Approach: Binary Lifting for O(log n) LCA per query.
+    //   Pre-processing (O(n log n)):
+    //     1. DFS from root (1) to compute depth[] and parent table up[][].
+    //        up[v][i] = 2^i-th ancestor of v.
+    //     2. Build the sparse ancestor table for binary lifting.
+    //
+    //   LCA query (O(log n)):
+    //     1. Bring the deeper node up to the same depth as the shallower one.
+    //     2. If they are equal, return that node as LCA.
+    //     3. Otherwise lift both simultaneously until their parents match.
+    //
+    //   Each answer = (k == 0) ? 0 : pow2[k - 1]
+    //   where pow2[] is precomputed up to 2*n.
+    //
+    // Time : O(n log n + q log n)    Space: O(n log n)
+
+    static const int MOD = 1e9 + 7;
+    static const int LOG = 17;   // 2^17 > 10^5
+
+    // Fast modular exponentiation
+    long long power(long long base, long long exp, long long mod) {
+        long long res = 1;
+        base %= mod;
+        while (exp &gt; 0) {
+            if (exp &amp; 1) res = res * base % mod;
+            base = base * base % mod;
+            exp &gt;&gt;= 1;
+        }
+        return res;
+    }
+
+    vector&lt;int&gt; assignEdgeWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                                   vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+        int n = (int)edges.size() + 1;
+
+        // Build adjacency list (1-indexed)
+        vector&lt;vector&lt;int&gt;&gt; adj(n + 1);
+        for (auto&amp; e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+
+        // depth[v] = depth of node v (root has depth 0)
+        // up[v][i] = 2^i-th ancestor of v (-1 if doesn't exist)
+        vector&lt;int&gt; depth(n + 1, 0);
+        vector&lt;array&lt;int, 17&gt;&gt; up(n + 1);
+        for (auto&amp; a : up) a.fill(-1);
+
+        // Iterative DFS to avoid stack overflow on large inputs
+        vector&lt;bool&gt; visited(n + 1, false);
+        stack&lt;pair&lt;int,int&gt;&gt; stk;
+        stk.push({1, -1});
+        visited[1] = true;
+
+        while (!stk.empty()) {
+            auto [u, par] = stk.top();
+            stk.pop();
+            up[u][0] = par;
+            for (int v : adj[u]) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    depth[v] = depth[u] + 1;
+                    stk.push({v, u});
+                }
+            }
+        }
+
+        // Build binary lifting table
+        for (int i = 1; i &lt; LOG; i++) {
+            for (int v = 1; v &lt;= n; v++) {
+                if (up[v][i - 1] != -1)
+                    up[v][i] = up[up[v][i - 1]][i - 1];
+            }
+        }
+
+        // LCA using binary lifting
+        auto lca = [&amp;](int u, int v) -&gt; int {
+            // Make u the deeper node
+            if (depth[u] &lt; depth[v]) swap(u, v);
+            int diff = depth[u] - depth[v];
+            // Lift u up by diff levels
+            for (int i = 0; i &lt; LOG; i++)
+                if ((diff &gt;&gt; i) &amp; 1)
+                    u = up[u][i];
+            if (u == v) return u;
+            // Lift both until their parents match
+            for (int i = LOG - 1; i &gt;= 0; i--)
+                if (up[u][i] != up[v][i]) {
+                    u = up[u][i];
+                    v = up[v][i];
+                }
+            return up[u][0];
+        };
+
+        // Precompute powers of 2 up to 2*n
+        vector&lt;long long&gt; pow2(2 * n + 2);
+        pow2[0] = 1;
+        for (int i = 1; i &lt;= 2 * n + 1; i++)
+            pow2[i] = pow2[i - 1] * 2 % MOD;
+
+        // Answer each query
+        vector&lt;int&gt; ans;
+        ans.reserve(queries.size());
+
+        for (auto&amp; q : queries) {
+            int u = q[0], v = q[1];
+            int l = lca(u, v);
+            int k = depth[u] + depth[v] - 2 * depth[l];  // edges on path
+            if (k == 0) {
+                ans.push_back(0);
+            } else {
+                ans.push_back((int)pow2[k - 1]);
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
