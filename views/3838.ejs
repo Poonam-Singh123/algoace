@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given array of strings `words` and integer array `weights` (length 26):
+    //   weights[i] = weight of the i-th lowercase letter ('a' + i).
+    //
+    // For each word:
+    //   1. Compute its total weight = sum of weights[c - 'a'] for each char c.
+    //   2. Take total % 26.
+    //   3. Map the result to a lowercase letter using REVERSE alphabet order:
+    //        0 → 'z',  1 → 'y',  2 → 'x',  ...,  25 → 'a'
+    //      Formula: mapped char = 'z' - remainder
+    //                           = (char)('z' - (totalWeight % 26))
+    //
+    // Concatenate the mapped characters for all words in order and return.
+    //
+    // Example:
+    //   weights = [5,3,12,14,1,2,3,2,10,6,6,9,7,8,7,10,8,9,6,9,9,8,3,7,7,2]
+    //   words   = ["abcd", "def", "xyz"]
+    //
+    //   "abcd": weights[0]+weights[1]+weights[2]+weights[3] = 5+3+12+14 = 34
+    //           34 % 26 = 8  →  'z' - 8 = 'r'
+    //   "def":  weights[3]+weights[4]+weights[5] = 14+1+2 = 17
+    //           17 % 26 = 17 →  'z' - 17 = 'i'
+    //   "xyz":  weights[23]+weights[24]+weights[25] = 7+7+2 = 16
+    //           16 % 26 = 16 →  'z' - 16 = 'j'
+    //   Output: "rij" ✓
+    //
+    // Time : O(n * L)  where n = words.size(), L = avg word length
+    // Space: O(n)      for the output string
+
+    string wordMapping(vector&lt;string&gt;&amp; words, vector&lt;int&gt;&amp; weights) {
+        string ans;
+        ans.reserve(words.size());
+
+        for (const string&amp; word : words) {
+            // Step 1: sum weights of all characters in the word
+            int total = 0;
+            for (char c : word) {
+                total += weights[c - 'a'];
+            }
+
+            // Step 2: take mod 26
+            int rem = total % 26;
+
+            // Step 3: reverse-alphabet mapping
+            //   0 -> 'z' (25th letter), 1 -> 'y' (24th), ..., 25 -> 'a' (0th)
+            ans += (char)('z' - rem);
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
