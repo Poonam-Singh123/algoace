@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    // The twin of node i (0-indexed) in an even-length list of size n is node (n-1-i).
+    // Twin sum = val[i] + val[n-1-i].
+    // Return the maximum twin sum.
+    //
+    // Approach: Reverse the second half in-place, then two-pointer scan.
+    //   This achieves O(n) time and O(1) extra space — no auxiliary array needed.
+    //
+    // Step 1 — Find the middle using slow/fast pointers.
+    //   After the loop, slow points to the first node of the second half.
+    //
+    // Step 2 — Reverse the second half in-place.
+    //   We reverse from `slow` onward so that the second half can be
+    //   traversed from tail to middle, aligning with the first half.
+    //
+    // Step 3 — Two-pointer scan.
+    //   left  starts at head     (first half, front to mid).
+    //   right starts at new head (reversed second half, tail to mid).
+    //   At each step: twin sum = left->val + right->val.
+    //   Track and return the maximum.
+    //
+    // Example: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+    //   Middle: slow stops at node 4 (start of second half).
+    //   Reversed second half: 6 -> 5 -> 4
+    //   Twin pairs: (1+6)=7, (2+5)=7, (3+4)=7  →  max = 7 ✓
+    //
+    // Time : O(n)    Space: O(1)
+
+    int pairSum(ListNode* head) {
+        // Step 1: Find middle of the list (slow/fast pointers)
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast &amp;&amp; fast-&gt;next) {
+            slow = slow-&gt;next;
+            fast = fast-&gt;next-&gt;next;
+        }
+        // `slow` now points to the first node of the second half
+
+        // Step 2: Reverse the second half in-place
+        ListNode* prev = nullptr;
+        ListNode* curr = slow;
+        while (curr) {
+            ListNode* nxt = curr-&gt;next;
+            curr-&gt;next   = prev;
+            prev         = curr;
+            curr         = nxt;
+        }
+        // `prev` is the new head of the reversed second half
+
+        // Step 3: Scan both halves simultaneously and track max twin sum
+        int ans = 0;
+        ListNode* left  = head;
+        ListNode* right = prev;
+        while (right) {
+            ans   = max(ans, left-&gt;val + right-&gt;val);
+            left  = left-&gt;next;
+            right = right-&gt;next;
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
