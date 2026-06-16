@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Process string s left to right, applying rules to build `result`:
+    //   lowercase letter → append to result
+    //   '*'              → remove the last character (if result non-empty)
+    //   '#'              → duplicate result (result += result)
+    //   '%'              → reverse result
+    // Return the final result string.
+    //
+    // Constraints: 1 &lt;= s.length &lt;= 20
+    //   Small input → direct simulation is perfectly efficient.
+    //   The result string grows at most 2^(count of '#') in length,
+    //   but with s.length &lt;= 20 this is bounded and manageable.
+    //
+    // Approach: Straightforward simulation using std::string operations.
+    //   - pop_back()         for '*' (O(1) amortised)
+    //   - result += result   for '#' (O(|result|))
+    //   - reverse()          for '%' (O(|result|))
+    //
+    // Example 1: s = "a#b%*"
+    //   'a'  →  result = "a"
+    //   '#'  →  result = "aa"
+    //   'b'  →  result = "aab"
+    //   '%'  →  result = "baa"
+    //   '*'  →  result = "ba"
+    //   Output: "ba" ✓
+    //
+    // Example 2: s = "z*#"
+    //   'z'  →  result = "z"
+    //   '*'  →  result = ""
+    //   '#'  →  result = ""     (duplicate of empty is still empty)
+    //   Output: "" ✓
+    //
+    // Time : O(|s| * 2^|s|)  worst case (all '#' before one letter)
+    //        but with |s| &lt;= 20 this is well within limits.
+    // Space: O(2^|s|)  for the result string
+
+    string processStr(string s) {
+        string result;
+
+        for (char c : s) {
+            if (c == '*') {
+                // Remove last character if result is non-empty
+                if (!result.empty()) {
+                    result.pop_back();
+                }
+            } else if (c == '#') {
+                // Duplicate result
+                result += result;
+            } else if (c == '%') {
+                // Reverse result
+                reverse(result.begin(), result.end());
+            } else {
+                // Lowercase letter: append to result
+                result += c;
+            }
+        }
+
+        return result;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
