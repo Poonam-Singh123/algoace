@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given a string s consisting only of characters 'a', 'b', and 'c',
+    // return the number of substrings containing AT LEAST one of each.
+    //
+    // Approach: Sliding Window with "fixed right end" counting trick.
+    //   For each right endpoint, find the SMALLEST left endpoint such that
+    //   the window [left, right] contains all three characters.
+    //   Once found, EVERY left endpoint further left (0, 1, ..., left)
+    //   also produces a valid substring (since shrinking from the left
+    //   while extending right only adds characters, never removes them
+    //   from a wider window).
+    //   So for each right, the count of valid substrings ending at `right`
+    //   is simply (left + 1).
+    //
+    //   We maintain a frequency count of 'a','b','c' in the current window
+    //   and shrink the window from the left as long as it remains valid
+    //   (contains all three) — this finds the minimal valid left for `right`.
+    //
+    // Example: s = "abcabc"
+    //   right=0 ('a'): freq={a:1}            window invalid → 0 substrings
+    //   right=1 ('b'): freq={a:1,b:1}        window invalid → 0 substrings
+    //   right=2 ('c'): freq={a:1,b:1,c:1}    valid! shrink: left=0 still valid
+    //                  (window "abc" — removing 'a' breaks it) → left stays 0
+    //                  count += (0 + 1) = 1   total=1
+    //   right=3 ('a'): freq={a:2,b:1,c:1}    valid, shrink:
+    //                  remove s[0]='a' → freq={a:1,b:1,c:1} still valid, left=1
+    //                  remove s[1]='b' → freq={a:1,b:0,c:1} invalid, stop, left=1
+    //                  count += (1 + 1) = 2   total=3
+    //   right=4 ('b'): freq={a:1,b:1,c:1}    valid, shrink:
+    //                  remove s[1]='b'... (continue similarly)
+    //                  left ends at 2  →  count += 3   total=6
+    //   right=5 ('c'): similarly left ends at 3  →  count += 4   total=10
+    //   Output: 10 ✓
+    //
+    // Time : O(n)    Space: O(1)  (fixed-size frequency array of 3)
+
+    int numberOfSubstrings(string s) {
+        int freq[3] = {0, 0, 0};   // counts of 'a', 'b', 'c' in current window
+        int left = 0;
+        long long ans = 0;
+
+        for (int right = 0; right &lt; (int)s.size(); right++) {
+            freq[s[right] - 'a']++;
+
+            // Shrink window from the left while it still contains all three
+            while (freq[0] &gt; 0 &amp;&amp; freq[1] &gt; 0 &amp;&amp; freq[2] &gt; 0) {
+                freq[s[left] - 'a']--;
+                left++;
+            }
+
+            // After the loop, [left-1, right] was the last valid window
+            // (since the loop body removed s[left] before incrementing left,
+            //  the window [left, right] is now INVALID, meaning [0..left-1]
+            //  are all valid starting points for substrings ending at right).
+            ans += left;
+        }
+
+        return (int)ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
