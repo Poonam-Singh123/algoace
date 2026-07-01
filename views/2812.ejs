@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // 0-indexed n x n grid: 1 = thief, 0 = empty.
+    // Safeness factor of a path = minimum Manhattan distance from any
+    // cell on the path to any thief.
+    // Return the MAXIMUM safeness factor over all paths from (0,0) to (n-1,n-1).
+    //
+    // Approach: Multi-source BFS + Dijkstra (max-safeness variant)
+    //
+    // Step 1 — Multi-source BFS from all thieves simultaneously.
+    //   dist[r][c] = Manhattan distance from (r,c) to the nearest thief.
+    //   This is the "safeness" of a single cell.
+    //   Multi-source BFS from all thieves at distance 0 propagates outward,
+    //   filling every cell's minimum distance in O(n^2).
+    //
+    // Step 2 — Dijkstra / modified BFS to maximise the MINIMUM safeness along path.
+    //   This is a "maximum bottleneck path" problem:
+    //     path_safeness = min(dist[r][c]) over all cells on the path.
+    //     Maximise this over all paths.
+    //
+    //   Use a max-heap (priority queue):
+    //     - Push (dist[0][0], 0, 0).
+    //     - For each popped cell (d, r, c): d is the minimum dist seen so far.
+    //     - For each neighbour (nr, nc): push (min(d, dist[nr][nc]), nr, nc).
+    //     - When we pop (n-1, n-1), d is our answer.
+    //
+    // Edge case: if (0,0) or (n-1,n-1) is a thief → safeness = 0 immediately.
+    //
+    // Time : O(n^2 log n)    Space: O(n^2)
+
+    int maximumSafenessFactor(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+        int n = grid.size();
+
+        // Quick check: start or end is a thief
+        if (grid[0][0] == 1 || grid[n-1][n-1] == 1) return 0;
+
+        // Step 1: Multi-source BFS — compute dist[r][c] for all cells
+        vector&lt;vector&lt;int&gt;&gt; dist(n, vector&lt;int&gt;(n, -1));
+        queue&lt;pair&lt;int,int&gt;&gt; q;
+
+        for (int r = 0; r &lt; n; r++) {
+            for (int c = 0; c &lt; n; c++) {
+                if (grid[r][c] == 1) {
+                    dist[r][c] = 0;
+                    q.push({r, c});
+                }
+            }
+        }
+
+        const int dr[] = {0, 0, 1, -1};
+        const int dc[] = {1, -1, 0, 0};
+
+        while (!q.empty()) {
+            auto [r, c] = q.front();
+            q.pop();
+            for (int d = 0; d &lt; 4; d++) {
+                int nr = r + dr[d];
+                int nc = c + dc[d];
+                if (nr &gt;= 0 &amp;&amp; nr &lt; n &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; n &amp;&amp; dist[nr][nc] == -1) {
+                    dist[nr][nc] = dist[r][c] + 1;
+                    q.push({nr, nc});
+                }
+            }
+        }
+
+        // Step 2: Dijkstra-style max-bottleneck path
+        // Max-heap: (current_min_dist, row, col)
+        using T = tuple&lt;int, int, int&gt;;
+        priority_queue&lt;T&gt; pq;
+        pq.push({dist[0][0], 0, 0});
+
+        vector&lt;vector&lt;bool&gt;&gt; visited(n, vector&lt;bool&gt;(n, false));
+        visited[0][0] = true;
+
+        while (!pq.empty()) {
+            auto [d, r, c] = pq.top();
+            pq.pop();
+
+            // Reached destination
+            if (r == n - 1 &amp;&amp; c == n - 1) return d;
+
+            for (int i = 0; i &lt; 4; i++) {
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+                if (nr &gt;= 0 &amp;&amp; nr &lt; n &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; n &amp;&amp; !visited[nr][nc]) {
+                    visited[nr][nc] = true;
+                    // Bottleneck: take the min of current path's safeness and next cell's safeness
+                    pq.push({min(d, dist[nr][nc]), nr, nc});
+                }
+            }
+        }
+
+        return 0;  // Unreachable (guaranteed valid input)
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
