@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // m x n binary grid: 1 = unsafe cell (costs 1 health), 0 = safe cell.
+    // Start at (0,0), goal is (m-1,n-1).
+    // Move up/down/left/right; health must remain &gt; 0 at all times.
+    // Return true if (m-1,n-1) can be reached with health &gt;= 1.
+    //
+    // Approach: BFS with minimum-cost tracking  O(m * n)
+    //
+    //   Define dist[i][j] = minimum health consumed to reach (i, j) from (0, 0).
+    //   (Equivalently: minimum number of unsafe cells on any path to (i, j).)
+    //
+    //   We use a standard BFS (0-1 BFS or plain BFS with pruning):
+    //     - dist[0][0] = grid[0][0]  (pay cost immediately upon entering)
+    //     - For each neighbour (nr, nc): new cost = dist[r][c] + grid[nr][nc]
+    //     - Only enqueue if new cost &lt; dist[nr][nc]  (strict improvement)
+    //
+    //   Because all edge weights are 0 or 1, a 0-1 BFS (deque) is optimal:
+    //     - Cost 0 (safe cell): push to FRONT of deque.
+    //     - Cost 1 (unsafe cell): push to BACK of deque.
+    //   This processes cheaper states first without a full priority queue,
+    //   giving O(m * n) time instead of O(m * n * log(m * n)).
+    //
+    //   Final answer: dist[m-1][n-1] &lt; health
+    //     (we consumed fewer unsafe cells than our health budget allows)
+    //
+    // Example 1: grid = [[0,1,0,0,0],[0,1,0,1,0],[0,0,0,1,0]], health = 1
+    //   A path exists using 0 unsafe cells → dist[2][4] = 0 &lt; 1 → true ✓
+    //
+    // Example 2: grid = [[0,1,1,0,0,0],[1,0,1,0,0,0],[0,1,1,1,0,1],[0,0,1,0,1,0]]
+    //   health = 3 → minimum cost path needs 4 unsafe cells → 4 &lt; 3 false → false ✓
+    //
+    // Time : O(m * n)    Space: O(m * n)
+
+    bool findSafeWalk(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int health) {
+        int m = grid.size(), n = grid[0].size();
+
+        // dist[i][j] = minimum number of unsafe cells on any path to (i,j)
+        vector&lt;vector&lt;int&gt;&gt; dist(m, vector&lt;int&gt;(n, INT_MAX));
+        dist[0][0] = grid[0][0];
+
+        // 0-1 BFS using a deque
+        deque&lt;pair&lt;int,int&gt;&gt; dq;
+        dq.push_back({0, 0});
+
+        const int dr[] = {0, 0, 1, -1};
+        const int dc[] = {1, -1, 0, 0};
+
+        while (!dq.empty()) {
+            auto [r, c] = dq.front();
+            dq.pop_front();
+
+            for (int i = 0; i &lt; 4; i++) {
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+                if (nr &lt; 0 || nr &gt;= m || nc &lt; 0 || nc &gt;= n) continue;
+
+                int newCost = dist[r][c] + grid[nr][nc];
+                if (newCost &lt; dist[nr][nc]) {
+                    dist[nr][nc] = newCost;
+                    // Safe cell (cost 0) → push front; unsafe (cost 1) → push back
+                    if (grid[nr][nc] == 0) dq.push_front({nr, nc});
+                    else                   dq.push_back({nr, nc});
+                }
+            }
+        }
+
+        // We need health remaining &gt;= 1 after consuming dist[m-1][n-1] unsafe cells
+        return dist[m-1][n-1] &lt; health;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
