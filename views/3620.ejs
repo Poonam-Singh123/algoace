@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Directed acyclic graph (DAG) of n nodes (0-indexed).
+    // edges[i] = [u, v, cost]:  directed edge u → v with recovery cost.
+    // online[i]: true if node i is available (0 and n-1 are always online).
+    // k: maximum total recovery cost allowed on a path.
+    //
+    // A valid path from 0 to n-1:
+    //   1. All intermediate nodes must be online.
+    //   2. Total edge cost &lt;= k.
+    //
+    // Score of a valid path = MINIMUM edge cost along the path.
+    // Return the MAXIMUM score among all valid paths, or -1 if none.
+    //
+    // Observation: two objectives to handle:
+    //   A. Maximise the MINIMUM edge cost along the path (bottleneck max).
+    //   B. Keep total edge cost &lt;= k (budget constraint).
+    //
+    // Approach: Binary search on the answer + DAG DP feasibility check.
+    //
+    //   Binary search on `minCost` in the range [0, max_edge_cost]:
+    //     For a fixed minCost, only consider edges with cost &gt;= minCost.
+    //     Run a DAG DP to check if any valid path (budget &lt;= k, all online
+    //     intermediate nodes) exists using only those edges.
+    //     If yes, try a larger minCost; otherwise try smaller.
+    //
+    //   DAG DP (topological order):
+    //     dp[v] = minimum total cost to reach v from 0 using only edges
+    //             with cost &gt;= minCost and only online intermediate nodes.
+    //     dp[0] = 0.
+    //     For each edge (u, v, c) with c &gt;= minCost:
+    //       If v is an intermediate node and v is offline: skip.
+    //       dp[v] = min(dp[v], dp[u] + c)
+    //     Check if dp[n-1] &lt;= k.
+    //
+    //   Since the graph is a DAG, we process edges in topological order
+    //   (sort by in-degree / use topo sort via Kahn's algorithm).
+    //
+    // Time : O(m log(maxCost) + n + m)   per binary search step × log iterations
+    // Space: O(n + m)
+
+    int networkRecovery(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges,
+                        vector&lt;bool&gt;&amp; online, int k) {
+        // Collect all unique edge costs for binary search domain
+        vector&lt;int&gt; costs;
+        for (auto&amp; e : edges) costs.push_back(e[2]);
+        sort(costs.begin(), costs.end());
+        costs.erase(unique(costs.begin(), costs.end()), costs.end());
+
+        // Build adjacency list
+        vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt; adj(n);   // adj[u] = {v, cost}
+        vector&lt;int&gt; indegree(n, 0);
+        for (auto&amp; e : edges) {
+            adj[e[0]].push_back({e[1], e[2]});
+            indegree[e[1]]++;
+        }
+
+        // Kahn's topological sort order (precomputed once)
+        vector&lt;int&gt; topo;
+        {
+            queue&lt;int&gt; q;
+            vector&lt;int&gt; deg = indegree;
+            for (int i = 0; i &lt; n; i++)
+                if (deg[i] == 0) q.push(i);
+            while (!q.empty()) {
+                int u = q.front(); q.pop();
+                topo.push_back(u);
+                for (auto [v, c] : adj[u])
+                    if (--deg[v] == 0) q.push(v);
+            }
+        }
+
+        // Check: can we reach n-1 from 0 with only edges of cost &gt;= minCost
+        // and total cost &lt;= k, visiting only online intermediate nodes?
+        auto feasible = [&amp;](int minCost) -&gt; bool {
+            const long long INF = 1e18;
+            vector&lt;long long&gt; dp(n, INF);
+            dp[0] = 0;
+            for (int u : topo) {
+                if (dp[u] == INF) continue;
+                for (auto [v, c] : adj[u]) {
+                    if (c &lt; minCost) continue;       // Edge below threshold
+                    if (v != n - 1 &amp;&amp; !online[v]) continue; // Offline intermediate
+                    long long nc = dp[u] + c;
+                    if (nc &lt; dp[v]) dp[v] = nc;
+                }
+            }
+            return dp[n - 1] &lt;= k;
+        };
+
+        // Binary search on minCost among the actual edge costs
+        int ans = -1;
+        int lo = 0, hi = (int)costs.size() - 1;
+        while (lo &lt;= hi) {
+            int mid = (lo + hi) / 2;
+            if (feasible(costs[mid])) {
+                ans = costs[mid];
+                lo = mid + 1;   // Try for a higher minimum
+            } else {
+                hi = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
