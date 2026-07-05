@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // n x n board of characters. 'S' = bottom-right (start), 'E' = top-left (end).
+    // Other cells: digit '1'-'9' (collect its value) or 'X' (obstacle, blocked).
+    // From any cell you can move UP, LEFT, or UP-LEFT (diagonal) only.
+    // Return [maxScore, numberOfPaths] mod 10^9+7.
+    // If no path exists, return [0, 0].
+    //
+    // Approach: 2D DP traversing from bottom-right to top-left.
+    //   dp[i][j] = {maxScore, pathCount} to reach cell (i,j) from 'S'.
+    //
+    //   Transition (processing in reverse — from S toward E):
+    //   For cell (i,j), predecessors that could move INTO (i,j) are:
+    //     (i+1, j)   → came from below     (up move)
+    //     (i, j+1)   → came from right     (left move)
+    //     (i+1, j+1) → came from below-right (up-left diagonal move)
+    //
+    //   For each predecessor p:
+    //     If dp[p].count == 0: p is unreachable, skip.
+    //     candidateScore = dp[p].score + value(i,j)
+    //     Update dp[i][j]:
+    //       candidateScore &gt; dp[i][j].score → replace (better path found)
+    //       candidateScore == dp[i][j].score → add path counts (equally good)
+    //
+    //   Special cells:
+    //     'S' = (n-1, n-1): dp[n-1][n-1] = {0, 1} (starting point, score 0)
+    //     'E' = (0, 0):     don't add its value (it's the destination marker)
+    //     'X' = obstacle:   dp[i][j] remains {-1, 0} (unreachable marker)
+    //
+    //   Final answer: dp[0][0].count &gt; 0 ? {dp[0][0].score, dp[0][0].count} : {0,0}
+    //
+    // Time : O(n^2)    Space: O(n^2)
+
+    const int MOD = 1e9 + 7;
+
+    vector&lt;int&gt; pathsWithMaxScore(vector&lt;string&gt;&amp; board) {
+        int n = board.size();
+
+        // score[i][j] = max score to reach (i,j) from S; -1 = unreachable
+        // cnt[i][j]   = number of such maximum-score paths; 0 = unreachable
+        vector&lt;vector&lt;int&gt;&gt; score(n, vector&lt;int&gt;(n, -1));
+        vector&lt;vector&lt;int&gt;&gt; cnt(n, vector&lt;int&gt;(n, 0));
+
+        // Starting cell 'S' at bottom-right
+        score[n-1][n-1] = 0;
+        cnt[n-1][n-1]   = 1;
+
+        // Helper: try to update (i,j) from predecessor (pi, pj)
+        auto update = [&amp;](int i, int j, int pi, int pj) {
+            if (pi &lt; 0 || pi &gt;= n || pj &lt; 0 || pj &gt;= n) return;
+            if (cnt[pi][pj] == 0) return;   // Predecessor unreachable
+
+            // Value of current cell (skip 'E' and 'S' — they contribute 0)
+            int val = 0;
+            if (board[i][j] &gt;= '1' &amp;&amp; board[i][j] &lt;= '9')
+                val = board[i][j] - '0';
+
+            int newScore = score[pi][pj] + val;
+
+            if (newScore &gt; score[i][j]) {
+                score[i][j] = newScore;
+                cnt[i][j]   = cnt[pi][pj] % MOD;
+            } else if (newScore == score[i][j]) {
+                cnt[i][j] = (cnt[i][j] + cnt[pi][pj]) % MOD;
+            }
+        };
+
+        // Traverse from (n-1,n-1) to (0,0), bottom-right to top-left
+        for (int i = n - 1; i &gt;= 0; i--) {
+            for (int j = n - 1; j &gt;= 0; j--) {
+                // Skip start cell (already initialised) and obstacles
+                if (board[i][j] == 'S') continue;
+                if (board[i][j] == 'X') continue;
+
+                // Three possible predecessors (cells that move UP/LEFT/UP-LEFT arrive here)
+                update(i, j, i+1, j);    // came from below
+                update(i, j, i, j+1);    // came from right
+                update(i, j, i+1, j+1);  // came from diagonally below-right
+            }
+        }
+
+        // If top-left cell is unreachable, return [0,0]
+        if (cnt[0][0] == 0) return {0, 0};
+        return {score[0][0], cnt[0][0]};
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
