@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // Given intervals[i] = [li, ri], interval [a,b] is COVERED by [c,d]
+    // if c &lt;= a AND b &lt;= d.
+    // Return the number of intervals NOT covered by any other interval.
+    //
+    // Approach: Greedy Sort  O(n log n)
+    //
+    //   Sort intervals by LEFT endpoint ascending; break ties by RIGHT endpoint
+    //   DESCENDING (so that wider intervals come first when they share a left boundary).
+    //
+    //   Why this sort order?
+    //     If two intervals share the same left endpoint, the one with the larger
+    //     right endpoint covers the smaller one. Placing it first ensures the
+    //     smaller one is identified as covered when we check prevEnd.
+    //
+    //   After sorting, maintain `prevEnd` = the rightmost right endpoint seen so far.
+    //   For each interval [l, r]:
+    //     - If r &lt;= prevEnd: this interval is covered by the one that set prevEnd → skip.
+    //     - If r &gt;  prevEnd: this interval is NOT covered → count it, update prevEnd = r.
+    //
+    //   We don't need to check the left endpoint explicitly: because of sorting,
+    //   for any current interval, all previously seen intervals have l' &lt;= current l.
+    //   So if prevEnd &gt;= r, there exists a previous interval [l', prevEnd] with
+    //   l' &lt;= l AND prevEnd &gt;= r → current interval is covered.
+    //
+    // Example 1: intervals = [[1,4],[3,6],[2,8]]
+    //   Sorted: [[1,4],[2,8],[3,6]]
+    //   [1,4]: r=4 &gt; prevEnd=0 → count=1, prevEnd=4
+    //   [2,8]: r=8 &gt; prevEnd=4 → count=2, prevEnd=8
+    //   [3,6]: r=6 &lt;= prevEnd=8 → covered, skip
+    //   Output: 2 ✓
+    //
+    // Example 2: intervals = [[1,4],[2,3]]
+    //   Sorted: [[1,4],[2,3]]
+    //   [1,4]: r=4 &gt; 0 → count=1, prevEnd=4
+    //   [2,3]: r=3 &lt;= 4 → covered, skip
+    //   Output: 1 ✓
+    //
+    // Time : O(n log n)    Space: O(1)
+
+    int removeCoveredIntervals(vector&lt;vector&lt;int&gt;&gt;&amp; intervals) {
+        // Sort: ascending by left, descending by right (for equal lefts)
+        sort(intervals.begin(), intervals.end(), [](const vector&lt;int&gt;&amp; a,
+                                                    const vector&lt;int&gt;&amp; b) {
+            return a[0] == b[0] ? a[1] &gt; b[1]   // same left: larger right first
+                                : a[0] &lt; b[0];   // different left: smaller left first
+        });
+
+        int ans     = 0;
+        int prevEnd = 0;
+
+        for (const auto&amp; iv : intervals) {
+            int r = iv[1];
+            if (r &gt; prevEnd) {
+                // This interval is NOT covered by anything seen so far
+                ans++;
+                prevEnd = r;
+            }
+            // else: r &lt;= prevEnd → covered → skip
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
