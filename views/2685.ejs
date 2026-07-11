@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title || 'LeetCode Solution' %>
+    </title>
+    <link rel="stylesheet" href="/styles.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/solution.js"></script>
+</head>
+<body>
+    <main>
+        <h1>LeetCode <%= problemNumber %>: <%= problemTitle || 'Problem ' + problemNumber %> (C++)</h1>
+        <div class="problem-description">
+            <p><strong>Problem:</strong>
+                <%= problemDescription || 'Problem description will be loaded here.' %>
+            </p>
+            <p><strong>Example:</strong>
+                <%= example || 'Example will be loaded here.' %>
+            </p>
+        </div>
+        <div class="code-container">
+            <button class="copy-button" onclick="copyCode(this)">Copy Code</button>
+            <pre><code class="language-cpp">class Solution {
+public:
+    // n nodes (0-indexed), undirected graph given as edge list.
+    // A connected component is COMPLETE if every pair of nodes in it
+    // is directly connected by an edge (i.e. it forms a clique).
+    //
+    // Key property of a complete component with k nodes:
+    //   It must have exactly k*(k-1)/2 edges.
+    //
+    // Approach: Union-Find + component edge/node counting  O(n + m)
+    //
+    //   1. Use Union-Find to group all nodes into connected components.
+    //   2. For each component, count:
+    //        nodeCount[root] = number of nodes in the component
+    //        edgeCount[root] = number of edges whose both endpoints share this root
+    //   3. A component rooted at `root` is complete iff:
+    //        edgeCount[root] == nodeCount[root] * (nodeCount[root] - 1) / 2
+    //   4. Count how many components are complete.
+    //
+    // Why Union-Find over BFS/DFS?
+    //   Both work in O(n + m). Union-Find is cleaner here since we only
+    //   need component membership and counts — no adjacency list required.
+    //
+    // Example 1: n=6, edges=[[0,1],[0,2],[1,2],[3,4]]
+    //   Components: {0,1,2} (3 nodes, 3 edges = 3*2/2 ✓) and {3,4} (2 nodes, 1 edge = 2*1/2 ✓)
+    //   and {5} (1 node, 0 edges = 1*0/2 ✓)
+    //   All 3 complete → Output: 3 ✓
+    //
+    // Example 2: n=6, edges=[[0,1],[0,2],[1,2],[3,4],[3,5]]
+    //   {0,1,2}: 3 edges ✓  {3,4,5}: 2 edges ≠ 3 ✗  {nothing else}
+    //   Output: 1 ✓
+    //
+    // Time : O(n + m * α(n)) ≈ O(n + m)    Space: O(n)
+
+    // Union-Find with path compression and union by rank
+    vector&lt;int&gt; parent, rank_;
+
+    int find(int x) {
+        if (parent[x] != x)
+            parent[x] = find(parent[x]);   // Path compression
+        return parent[x];
+    }
+
+    void unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (rank_[px] &lt; rank_[py]) swap(px, py);
+        parent[py] = px;
+        if (rank_[px] == rank_[py]) rank_[px]++;
+    }
+
+    int countCompleteComponents(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+        parent.resize(n);
+        rank_.assign(n, 0);
+        iota(parent.begin(), parent.end(), 0);  // parent[i] = i
+
+        // Step 1: Build Union-Find from edges
+        for (auto&amp; e : edges) unite(e[0], e[1]);
+
+        // Step 2: Count nodes and edges per component root
+        unordered_map&lt;int, int&gt; nodeCnt, edgeCnt;
+        for (int i = 0; i &lt; n; i++) nodeCnt[find(i)]++;
+        for (auto&amp; e : edges) edgeCnt[find(e[0])]++;
+
+        // Step 3: Check completeness for each component
+        int ans = 0;
+        for (auto&amp; [root, nc] : nodeCnt) {
+            int ec = edgeCnt.count(root) ? edgeCnt[root] : 0;
+            if (ec == nc * (nc - 1) / 2) ans++;
+        }
+
+        return ans;
+    }
+};</code></pre>
+        </div>
+        <a href="/" class="back-link">&#8592; Back to Home</a>
+    </main>
+</body>
+</html>
